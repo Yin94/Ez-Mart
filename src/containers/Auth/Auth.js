@@ -22,10 +22,10 @@ export default class extends React.Component {
       switchPath = "";
     if (mode === "0") {
       switchText = "Signin";
-      switchPath = "/auth/1";
+      switchPath = "/auth1";
     } else {
       switchText = "Signup";
-      switchPath = "/auth/0";
+      switchPath = "/auth0";
     }
 
     return (
@@ -43,7 +43,8 @@ export default class extends React.Component {
             onChange={e => this.setState({ email: e.target.value })}
             type='email'
             autoFocus
-            placeholder='please enter email'
+
+            // placeholder='please enter email'
           />
         </div>
         <div className={styles.ControlGroup}>
@@ -52,7 +53,8 @@ export default class extends React.Component {
             value={this.state.pswd}
             onChange={e => this.setState({ pswd: e.target.value })}
             type='password'
-            placeholder='please enter password'
+
+            // placeholder='please enter password'
           />
         </div>
 
