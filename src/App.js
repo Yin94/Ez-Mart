@@ -6,14 +6,14 @@ import Auth from "./containers/Auth/Auth";
 class App extends Component {
   render() {
     return (
-      <>
+      <div style={{ width: "100%", overflow: "hidden" }}>
         <Header />
         <Layout>
           <Switch>
-            <Route path='/auth' component={Auth} />
+            <Route path='/auth/:mode' component={Auth} />
           </Switch>
         </Layout>
-      </>
+      </div>
     );
   }
 }
