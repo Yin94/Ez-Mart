@@ -1,0 +1,50 @@
+.container {
+  display: grid;
+  grid-template-columns: auto;
+  grid-gap: 10px;
+}
+
+.container img {
+  width: 100%;
+  border-radius: 1em;
+}
+.container img[alt="delete"] {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 20%;
+  display: none;
+  opacity: 0.8;
+}
+.container small {
+  color: #fc2a07;
+  font-size: 1.2em;
+  font-weight: bolder;
+}
+.container > div {
+  position: relative;
+}
+.container > div button {
+  opacity: 0.8;
+
+  width: 50%;
+}
+.container > div button[name="left"] {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  display: none;
+}
+
+.container > div button[name="right"] {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: none;
+}
+
+.imgContainer:hover button[name="right"],
+.imgContainer:hover button[name="left"],
+.imgContainer:hover img[alt="delete"] {
+  display: inline-block;
+}

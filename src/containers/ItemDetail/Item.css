@@ -1,0 +1,24 @@
+.mainArea {
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  grid-template-areas: "largePic details details" "gallery details details";
+  grid-gap: 10px;
+}
+.lgPic {
+  grid-area: largePic;
+}
+.lgPic img {
+  width: 100%;
+  height: auto;
+}
+.gallery {
+  grid-area: gallery;
+}
+
+@media only screen and (max-width: 600px) {
+  .mainArea {
+    grid-template-columns: auto;
+    grid-template-areas: "largePic" "gallery" "details";
+    grid--gap: 20px;
+  }
+}

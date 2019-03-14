@@ -61,13 +61,13 @@ export default class extends React.Component {
         <div className={styles.ButtonGroup}>
           <Button type='submit'>Submit</Button>
           <Button
-            className='Ginger'
+            className='btn ginger'
             type='button'
             onClick={this.onCancelHandler}>
             Cancel
           </Button>
           <Button
-            className='Succeed'
+            className='btn succeed'
             onClick={() => this.onSwitchHandler(switchPath)}>
             Switch to {switchText}
           </Button>

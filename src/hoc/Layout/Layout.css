@@ -4,6 +4,13 @@
   padding: 0;
 }
 .LayoutContainer {
-  width: 60%;
+  width: 80%;
   margin: auto;
+  margin: 2em auto;
+}
+
+@media only screen and (max-width: 600px) {
+  .LayoutContainer {
+    width: 90%;
+  }
 }

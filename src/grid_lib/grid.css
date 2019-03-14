@@ -1,0 +1,8 @@
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.col {
+  grid-column: 1 / span 2;
+}

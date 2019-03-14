@@ -1,0 +1,48 @@
+.NavBar {
+  display: grid;
+  grid-template-areas: "home search auth fav item";
+  grid-template-columns: 1fr 6fr 1fr 1fr 1fr;
+  list-style-type: none;
+  background-color: #fff;
+  text-align: center;
+  grid-gap: 5px;
+}
+
+.NavBar a {
+  text-decoration: none;
+  color: black;
+  padding: 1em;
+  display: block;
+}
+
+.NavBar a.active {
+  background-color: red;
+  color: #fff;
+  /* font-weight: bold; */
+}
+.NavBar > div {
+  grid-area: search;
+}
+.NavBar > a[id="1"] {
+  grid-area: home;
+}
+.NavBar > a[id="2"] {
+  grid-area: auth;
+}
+.NavBar > a[id="3"] {
+  grid-area: fav;
+}
+.NavBar > a[id="4"] {
+  grid-area: item;
+}
+
+@media only screen and (max-width: 600px) {
+  .NavBar {
+    grid-template-columns: auto;
+    grid-template-areas: "home auth fav item" "search search search search";
+  }
+  .NavBar > div {
+    width: 90%;
+    margin: auto;
+  }
+}
