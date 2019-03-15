@@ -6,6 +6,11 @@
 }
 .lgPic {
   grid-area: largePic;
+  position: relative;
+}
+.lgPic:hover .fadeIn {
+  display: block;
+  width: 100%;
 }
 .lgPic img {
   width: 100%;
@@ -14,7 +19,26 @@
 .gallery {
   grid-area: gallery;
 }
-
+.fadeIn {
+  text-align: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 0;
+  transition: 0.5s ease;
+  overflow: hidden;
+  background-color: yellow;
+}
+.fadeIn p {
+  position: absolute;
+  font-size: 24px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+}
 @media only screen and (max-width: 600px) {
   .mainArea {
     grid-template-columns: auto;

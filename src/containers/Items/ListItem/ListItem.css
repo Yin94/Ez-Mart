@@ -5,7 +5,7 @@
 }
 
 .container img {
-  width: 100%;
+  max-width: 100%;
   border-radius: 1em;
 }
 .container img[alt="delete"] {

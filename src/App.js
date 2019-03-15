@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import Layout from "./hoc/Layout/Layout";
 import Header from "./components/Header/Header";
-import { Switch, Route, Redirect } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import Auth from "./containers/Auth/Auth";
 import NavBar from "./components/NavBar/NavBar";
 import Favorites from "./containers/Favorites/Favorites";
-import Item from "./containers/ItemDetail/Item";
+import ItemDetail from "./containers/ItemDetail/ItemDetail";
 import Items from "./containers/Items/Items";
 import "./grid_lib/grid.css";
 class App extends Component {
@@ -17,7 +17,7 @@ class App extends Component {
         <Layout>
           <Switch>
             <Route path='/auth:mode' component={Auth} />
-            <Route path='/item/:id' component={Item} />
+            <Route path='/item/:id' component={ItemDetail} />
             <Route path='/fav' component={Favorites} />
             <Route path='/items' component={Items} />
           </Switch>

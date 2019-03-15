@@ -1,0 +1,28 @@
+i {
+  z-index: 1;
+  border: solid darkgrey;
+  border-width: 0 10px 10px 0;
+  display: inline-block;
+  padding: 10px;
+  position: absolute;
+  margin: 0;
+  top: 50%;
+  opacity: 0.7;
+  transform: translate(-50%, -50%);
+}
+i:hover {
+  filter: brightness(200%);
+  cursor: pointer;
+}
+
+i.right {
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  right: 1%;
+}
+
+i.left {
+  left: 1%;
+  transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
+}

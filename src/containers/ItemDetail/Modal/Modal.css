@@ -1,0 +1,21 @@
+.container {
+  position: fixed;
+  top: 5%;
+  bottom: 5%;
+  left: 5%;
+  right: 5%;
+  background-color: rgb(0, 0, 0, 0.9);
+  z-index: 1;
+  overflow: auto;
+  overflow-x: scroll;
+}
+
+.container img {
+  position: absolute;
+  height: auto;
+  max-width: 94%;
+  margin: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

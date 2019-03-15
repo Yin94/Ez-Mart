@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./FavHead.css";
+// import styles from "./FavHead.css";
 
 import SearchBar from "../../../UI/SearchBar/SearchBar";
 export default function FavHead() {
