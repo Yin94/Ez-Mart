@@ -5,7 +5,7 @@ import { Switch, Route, Redirect } from "react-router-dom";
 import Auth from "./containers/Auth/Auth";
 import NavBar from "./components/NavBar/NavBar";
 import Favorites from "./containers/Favorites/Favorites";
-import Item from "./containers/Item/Item";
+import Item from "./containers/ItemDetail/Item";
 import "./grid_lib/grid.css";
 class App extends Component {
   render() {

@@ -11,9 +11,7 @@ export default function FavListItem({ favItem = item }) {
           src='https://image.flaticon.com/icons/png/512/51/51032.png'
           alt='delete'
         />
-        <Button name='left' className='btn'>
-          Details
-        </Button>
+        <Button name='left'>Details</Button>
         <Button className='btn succeed' name='right'>
           Contact seller
         </Button>
