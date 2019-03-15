@@ -19,6 +19,6 @@
   .mainArea {
     grid-template-columns: auto;
     grid-template-areas: "largePic" "gallery" "details";
-    grid--gap: 20px;
+    grid-gap: 20px;
   }
 }
