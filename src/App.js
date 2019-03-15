@@ -6,6 +6,7 @@ import Auth from "./containers/Auth/Auth";
 import NavBar from "./components/NavBar/NavBar";
 import Favorites from "./containers/Favorites/Favorites";
 import Item from "./containers/ItemDetail/Item";
+import Items from "./containers/Items/Items";
 import "./grid_lib/grid.css";
 class App extends Component {
   render() {
@@ -18,6 +19,7 @@ class App extends Component {
             <Route path='/auth:mode' component={Auth} />
             <Route path='/item/:id' component={Item} />
             <Route path='/fav' component={Favorites} />
+            <Route path='/items' component={Items} />
           </Switch>
         </Layout>
       </div>
