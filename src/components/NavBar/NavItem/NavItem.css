@@ -1,7 +1,7 @@
 .NavBar {
   display: grid;
-  grid-template-areas: "home search auth fav item";
-  grid-template-columns: 1fr 6fr 1fr 1fr 1fr;
+  grid-template-areas: "home search auth fav ";
+  grid-template-columns: 1fr 6fr 1fr 1fr;
   list-style-type: none;
   background-color: #fff;
   text-align: center;
@@ -32,14 +32,11 @@
 .NavBar > a[id="3"] {
   grid-area: fav;
 }
-.NavBar > a[id="4"] {
-  grid-area: item;
-}
 
 @media only screen and (max-width: 600px) {
   .NavBar {
     grid-template-columns: auto;
-    grid-template-areas: "home auth fav item" "search search search search";
+    grid-template-areas: "home auth fav " "search search search ";
   }
   .NavBar > div {
     width: 90%;

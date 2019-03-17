@@ -4,6 +4,9 @@
   grid-template-areas: "largePic details details" "gallery details details";
   grid-gap: 10px;
 }
+.mainArea img:hover {
+  cursor: pointer;
+}
 .lgPic {
   grid-area: largePic;
   position: relative;
@@ -11,6 +14,7 @@
 .lgPic:hover .fadeIn {
   display: block;
   width: 100%;
+  cursor: pointer;
 }
 .lgPic img {
   width: 100%;

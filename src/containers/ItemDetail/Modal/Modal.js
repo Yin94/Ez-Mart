@@ -49,9 +49,6 @@ Modal.defaultProps = {
   listLength: 5,
 
   img:
-    // "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/image/AppleInc/aos/published/images/i/pa/ipad/pro/ipad-pro-12-11-select-201810_FMT_WHH?wid=2000&hei=2000&fmt=jpeg&qlt=80&op_usm=0.5,0.5&.v=1540576009788"
-    // "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Long_March_2D_launching_VRSS-1.jpg/1200px-Long_March_2D_launching_VRSS-1.jpg"
     "https://external-preview.redd.it/DawO9IaFnqzr214G_g3hnQTrk01Gk4MY1z8qXSk6I_M.jpg?auto=webp&s=787392ee1ec8231441cfdb02c9b5b6a3c612846b"
-  // "https://blog.bookbaby.com/wp-content/uploads/2016/03/How-Long-Will-It-Take.png"
 };
 export default Modal;

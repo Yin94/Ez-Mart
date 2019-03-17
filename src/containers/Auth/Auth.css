@@ -56,6 +56,18 @@
   margin: 10px auto;
   width: 90%;
 }
+.errorSpan {
+  width: 90%;
+  margin: auto;
+  background-color: rgb(28, 28, 254);
+  font-size: 1.2em;
+  color: white;
+  opacity: 0.8;
+  border-radius: 4px;
+  padding: 20px 0;
+  display: block;
+  font-weight: bolder;
+}
 @media only screen and (max-width: 600px) {
   .ButtonGroup {
     grid-template-columns: auto;

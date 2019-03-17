@@ -4,9 +4,15 @@ import "./index.css";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import { createStore } from "redux";
-import rootReducer from "./store_redux/reducer/index";
-const store = createStore(rootReducer);
+import { createStore, applyMiddleware, compose } from "redux";
+import rootReducer from "./store_redux/index";
+import thunk from "redux-thunk";
+import "./firebase/config";
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const store = createStore(
+  rootReducer,
+  /* preloadedState, */ composeEnhancers(applyMiddleware(thunk))
+);
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
