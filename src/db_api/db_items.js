@@ -10,7 +10,19 @@ export async function fetchItems() {
     return error;
   }
 }
-
+export async function queryItem(id) {
+  const result = [];
+  try {
+    const querySnapshot = await db
+      .collection("items")
+      .where("id", "==", id)
+      .get();
+    querySnapshot.forEach(item => result.push(item.data()));
+    return result[0];
+  } catch (error) {
+    return error;
+  }
+}
 export async function addItems(list) {}
 
 const list = [

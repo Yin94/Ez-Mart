@@ -1,7 +1,7 @@
 import React from "react";
 
-export default function SellerNote({ noteList = ["note1", "note2"] }) {
-  const list = noteList.map((note, index) => (
+export default function SellerNote({ notes }) {
+  const list = notes.map((note, index) => (
     <li style={{ padding: "5px" }} key={index + note}>
       {note}
     </li>

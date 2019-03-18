@@ -13,6 +13,7 @@
 .container img {
   position: absolute;
   height: auto;
+  /* min-width: 50%; */
   max-width: 94%;
   margin: 0;
   top: 50%;

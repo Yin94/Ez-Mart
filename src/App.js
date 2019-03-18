@@ -9,20 +9,28 @@ import ItemDetail from "./containers/ItemDetail/ItemDetail";
 import Items from "./containers/Items/Items";
 import { connect } from "react-redux";
 import { authSucceed, logOut } from "./store_redux/auth/auth";
-import { startFetchingItems } from "./store_redux/items/items";
+import { startFetchingItems, setCurrentItem } from "./store_redux/items/items";
 class App extends Component {
   componentDidMount = () => {
     this.props.startFetchItems();
     const loggedIn = localStorage.getItem("user-authed");
-    if (loggedIn) this.props.authSucceed("local");
+
+    if (loggedIn) {
+      const uid = localStorage.getItem("user-uid");
+      this.props.authSucceed(uid, true);
+    }
   };
   logOutHandler = () => {
-    // console.log("s");
     this.props.logOut();
   };
   itemSelectedHandler = index => {
-    const itemId = this.props.items[index].id;
-    this.props.history.push("item/" + itemId);
+    const item = this.props.items[index];
+    this.props.setCurrentItem(item);
+    this.props.history.push("item/" + item.id);
+  };
+  onFavHandler = id => {
+    // console.log(id);
+    alert("on fav handler");
   };
   render() {
     const authed = this.props.authed;
@@ -40,11 +48,12 @@ class App extends Component {
               component={() => (
                 <Items
                   list={this.props.items}
+                  favoriteClicked={this.onFavHandler}
                   itemSelected={index => this.itemSelectedHandler(index)}
                 />
               )}
             />
-            <Redirect to='items' />
+            <Redirect to='/items' />
           </Switch>
         </Layout>
       </div>
@@ -57,9 +66,10 @@ const mps = state => ({
 });
 
 const mpd = dispatch => ({
-  authSucceed: mode => dispatch(authSucceed(mode)),
+  authSucceed: (uid, mode) => dispatch(authSucceed(uid, mode)),
   logOut: () => dispatch(logOut()),
-  startFetchItems: () => dispatch(startFetchingItems())
+  startFetchItems: () => dispatch(startFetchingItems()),
+  setCurrentItem: item => dispatch(setCurrentItem(item))
 });
 export default withRouter(
   connect(

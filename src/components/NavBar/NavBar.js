@@ -12,12 +12,26 @@ export default function NavBar({ authed, logOut }) {
         <NavLink id={"1"} activeClassName={styles.active} to='/items'>
           Items
         </NavLink>
-        <SearchBar type='navSearch' containerStyle={searchBarStyle} />
+        <div className={styles.searchGroup}>
+          <SearchBar type='navSearch' containerStyle={searchBarStyle} />
+        </div>
         {authed ? (
           <>
-            <NavLink id={"2"} activeClassName={styles.active} to='/fav'>
-              Fav
-            </NavLink>
+            <div id={"2"} className={styles.dropdown}>
+              <NavLink activeClassName={styles.active} to='/#'>
+                Options
+              </NavLink>
+              <div className={styles.dropContent}>
+                <NavLink activeClassName={styles.active} to='/mkpost'>
+                  I want to sell...
+                </NavLink>
+                <NavLink activeClassName={styles.active} to='/fav'>
+                  Favorites
+                </NavLink>
+                <NavLink to='/posts'>My Posts</NavLink>
+              </div>
+            </div>
+
             <NavLink
               id={"3"}
               onClick={logOut}

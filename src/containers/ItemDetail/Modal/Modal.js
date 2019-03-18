@@ -4,7 +4,7 @@ import styles from "./Modal.css";
 import ClosingTag from "../../../UI/ClosingTag/ClosingTag";
 import NavArrow from "../../../UI/NavArrow/NavArrow";
 function Modal({
-  img,
+  imgs,
   index,
   show,
   listLength,
@@ -29,11 +29,11 @@ function Modal({
   if (index === listLength - 1) displayNav.pop();
   if (index === 0) displayNav.splice(0, 1);
   return show ? (
-    <div className={styles.container}>
+    <div onKeyPress={() => console.log("yi")} className={styles.container}>
       <ClosingTag onClick={close} />
 
       {displayNav}
-      <img src={img} alt='img' />
+      <img src={imgs[index]} alt='img' />
     </div>
   ) : null;
 }

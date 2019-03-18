@@ -15,14 +15,16 @@ ListItem.defaultProps = {
   name: "yin"
 };
 
-export default function ListItem({ itemSelected, item }) {
-  const { name, img, price, id, favs } = item;
+export default function ListItem({ itemSelected, item, favoriteClicked }) {
+  const { name, imgs, price, id, favs } = item;
   return (
     <div className={styles.container}>
       <div className={styles.imgContainer}>
-        <img onClick={itemSelected} src={img} alt='imgUrl' />
+        <img onClick={itemSelected} src={imgs[0]} alt='imgUrl' />
 
-        <Button name='left'>Favorite</Button>
+        <Button onClick={favoriteClicked} name='left'>
+          Favorite
+        </Button>
         <Button onClick={itemSelected} className='btn succeed' name='right'>
           Details
         </Button>
@@ -33,7 +35,7 @@ export default function ListItem({ itemSelected, item }) {
       </div>
 
       <p>
-        <Link to={"/item/" + id}>{name}</Link>
+        <Link to={"/item/" + id + "/" + true}>{name}</Link>
       </p>
     </div>
   );

@@ -6,11 +6,14 @@ const initialState = {
   error: false,
   loading: false,
   succeed: false,
-  authed: false
+  authed: false,
+  uid: ""
 };
-function setInfo(state, mode) {
-  const newStatus = { loading: false, authed: true };
-  if (mode !== "local") newStatus.succeed = true;
+function setInfo(state, uid, fromLocal) {
+  const newStatus = { loading: false, authed: true, uid: uid };
+  if (!fromLocal) newStatus.succeed = true;
+  console.log(newStatus.succeed);
+
   return combine(state, newStatus);
 }
 function setError(state, error) {
@@ -21,12 +24,12 @@ function setProcessing(state) {
 }
 const resetStatus = state =>
   combine(state, { error: false, loading: false, succeed: false });
-const logAuthOut = state => combine(state, { authed: false });
+const logAuthOut = state => combine(state, { authed: false, uid: "" });
 //reducer function
 export default function(state = initialState, action) {
   switch (action.type) {
     case AUTH_SUCCEED:
-      return setInfo(state, action.mode);
+      return setInfo(state, action.uid, action.fromLocal);
     case AUTH_ERROR:
       return setError(state, action.error);
     case AUTH_PROCESSING:
@@ -54,13 +57,16 @@ export function tryAuth(email, password, mode) {
     const result = await dbAuth.authWiwthEmailAndPswd(email, password, mode);
     if (result) dispatch({ type: AUTH_ERROR, error: result });
     else {
+      const user = dbAuth.getCurrentUser();
+
       localStorage.setItem("user-authed", true);
-      dispatch(authSucceed());
+      localStorage.setItem("user-uid", user.uid);
+      dispatch(authSucceed(user.uid));
     }
   };
 }
-export function authSucceed(mode) {
-  return { type: AUTH_SUCCEED, mode };
+export function authSucceed(uid, fromLocal) {
+  return { type: AUTH_SUCCEED, uid, fromLocal };
 }
 export function commitStatus() {
   return {
@@ -69,6 +75,9 @@ export function commitStatus() {
 }
 
 export function logOut() {
+  localStorage.removeItem("user-authed");
+  localStorage.removeItem("user-uid");
+
   return {
     type: LOG_OUT
   };
