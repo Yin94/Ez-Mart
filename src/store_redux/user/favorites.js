@@ -1,4 +1,5 @@
-import { fetchFavList } from "../../db_api/db_user";
+import { fetchSavList, manageFavItem } from "../../db_api/db_user";
+import { getCurrentUser } from "../../db_api/db_auth";
 import combine from "../../utility/combine";
 //reducer
 const initialState = {
@@ -11,14 +12,20 @@ const setList = (state, list) => combine(state, { list, succeed: true });
 const favsError = (state, error) => combine(state, { error });
 const resetStatus = state =>
   combine(state, { error: false, succeed: false, loading: false });
-
+const deleteItem = (state, id) => {
+  const index = state.list.indexOf(id);
+  const list = [...state.list];
+  list.splice(index, 1);
+  return combine(state, { list });
+};
 export default (state = initialState, action) => {
   switch (action.type) {
     case SET_LIST:
       return setList(state, action.list);
     case FAVS_ERROR:
       return favsError(state, action.error);
-
+    case DELETE_ITEM:
+      return deleteItem(state, action.id);
     case COMMIT_STATUS:
       return resetStatus(state);
     default:
@@ -29,12 +36,25 @@ export default (state = initialState, action) => {
 const SET_LIST = "favorites/SET_LIST";
 const FAVS_ERROR = "favorites/Favs_ERROR";
 const COMMIT_STATUS = "favorites/COMMIT_STATUS";
+const DELETE_ITEM = "favorites/DELETE_ITEM";
 //action creators
-export const startFetchingFavs = uid => {
+export const startFetchingFavs = () => {
+  const uid = localStorage.getItem("user-uid") || getCurrentUser().id;
   return async dispatch => {
-    const list = await fetchFavList(uid);
+    const list = await fetchSavList(uid);
     list.code
       ? dispatch({ type: FAVS_ERROR, error: list })
       : dispatch({ type: SET_LIST, list });
+  };
+};
+
+export const startDeleteFavItem = id => {
+  return async dispatch => {
+    try {
+      await manageFavItem(id, false);
+      dispatch({ type: DELETE_ITEM, id });
+    } catch (error) {
+      dispatch({ type: FAVS_ERROR, error: error.message });
+    }
   };
 };

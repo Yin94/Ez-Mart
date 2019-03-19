@@ -1,0 +1,45 @@
+.container {
+  margin: auto;
+  background-color: #fa960d;
+  max-width: 800px;
+  border-radius: 4px;
+}
+.postForm {
+  width: 98%;
+  color: white;
+  margin: auto;
+  font-weight: bold;
+}
+.titleAndPrice {
+  display: grid;
+  grid-template-columns: 8fr 2fr;
+}
+
+.postForm input,
+.titleAndPrice label {
+  padding: 9px 0;
+  border-radius: 4px;
+}
+.postForm input {
+  width: 60%;
+}
+
+.titleAndPrice input {
+  width: 99%;
+}
+
+.notesGroup {
+  margin: 50px 0;
+}
+.submitBtnGroup {
+  width: 90%;
+  margin: auto;
+  grid-gap: 50px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.postForm input[type="file"] {
+  padding: 10px;
+  font-size: 1.2em;
+}

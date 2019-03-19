@@ -1,17 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./FavItem.css";
 import Button from "../../../../UI/Button/Button";
-export default function FavListItem({ favItem = item }) {
-  const { price, name, imgUrl } = favItem;
+import { Link } from "react-router-dom";
+
+export default function FavListItem({ item, deleteFavItem }) {
+  const { price, name, imgs, id } = item;
+  const [mode, onDelete] = useState(false);
+
+  const deleteCorner = mode ? (
+    <Button id='delete' onClick={deleteFavItem}>
+      Delete Item
+    </Button>
+  ) : (
+    <img
+      onClick={() => onDelete(!mode)}
+      src='https://image.flaticon.com/icons/png/512/51/51032.png'
+      alt='delete'
+      id='delete'
+    />
+  );
   return (
     <div className={styles.container}>
       <div className={styles.imgContainer}>
-        <img src={imgUrl} alt='imgUrl' />
-        <img
-          src='https://image.flaticon.com/icons/png/512/51/51032.png'
-          alt='delete'
-        />
-        <Button name='left'>Details</Button>
+        <img src={imgs[0]} alt='imgUrl' />
+        {deleteCorner}
+        <Link to={"item/" + id}>
+          <Button name='left'>Details</Button>
+        </Link>
         <Button className='btn succeed' name='right'>
           Contact seller
         </Button>
@@ -22,10 +37,3 @@ export default function FavListItem({ favItem = item }) {
     </div>
   );
 }
-
-const item = {
-  name: "white shoes",
-  price: 40,
-  imgUrl:
-    "https://img.alicdn.com/bao/uploaded/i4/57178339/O1CN013y7vRL2BTJI3uVSps_!!57178339.jpg_160x160xz.jpg"
-};

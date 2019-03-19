@@ -8,13 +8,30 @@
   width: 100%;
   border-radius: 1em;
 }
-.container img[alt="delete"] {
+.container img[id="delete"] {
   position: absolute;
   top: 3px;
   right: 3px;
   width: 20%;
   display: none;
   opacity: 0.8;
+}
+.container button[id="delete"] {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  animation-name: example;
+  display: none;
+  animation-duration: 0.5s;
+}
+
+@keyframes example {
+  from {
+    width: 0;
+  }
+  to {
+    width: 50%;
+  }
 }
 .container small {
   color: #fc2a07;
@@ -45,6 +62,6 @@
 
 .imgContainer:hover button[name="right"],
 .imgContainer:hover button[name="left"],
-.imgContainer:hover img[alt="delete"] {
+.imgContainer:hover *[id="delete"] {
   display: inline-block;
 }

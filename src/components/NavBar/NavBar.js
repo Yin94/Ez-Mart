@@ -22,7 +22,7 @@ export default function NavBar({ authed, logOut }) {
                 Options
               </NavLink>
               <div className={styles.dropContent}>
-                <NavLink activeClassName={styles.active} to='/mkpost'>
+                <NavLink activeClassName={styles.active} to='/make-post'>
                   I want to sell...
                 </NavLink>
                 <NavLink activeClassName={styles.active} to='/fav'>

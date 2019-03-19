@@ -13,7 +13,12 @@ const itemsError = (state, error) => combine(state, error);
 const setCurItem = (state, currentItem) =>
   combine(state, { currentItem, succeed: true });
 const resetStatus = state =>
-  combine(state, { error: false, succeed: false, loading: false });
+  combine(state, {
+    error: false,
+    succeed: false,
+    loading: false,
+    currentItem: null
+  });
 export default (state = initialState, action) => {
   switch (action.type) {
     case SET_LIST:

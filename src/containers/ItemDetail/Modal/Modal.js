@@ -29,7 +29,7 @@ function Modal({
   if (index === listLength - 1) displayNav.pop();
   if (index === 0) displayNav.splice(0, 1);
   return show ? (
-    <div onKeyPress={() => console.log("yi")} className={styles.container}>
+    <div className={styles.container}>
       <ClosingTag onClick={close} />
 
       {displayNav}

@@ -9,6 +9,8 @@ import ItemDetail from "./containers/ItemDetail/ItemDetail";
 import Items from "./containers/Items/Items";
 import { connect } from "react-redux";
 import { authSucceed, logOut } from "./store_redux/auth/auth";
+import { manageFavItem } from "./db_api/db_user";
+import MakePost from "./containers/MakePost/MakePost";
 import { startFetchingItems, setCurrentItem } from "./store_redux/items/items";
 class App extends Component {
   componentDidMount = () => {
@@ -28,9 +30,9 @@ class App extends Component {
     this.props.setCurrentItem(item);
     this.props.history.push("item/" + item.id);
   };
-  onFavHandler = id => {
-    // console.log(id);
-    alert("on fav handler");
+  onSavHandler = async id => {
+    const error = await manageFavItem(id, true);
+    console.log(error);
   };
   render() {
     const authed = this.props.authed;
@@ -43,12 +45,13 @@ class App extends Component {
             <Route path='/auth:mode' component={Auth} />
             <Route path='/item/:id' component={ItemDetail} />
             <Route path='/fav' component={Favorites} />
+            <Route path='/make-post' component={MakePost} />
             <Route
               path='/items'
               component={() => (
                 <Items
                   list={this.props.items}
-                  favoriteClicked={this.onFavHandler}
+                  favoriteClicked={this.onSavHandler}
                   itemSelected={index => this.itemSelectedHandler(index)}
                 />
               )}

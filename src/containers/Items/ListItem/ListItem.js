@@ -23,7 +23,7 @@ export default function ListItem({ itemSelected, item, favoriteClicked }) {
         <img onClick={itemSelected} src={imgs[0]} alt='imgUrl' />
 
         <Button onClick={favoriteClicked} name='left'>
-          Favorite
+          Save
         </Button>
         <Button onClick={itemSelected} className='btn succeed' name='right'>
           Details

@@ -38,16 +38,26 @@ export default withRouter(
 
         this.setState({ imgIndex });
       };
-      onCloseModalHandler = e => {
-        if (e.keyCode === 27 || e.type === "click")
-          this.setState({ showModal: false });
+      onCloseModalHandler = () => {
+        this.setState({ showModal: false });
       };
       onGalleryClickedHandler = imgIndex => {
         // const imgIndex= this.
         this.setState({ imgIndex });
       };
+      onSaveHandler = () => {
+        console.log("save");
+      };
+      onModalKeyPressHandler = e => {
+        const key = e.keyCode;
+        if (key === 27) this.onCloseModalHandler();
+        if (key === 37 && this.state.imgIndex !== 0)
+          this.onSwitchModalPicHandler({ target: { id: "left" } });
+        if (key === 39 && this.state.imgIndex !== this.state.imgLength - 1)
+          this.onSwitchModalPicHandler({ target: { id: "right" } });
+      };
       componentDidMount = () => {
-        window.addEventListener("keyup", this.onCloseModalHandler, false);
+        window.addEventListener("keyup", this.onModalKeyPressHandler, false);
         const id = this.props.match.params.id;
         const item = this.props.item;
         if (!item) this.props.fetchItem(id);
@@ -59,7 +69,6 @@ export default withRouter(
 
       render() {
         const item = this.props.item;
-        //check if item exists in store
         if (!item) return null;
         const { price, name, imgs, notes } = item;
         return (
@@ -88,6 +97,7 @@ export default withRouter(
                 className={styles.gallery}
               />
               <ItemDescrip
+                onSave={this.onSaveHandler}
                 {...{ name, price, notes }}
                 className={styles.details}
               />
