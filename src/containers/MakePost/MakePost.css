@@ -10,13 +10,13 @@
   margin: auto;
   font-weight: bold;
 }
-.titleAndPrice {
+.nameAndPrice {
   display: grid;
   grid-template-columns: 8fr 2fr;
 }
 
 .postForm input,
-.titleAndPrice label {
+.nameAndPrice label {
   padding: 9px 0;
   border-radius: 4px;
 }
@@ -24,7 +24,7 @@
   width: 60%;
 }
 
-.titleAndPrice input {
+.nameAndPrice input {
   width: 99%;
 }
 

@@ -2,74 +2,94 @@ import React, { Component } from "react";
 import styles from "./MakePost.css";
 import NoteItem from "./NoteItem/NoteItem";
 import Button from "../../UI/Button/Button";
-
+import { addItem } from "../../db_api/db_items";
+const validator = form => {
+  const { name, notes, imgs, price } = form;
+  const validArray = [];
+  let validImgLength = 0;
+  const validList = notes.filter(item => item.length <= 100);
+  for (let img of imgs) {
+    if (img.size <= 20480000) validImgLength++;
+  }
+  validArray.push(name.length < 100);
+  validArray.push(price == parseInt(price) && parseInt(price) > 0);
+  validArray.push(validList.length === notes.length);
+  validArray.push(validImgLength === imgs.length);
+  return validArray;
+};
 export default class MakePost extends Component {
   state = {
-    noteList: [],
-    images: [],
-    title: "",
-    price: ""
+    notes: [],
+    imgs: [],
+    name: "",
+    price: "",
+    validation: Array(4).fill(false)
   };
   onSubmitHandler = e => {
     e.preventDefault();
+    const { validation, ...form } = this.state;
+    const vArray = validator(form);
+    const vResult = vArray.reduce((cur, acc) => acc && cur, true);
+    if (vResult) addItem(form);
+    else alert("error formed form");
     //got all the form data, need validation then send to store and update to server
   };
   onDeleteNoteHandler = index => {
-    const noteList = this.state.noteList;
-    noteList.splice(index, 1);
-    this.setState({ noteList });
+    const notes = this.state.notes;
+    notes.splice(index, 1);
+    this.setState({ notes });
   };
   onAddNoteHandler = () => {
-    const list = [...this.state.noteList];
+    const list = [...this.state.notes];
     list.push("");
-    this.setState({ noteList: list });
+    this.setState({ notes: list });
   };
   onNoteChangedHander = (e, index) => {
-    const noteList = [...this.state.noteList];
-    noteList[index] = e.target.value;
-    this.setState({ noteList }, () => {
-      console.log(this.state.noteList);
+    const notes = [...this.state.notes];
+    notes[index] = e.target.value;
+    this.setState({ notes }, () => {
+      console.log(this.state.notes);
     });
   };
   onUploadHanler = e => {
-    //check validity
-    const images = this.state.images;
-    images.push(e.target.files[0]);
-    this.setState({ images }, console.log(this.state.images));
+    this.setState({ imgs: e.target.files });
   };
   onClearNotesHandler = () => {
-    this.setState({ noteList: [] });
+    this.setState({ notes: [] });
   };
   onClearFormHandler = () => {
     this.setState({
-      noteList: [],
-      images: []
+      notes: [],
+      imgs: [],
+      name: "",
+      price: ""
     });
   };
   render() {
-    const displayNoteList = this.state.noteList.map((item, index) => (
+    const displaynotes = this.state.notes.map((item, index) => (
       <NoteItem
         key={"yo" + index}
         index={index}
         deleteNote={this.onDeleteNoteHandler}
         noteChanged={this.onNoteChangedHander}
-        value={this.state.noteList[index]}
+        value={this.state.notes[index]}
       />
     ));
 
     return (
       <div className={styles.container}>
         <form className={styles.postForm} onSubmit={this.onSubmitHandler}>
-          <div className={styles.titleAndPrice}>
+          <div className={styles.nameAndPrice}>
             <div>
               <label htmlFor=''>title:</label>
               <input
                 onChange={e => {
-                  const title = e.target.value;
-                  this.setState({ title });
+                  const name = e.target.value;
+                  this.setState({ name });
                 }}
-                value={this.state.title}
+                value={this.state.name}
                 type='text'
+                required
               />
             </div>
             <div>
@@ -82,19 +102,24 @@ export default class MakePost extends Component {
                 }}
                 value={this.state.price}
                 type='text'
+                required
               />
             </div>
           </div>
           <div className={styles.notesGroup}>
-            <Button onClick={this.onAddNoteHandler} className='btn succeed'>
+            <Button
+              type='button'
+              onClick={this.onAddNoteHandler}
+              className='btn succeed'>
               Add Note
             </Button>
             <Button
+              type='button'
               onClick={this.onClearNotesHandler}
               style={{ backgroundColor: "red" }}>
               Clear Notes
             </Button>
-            {displayNoteList}
+            {displaynotes}
           </div>
           <div>
             <input
@@ -102,6 +127,8 @@ export default class MakePost extends Component {
               multiple
               accept='image/*'
               onChange={this.onUploadHanler}
+              files={this.state.imgs}
+              required
             />
           </div>
 
@@ -109,7 +136,10 @@ export default class MakePost extends Component {
             <Button type='submit' className='btn succeed'>
               Submit
             </Button>
-            <Button onClick={this.onClearFormHandler}>Clear form</Button>
+
+            <Button type='button' onClick={this.onClearFormHandler}>
+              Clear form
+            </Button>
           </div>
         </form>
       </div>
