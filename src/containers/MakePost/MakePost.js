@@ -25,13 +25,13 @@ export default class MakePost extends Component {
     price: "",
     validation: Array(4).fill(false)
   };
-  onSubmitHandler = e => {
+  onSubmitHandler = async e => {
     e.preventDefault();
     const { validation, ...form } = this.state;
     const vArray = validator(form);
     const vResult = vArray.reduce((cur, acc) => acc && cur, true);
     if (vResult) {
-      const error = addItem(form);
+      const error = await addItem(form);
       if (error) alert(error);
     } else alert("error formed form");
     //got all the form data, need validation then send to store and update to server

@@ -1,5 +1,5 @@
 import { db, fileStorage } from "../firebase/apps/apps";
-
+import { getCurrentUser } from "./db_auth";
 export async function fetchItems() {
   const result = [];
   try {
@@ -32,12 +32,19 @@ export async function addItem(item) {
     files.push(img.name);
   }
   form.imgs = files;
+  form.favs = 0;
+  form["post-time"] = new Date();
+  form.publisher = getCurrentUser().id || localStorage.getItem("user-uid");
   try {
     docRef = await db.collection("items").add(form);
     await upLoadFiles(imgs, docRef.id);
+    await docRef.update({
+      id: docRef.id
+    });
     return null;
   } catch (error) {
     //keep data integrety
+    console.log(error.message);
     try {
       await docRef.delete();
       return "Error on uploading the images! ";
