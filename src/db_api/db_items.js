@@ -26,13 +26,30 @@ export async function queryItem(id) {
 export async function addItem(item) {
   // Add a new document with a generated id.
   const { imgs, ...form } = item;
-  const docRef = await db.collection("items").add(form);
-
-  await upLoadFiles(imgs, docRef.id);
+  const files = [];
+  let docRef = null;
+  for (let img of imgs) {
+    files.push(img.name);
+  }
+  form.imgs = files;
+  try {
+    docRef = await db.collection("items").add(form);
+    await upLoadFiles(imgs, docRef.id);
+    return null;
+  } catch (error) {
+    //keep data integrety
+    try {
+      await docRef.delete();
+      return "Error on uploading the images! ";
+    } catch (err) {
+      return "Error on uploading the images! But item created";
+    }
+  }
 }
 
 async function upLoadFiles(files, itemId) {
   // Create a root reference
+  const pathArray = [];
   var storageRef = fileStorage.ref();
 
   // Create a reference to 'mountains.jpg'
@@ -40,10 +57,8 @@ async function upLoadFiles(files, itemId) {
     const fileRef = storageRef.child(
       "images/items/" + itemId + "/" + file.name
     );
-    await fileRef.put(file);
+    const result = await fileRef.put(file);
+    pathArray.push(result.ref.fullPath);
   }
+  return pathArray;
 }
-
-// fileRef.put(files[0]).then(function(snapshot) {
-//   console.log(snapshot);
-// });
