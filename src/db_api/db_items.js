@@ -5,20 +5,22 @@ export async function fetchItems() {
   try {
     const querySnapshot = await db.collection("items").get();
     querySnapshot.forEach(item => result.push(item.data()));
-    //
+    //only download cover img in the imgPath arrary
     for (let i in result) {
       const imgs = await downloadFiles(
         result[i].imgs,
         result[i].id,
         "cover-img"
       );
-      result[i].imgs = imgs;
+      result[i].imgs[0] = imgs[0];
     }
     return result;
   } catch (error) {
     return error;
   }
 }
+
+// query Item and download images
 export async function queryItem(id) {
   const result = [];
   try {
@@ -27,7 +29,6 @@ export async function queryItem(id) {
       .where("id", "==", id)
       .get();
     querySnapshot.forEach(item => result.push(item.data()));
-
     const imgs = await downloadFiles(result[0].imgs, id);
     result[0].imgs = imgs;
     return result[0];
@@ -100,4 +101,14 @@ export async function downloadFiles(files, itemId, mode) {
     urls.push(url);
   }
   return urls;
+}
+
+export async function fetchItemPublisher(uid) {
+  const result = [];
+  const querySnapshot = await db
+    .collection("users")
+    .where("uid", "==", uid)
+    .get();
+  querySnapshot.forEach(item => result.push(item.data()));
+  return result[0];
 }

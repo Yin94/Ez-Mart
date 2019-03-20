@@ -1,5 +1,5 @@
 import combine from "../../utility/combine";
-import { fetchItems, queryItem } from "../../db_api/db_items";
+import { fetchItems, queryItem, downloadFiles } from "../../db_api/db_items";
 //reducer
 const initialState = {
   list: [],
@@ -12,6 +12,7 @@ const setList = (state, list) => combine(state, { list, succeed: true });
 const itemsError = (state, error) => combine(state, error);
 const setCurItem = (state, currentItem) =>
   combine(state, { currentItem, succeed: true });
+
 const resetStatus = state =>
   combine(state, {
     error: false,
@@ -50,11 +51,20 @@ export const startFetchingItems = () => {
   };
 };
 
-export const startFetchingItem = id => {
+export const startFetchingItem = (id, itemRef) => {
   return async dispatch => {
-    const item = await queryItem(id);
+    if (itemRef) {
+      // cuz  call by ref, have to create a new item, otherwise line61 will change state in store.
+      const item = { ...itemRef };
+      const [coverImg, ...toBeDownload] = item.imgs;
+      const downloadedImgs = await downloadFiles(toBeDownload, item.id);
+      item.imgs = [coverImg, ...downloadedImgs];
+      dispatch(setCurrentItem(item));
+    } else {
+      const item = await queryItem(id);
 
-    dispatch(setCurrentItem(item));
+      dispatch(setCurrentItem(item));
+    }
   };
 };
 

@@ -13,9 +13,7 @@ const favsError = (state, error) => combine(state, { error });
 const resetStatus = state =>
   combine(state, { error: false, succeed: false, loading: false });
 const deleteItem = (state, id) => {
-  const index = state.list.indexOf(id);
-  const list = [...state.list];
-  list.splice(index, 1);
+  const list = state.list.filter(item => item.id !== id);
   return combine(state, { list });
 };
 export default (state = initialState, action) => {

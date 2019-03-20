@@ -4,6 +4,7 @@ import Gallery from "../../components/Gallery/Gallery";
 import ItemDescrip from "./ItemDescrip/ItemDescrip";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
+import { manageFavItem } from "../../db_api/db_user";
 import Modal from "./Modal/Modal";
 import {
   startFetchingItem,
@@ -11,10 +12,11 @@ import {
 } from "../../store_redux/items/items";
 const mps = state => ({
   item: state.items.currentItem,
+  items: state.items,
   succeed: state.items.succeed
 });
 const mpd = dispatch => ({
-  fetchItem: id => dispatch(startFetchingItem(id)),
+  fetchItem: (id, item) => dispatch(startFetchingItem(id, item)),
   commitStatus: () => dispatch(commitItemsStatusAndItem())
 });
 
@@ -42,11 +44,11 @@ export default withRouter(
         this.setState({ showModal: false });
       };
       onGalleryClickedHandler = imgIndex => {
-        // const imgIndex= this.
         this.setState({ imgIndex });
       };
-      onSaveHandler = () => {
-        console.log("save");
+      onSaveHandler = async id => {
+        const error = await manageFavItem(id, true);
+        alert("error from itemdetail!");
       };
       onModalKeyPressHandler = e => {
         const key = e.keyCode;
@@ -59,9 +61,8 @@ export default withRouter(
       componentDidMount = () => {
         window.addEventListener("keyup", this.onModalKeyPressHandler, false);
         const id = this.props.match.params.id;
-        // const item = this.props.item;
-        // if (!item)
-        this.props.fetchItem(id);
+        const item = this.props.item;
+        this.props.fetchItem(id, item);
       };
       componentWillUnmount = () => {
         this.props.commitStatus();
@@ -71,7 +72,8 @@ export default withRouter(
       render() {
         const item = this.props.item;
         if (!item) return null;
-        const { price, name, imgs, notes } = item;
+        const { price, name, imgs, notes, id, publisher } = item;
+
         return (
           <>
             <Modal
@@ -93,13 +95,13 @@ export default withRouter(
                 <img src={imgs[this.state.imgIndex]} alt='' />
               </div>
               <Gallery
-                imgList={item.imgs}
+                imgList={imgs}
                 onClick={this.onGalleryClickedHandler}
                 className={styles.gallery}
               />
               <ItemDescrip
-                onSave={this.onSaveHandler}
-                {...{ name, price, notes }}
+                onSave={() => this.onSaveHandler(id)}
+                {...{ name, price, notes, publisher }}
                 className={styles.details}
               />
             </div>

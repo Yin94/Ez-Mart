@@ -6,6 +6,7 @@ import {
   startFetchingFavs,
   startDeleteFavItem
 } from "../../store_redux/user/favorites";
+import { setCurrentItem } from "../../store_redux/items/items";
 
 const mps = state => ({
   list: state.favorites.list,
@@ -14,7 +15,8 @@ const mps = state => ({
 });
 const mpd = dispatch => ({
   fetchSavList: () => dispatch(startFetchingFavs()),
-  deleteFavItem: id => dispatch(startDeleteFavItem(id))
+  deleteFavItem: id => dispatch(startDeleteFavItem(id)),
+  setPassedItem: item => dispatch(setCurrentItem(item))
 });
 export default connect(
   mps,
@@ -23,6 +25,10 @@ export default connect(
   class Favorites extends Component {
     onDeleteHandler = id => {
       this.props.deleteFavItem(id);
+    };
+    onClickItemHandler = item => {
+      this.props.setPassedItem(item);
+      this.props.history.push("/item/" + item.id);
     };
     componentDidMount = () => {
       this.props.fetchSavList();
@@ -38,7 +44,11 @@ export default connect(
       return (
         <div>
           <FavHead />
-          <FavList list={this.props.list} deleteItem={this.onDeleteHandler} />
+          <FavList
+            itemClicked={this.onClickItemHandler}
+            list={this.props.list}
+            deleteItem={this.onDeleteHandler}
+          />
         </div>
       );
     }

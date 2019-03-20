@@ -31,7 +31,7 @@ export async function fetchSavList(uid) {
         savedItemResult[i].id,
         "cover-img"
       );
-      savedItemResult[i].imgs = imgs;
+      savedItemResult[i].imgs[0] = imgs[0];
     }
 
     return savedItemResult;

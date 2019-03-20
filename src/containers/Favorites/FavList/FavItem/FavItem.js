@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import styles from "./FavItem.css";
 import Button from "../../../../UI/Button/Button";
-import { Link } from "react-router-dom";
 
-export default function FavListItem({ item, deleteFavItem }) {
-  const { price, name, imgs, id } = item;
+export default function FavListItem({ item, deleteFavItem, itemClicked }) {
+  const { price, name, imgs } = item;
   const [mode, onDelete] = useState(false);
 
   const deleteCorner = mode ? (
@@ -22,11 +21,11 @@ export default function FavListItem({ item, deleteFavItem }) {
   return (
     <div className={styles.container}>
       <div className={styles.imgContainer}>
-        <img src={imgs[0]} alt='imgUrl' />
+        <img src={imgs[0]} alt='imgUrl' onClick={() => itemClicked(item)} />
         {deleteCorner}
-        <Link to={"item/" + id}>
-          <Button name='left'>Details</Button>
-        </Link>
+        <Button name='left' onClick={() => itemClicked(item)}>
+          Details
+        </Button>
         <Button className='btn succeed' name='right'>
           Contact seller
         </Button>

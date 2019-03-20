@@ -1,9 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./ItemDecrip.css";
 import Button from "../../../UI/Button/Button";
 import SellerNote from "./SellerNote/SellerNote";
+import { fetchItemPublisher } from "../../../db_api/db_items";
+// import moduleName from 'module'
+async function fetchContactData(id) {
+  return await fetchItemPublisher(id);
+}
 export default function ItemDescrip({ className, onSave, ...itemProps }) {
-  const { name, price, notes } = itemProps;
+  const { name, price, notes, publisher } = itemProps;
+  const [showContact, contactClicked] = useState(false);
+  const [pubInfo, getPubInfo] = useState(null);
+
   return (
     <div className={[className, styles["container"]].join(" ")}>
       <h3 style={{ fontSize: "40px" }}>{name}</h3>
@@ -16,18 +24,36 @@ export default function ItemDescrip({ className, onSave, ...itemProps }) {
       <div className={styles.btnGroup}>
         <Button onClick={onSave}>Save</Button>
         <div className={styles.dropdown}>
-          <Button style={{ width: "100%" }} className='btn succeed'>
+          <Button
+            onClick={async () => {
+              if (!showContact && !pubInfo) {
+                const publisherData = await fetchContactData(
+                  publisher,
+                  showContact
+                );
+                getPubInfo(publisherData);
+              }
+              contactClicked(!showContact);
+            }}
+            style={{ width: "100%" }}
+            className='btn succeed'>
             Contact Seller
           </Button>
-          <div className={styles.dropdownContent}>
-            <small>Seller:</small>
-            <p>Yin94</p>
+          {showContact && (
+            <div className={styles.dropdownContent}>
+              <small>Seller:</small>
+              <p>{pubInfo["username"]}</p>
 
-            <small>Email:</small>
-            <input defaultValue={"adsas"} type='email' name='seller-email' />
-            <small>Tel:</small>
-            <p> 6072326499</p>
-          </div>
+              <small>Email:</small>
+              <input
+                defaultValue={pubInfo["email"]}
+                type='email'
+                name='seller-email'
+              />
+              <small>Tel:</small>
+              <p> {pubInfo["phone-number"]}</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

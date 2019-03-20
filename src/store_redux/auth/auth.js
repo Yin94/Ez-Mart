@@ -58,7 +58,6 @@ export function tryAuth(email, password, mode) {
     if (result) dispatch({ type: AUTH_ERROR, error: result });
     else {
       const user = dbAuth.getCurrentUser();
-
       localStorage.setItem("user-authed", true);
       localStorage.setItem("user-uid", user.uid);
       dispatch(authSucceed(user.uid));

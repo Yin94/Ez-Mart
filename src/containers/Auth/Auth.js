@@ -24,7 +24,10 @@ export default connect(
   class extends React.Component {
     state = {
       email: "",
-      pswd: ""
+      pswd: "",
+      confirmPswd: "",
+      username: "",
+      tel: ""
     };
     submitHandler = async (e, mode) => {
       e.preventDefault();
@@ -91,6 +94,34 @@ export default connect(
               type='password'
             />
           </div>
+          {mode === "0" && (
+            <div id='signUpPanel'>
+              <div className={styles.ControlGroup}>
+                <label htmlFor='confirmPswd'>Confirm Password:</label>
+                <input
+                  value={this.state.confirmPswd}
+                  onChange={e => this.setState({ confirmPswd: e.target.value })}
+                  type='password'
+                />
+              </div>
+              <div className={styles.ControlGroup}>
+                <label htmlFor='username'>Username:</label>
+                <input
+                  value={this.state.username}
+                  onChange={e => this.setState({ username: e.target.value })}
+                  type='text'
+                />
+              </div>
+              <div className={styles.ControlGroup}>
+                <label htmlFor='tel'>TEL:</label>
+                <input
+                  value={this.state.tel}
+                  onChange={e => this.setState({ tel: e.target.value })}
+                  type='tel'
+                />
+              </div>
+            </div>
+          )}
           <div>
             {this.props.loading && <Spinner style={{ left: "45%" }} />}
 
