@@ -42,6 +42,7 @@ export const startFetchingFavs = () => {
   const uid = localStorage.getItem("user-uid") || getCurrentUser().id;
   return async dispatch => {
     const list = await fetchSavList(uid);
+
     list.code
       ? dispatch({ type: FAVS_ERROR, error: list })
       : dispatch({ type: SET_LIST, list });

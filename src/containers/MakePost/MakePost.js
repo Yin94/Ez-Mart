@@ -3,6 +3,7 @@ import styles from "./MakePost.css";
 import NoteItem from "./NoteItem/NoteItem";
 import Button from "../../UI/Button/Button";
 import { addItem } from "../../db_api/db_items";
+import Spinner from "../../UI/Spinner/Spinner";
 const validator = form => {
   const { name, notes, imgs, price } = form;
   const validArray = [];
@@ -17,23 +18,33 @@ const validator = form => {
   validArray.push(validImgLength === imgs.length);
   return validArray;
 };
+
+const initialState = {
+  notes: [],
+  imgs: [],
+  name: "",
+  price: "",
+  validation: Array(4).fill(false),
+  loading: false,
+  succeed: false
+};
 export default class MakePost extends Component {
-  state = {
-    notes: [],
-    imgs: [],
-    name: "",
-    price: "",
-    validation: Array(4).fill(false)
-  };
+  state = initialState;
   onSubmitHandler = async e => {
     e.preventDefault();
     const { validation, ...form } = this.state;
     const vArray = validator(form);
     const vResult = vArray.reduce((cur, acc) => acc && cur, true);
     if (vResult) {
+      //passed local verify start uploading
+      this.setState({ loading: true });
       const error = await addItem(form);
-      if (error) alert(error);
+      if (error) {
+        this.setState({ loading: false, succeed: false });
+        alert(error);
+      } else this.setState({ ...initialState, succeed: true });
     } else alert("error formed form");
+
     //got all the form data, need validation then send to store and update to server
   };
   onDeleteNoteHandler = index => {
@@ -49,9 +60,7 @@ export default class MakePost extends Component {
   onNoteChangedHander = (e, index) => {
     const notes = [...this.state.notes];
     notes[index] = e.target.value;
-    this.setState({ notes }, () => {
-      console.log(this.state.notes);
-    });
+    this.setState({ notes });
   };
   onUploadHanler = e => {
     this.setState({ imgs: e.target.files });
@@ -135,13 +144,19 @@ export default class MakePost extends Component {
           </div>
 
           <div className={styles.submitBtnGroup}>
-            <Button type='submit' className='btn succeed'>
-              Submit
-            </Button>
+            {this.state.loading ? (
+              <Spinner />
+            ) : (
+              <>
+                <Button type='submit' className='btn succeed'>
+                  Submit
+                </Button>
 
-            <Button type='button' onClick={this.onClearFormHandler}>
-              Clear form
-            </Button>
+                <Button type='button' onClick={this.onClearFormHandler}>
+                  Clear form
+                </Button>
+              </>
+            )}
           </div>
         </form>
       </div>

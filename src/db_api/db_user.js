@@ -1,16 +1,18 @@
 import { db } from "../firebase/apps/apps";
 import { getCurrentUser } from "./db_auth";
+import { downloadFiles } from "./db_items";
 import firebase from "firebase";
 export async function fetchSavList(uid) {
   const result = [];
   const savedItemResult = [];
-
   try {
     const querySnapshot = await db
       .collection("favorites")
       .where("uid", "==", uid)
       .get();
-    querySnapshot.forEach(item => result.push(item.data()));
+    querySnapshot.forEach(item => {
+      result.push(item.data());
+    });
     const idList = result[0].list;
 
     for (let id of idList) {
@@ -18,9 +20,18 @@ export async function fetchSavList(uid) {
         .collection("items")
         .where("id", "==", id)
         .get();
-      idQuerySnapShot.forEach(item => {
-        savedItemResult.push(item.data());
+      idQuerySnapShot.forEach(async ele => {
+        savedItemResult.push(ele.data());
       });
+    }
+
+    for (let i in savedItemResult) {
+      const imgs = await downloadFiles(
+        savedItemResult[i].imgs,
+        savedItemResult[i].id,
+        "cover-img"
+      );
+      savedItemResult[i].imgs = imgs;
     }
 
     return savedItemResult;

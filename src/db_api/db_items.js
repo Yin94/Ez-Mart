@@ -5,6 +5,15 @@ export async function fetchItems() {
   try {
     const querySnapshot = await db.collection("items").get();
     querySnapshot.forEach(item => result.push(item.data()));
+    //
+    for (let i in result) {
+      const imgs = await downloadFiles(
+        result[i].imgs,
+        result[i].id,
+        "cover-img"
+      );
+      result[i].imgs = imgs;
+    }
     return result;
   } catch (error) {
     return error;
@@ -18,6 +27,9 @@ export async function queryItem(id) {
       .where("id", "==", id)
       .get();
     querySnapshot.forEach(item => result.push(item.data()));
+
+    const imgs = await downloadFiles(result[0].imgs, id);
+    result[0].imgs = imgs;
     return result[0];
   } catch (error) {
     return error;
@@ -35,21 +47,23 @@ export async function addItem(item) {
   form.favs = 0;
   form["post-time"] = new Date();
   form.publisher = getCurrentUser().id || localStorage.getItem("user-uid");
+  //TODO: has consistency bug here, need to fix. can catch docId some time
   try {
     docRef = await db.collection("items").add(form);
     await upLoadFiles(imgs, docRef.id);
     await docRef.update({
       id: docRef.id
     });
+
     return null;
   } catch (error) {
     //keep data integrety
-    console.log(error.message);
+
     try {
       await docRef.delete();
-      return "Error on uploading the images! ";
-    } catch (err) {
-      return "Error on uploading the images! But item created";
+      return "error on upload, transaction discarded";
+    } catch (error) {
+      return "error upload delete databse item failed";
     }
   }
 }
@@ -68,4 +82,22 @@ async function upLoadFiles(files, itemId) {
     pathArray.push(result.ref.fullPath);
   }
   return pathArray;
+}
+
+export async function downloadFiles(files, itemId, mode) {
+  const pathReference = fileStorage.ref();
+  const urls = [];
+  if (mode === "cover-img") {
+    const ref = pathReference.child("images/items/" + itemId + "/" + files[0]);
+    let url = await ref.getDownloadURL();
+    urls.push(url);
+    return urls;
+  }
+
+  for (let file of files) {
+    const ref = pathReference.child("images/items/" + itemId + "/" + file);
+    let url = await ref.getDownloadURL();
+    urls.push(url);
+  }
+  return urls;
 }

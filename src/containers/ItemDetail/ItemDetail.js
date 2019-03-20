@@ -59,8 +59,9 @@ export default withRouter(
       componentDidMount = () => {
         window.addEventListener("keyup", this.onModalKeyPressHandler, false);
         const id = this.props.match.params.id;
-        const item = this.props.item;
-        if (!item) this.props.fetchItem(id);
+        // const item = this.props.item;
+        // if (!item)
+        this.props.fetchItem(id);
       };
       componentWillUnmount = () => {
         this.props.commitStatus();
