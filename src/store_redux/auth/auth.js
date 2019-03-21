@@ -49,12 +49,16 @@ const AUTH_ERROR = "auth/AUTH_ERROR";
 const COMMIT_STATUS = "auth/COMMIT_STATUS";
 const LOG_OUT = "auth/LOG_OUT";
 //action creators
-export function tryAuth(email, password, mode) {
+export function tryAuth(form, mode) {
   return async dispatch => {
     dispatch({
       type: AUTH_PROCESSING
     });
-    const result = await dbAuth.authWiwthEmailAndPswd(email, password, mode);
+    const result = await dbAuth.authWiwthEmailAndPswd(
+      form.email,
+      form.pswd,
+      mode
+    );
     if (result) dispatch({ type: AUTH_ERROR, error: result });
     else {
       const user = dbAuth.getCurrentUser();
