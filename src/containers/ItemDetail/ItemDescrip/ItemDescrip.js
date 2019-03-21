@@ -51,7 +51,7 @@ export default function ItemDescrip({ className, onSave, ...itemProps }) {
                 name='seller-email'
               />
               <small>Tel:</small>
-              <p> {pubInfo["phone-number"]}</p>
+              <p> {pubInfo["tel"]}</p>
             </div>
           )}
         </div>

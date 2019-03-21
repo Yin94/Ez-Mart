@@ -41,7 +41,7 @@ export const startFetchingFavs = () => {
   return async dispatch => {
     const list = await fetchSavList(uid);
 
-    list.code
+    list instanceof Error
       ? dispatch({ type: FAVS_ERROR, error: list })
       : dispatch({ type: SET_LIST, list });
   };

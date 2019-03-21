@@ -54,11 +54,7 @@ export function tryAuth(form, mode) {
     dispatch({
       type: AUTH_PROCESSING
     });
-    const result = await dbAuth.authWiwthEmailAndPswd(
-      form.email,
-      form.pswd,
-      mode
-    );
+    const result = await dbAuth.authWiwthEmailAndPswd(form, mode);
     if (result) dispatch({ type: AUTH_ERROR, error: result });
     else {
       const user = dbAuth.getCurrentUser();

@@ -37,7 +37,7 @@ class App extends Component {
   render() {
     const authed = this.props.authed;
     return (
-      <div style={{ width: "100%", overflow: "hidden" }}>
+      <div style={{ width: "100%" }}>
         <Header />
         <NavBar {...{ authed }} logOut={this.logOutHandler} />
         <Layout>

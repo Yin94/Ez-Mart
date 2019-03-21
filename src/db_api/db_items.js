@@ -48,7 +48,6 @@ export async function addItem(item) {
   form.favs = 0;
   form["post-time"] = new Date();
   form.publisher = getCurrentUser().id || localStorage.getItem("user-uid");
-  //TODO: has consistency bug here, need to fix. can catch docId some time
   try {
     docRef = await db.collection("items").add(form);
     await upLoadFiles(imgs, docRef.id);

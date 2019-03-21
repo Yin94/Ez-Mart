@@ -47,8 +47,7 @@ export default withRouter(
         this.setState({ imgIndex });
       };
       onSaveHandler = async id => {
-        const error = await manageFavItem(id, true);
-        alert("error from itemdetail!");
+        await manageFavItem(id, true);
       };
       onModalKeyPressHandler = e => {
         const key = e.keyCode;

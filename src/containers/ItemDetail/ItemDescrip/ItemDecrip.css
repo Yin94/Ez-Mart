@@ -1,6 +1,7 @@
 .container {
   grid-template-columns: auto;
   display: grid;
+  overflow: visible;
 }
 
 .price {
@@ -29,6 +30,7 @@
   position: absolute;
   width: 100%;
   display: grid;
+
   grid-template-columns: 2fr 6fr;
   grid-gap: 10px 0;
   border-radius: 4px;

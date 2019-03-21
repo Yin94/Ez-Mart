@@ -13,7 +13,7 @@ export async function fetchSavList(uid) {
     querySnapshot.forEach(item => {
       result.push(item.data());
     });
-    const idList = result[0].list;
+    const idList = result[0] ? result[0].list : [];
 
     for (let id of idList) {
       const idQuerySnapShot = await db
@@ -36,12 +36,14 @@ export async function fetchSavList(uid) {
 
     return savedItemResult;
   } catch (error) {
+    console.log(error);
     return error;
   }
 }
 
 export async function manageFavItem(id, mode) {
   let docKey = null;
+
   const uid = getCurrentUser().uid;
 
   let userSavedDocRef = await db
@@ -49,7 +51,13 @@ export async function manageFavItem(id, mode) {
     .where("uid", "==", uid)
     .get();
   userSavedDocRef.forEach(item => (docKey = item.id));
-
+  const newDoc = {
+    uid: uid,
+    list: []
+  };
+  if (!docKey) {
+    docKey = (await db.collection("favorites").add(newDoc)).id;
+  }
   const savedArrayRef = db.collection("favorites").doc(docKey);
 
   const field = firebase.firestore.FieldValue;
