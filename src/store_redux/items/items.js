@@ -1,18 +1,24 @@
 import combine from "../../utility/combine";
-import { fetchItems, queryItem, downloadFiles } from "../../db_api/db_items";
+import {
+  fetchItems,
+  queryItem,
+  fetchItemTotalCounts,
+  downloadFiles
+} from "../../db_api/db_items";
 //reducer
 const initialState = {
   list: [],
   currentItem: null,
   error: false,
   loading: false,
-  succeed: false
+  succeed: false,
+  count: 0
 };
 const setList = (state, list) => combine(state, { list, succeed: true });
 const itemsError = (state, error) => combine(state, error);
 const setCurItem = (state, currentItem) =>
   combine(state, { currentItem, succeed: true });
-
+const setItemsCount = (state, count) => combine(state, { count });
 const resetStatus = state =>
   combine(state, {
     error: false,
@@ -30,6 +36,8 @@ export default (state = initialState, action) => {
       return setCurItem(state, action.item);
     case COMMIT_STATUS:
       return resetStatus(state);
+    case SET_ITEMS_COUNT:
+      return setItemsCount(state, action.count);
     default:
       return state;
   }
@@ -39,7 +47,18 @@ const SET_LIST = "items/SET_LIST";
 const ITEMS_ERROR = "items/ITEMS_ERROR";
 const SET_CURRENT_ITEM = "items/SET_CURRENT_ITEM";
 const COMMIT_STATUS = "items/COMMIT_STATUS";
+const SET_ITEMS_COUNT = "SET_ITEMS_COUNT";
 //action creators
+export const startFetchingItemsCount = () => {
+  return async dispatch => {
+    try {
+      const count = await fetchItemTotalCounts();
+      dispatch({ type: SET_ITEMS_COUNT, count });
+    } catch (error) {
+      dispatch({ type: ITEMS_ERROR, error });
+    }
+  };
+};
 export const startFetchingItems = () => {
   return async dispatch => {
     try {

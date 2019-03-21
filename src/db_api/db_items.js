@@ -1,5 +1,10 @@
 import { db, fileStorage } from "../firebase/apps/apps";
 import { getCurrentUser } from "./db_auth";
+export async function fetchItemTotalCounts() {
+  const snapShot = await db.collection("items").get();
+  console.log(snapShot);
+  return snapShot.size;
+}
 export async function fetchItems() {
   const result = [];
   try {

@@ -11,9 +11,14 @@ import { connect } from "react-redux";
 import { authSucceed, logOut } from "./store_redux/auth/auth";
 import { manageFavItem } from "./db_api/db_user";
 import MakePost from "./containers/MakePost/MakePost";
-import { startFetchingItems, setCurrentItem } from "./store_redux/items/items";
+import {
+  startFetchingItems,
+  setCurrentItem,
+  startFetchingItemsCount
+} from "./store_redux/items/items";
 class App extends Component {
   componentDidMount = () => {
+    this.props.startFetchItemsCount();
     this.props.startFetchItems();
     const loggedIn = localStorage.getItem("user-authed");
 
@@ -72,7 +77,8 @@ const mpd = dispatch => ({
   authSucceed: (uid, mode) => dispatch(authSucceed(uid, mode)),
   logOut: () => dispatch(logOut()),
   startFetchItems: () => dispatch(startFetchingItems()),
-  setCurrentItem: item => dispatch(setCurrentItem(item))
+  setCurrentItem: item => dispatch(setCurrentItem(item)),
+  startFetchItemsCount: () => dispatch(startFetchingItemsCount())
 });
 export default withRouter(
   connect(
