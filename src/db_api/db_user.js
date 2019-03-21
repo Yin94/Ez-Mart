@@ -13,6 +13,7 @@ export async function fetchSavList(uid) {
     querySnapshot.forEach(item => {
       result.push(item.data());
     });
+    //check if favlist exists.
     const idList = result[0] ? result[0].list : [];
 
     for (let id of idList) {
@@ -36,7 +37,6 @@ export async function fetchSavList(uid) {
 
     return savedItemResult;
   } catch (error) {
-    console.log(error);
     return error;
   }
 }
