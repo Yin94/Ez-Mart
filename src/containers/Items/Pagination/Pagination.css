@@ -1,0 +1,13 @@
+.pagiPanel {
+  display: block;
+  position: relative;
+  text-align: center;
+}
+
+.pagiPanel button {
+  width: 10%;
+}
+
+.pagiPanel > startNend {
+  width: 7%;
+}

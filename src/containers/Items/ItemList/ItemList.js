@@ -1,7 +1,6 @@
 import React from "react";
 import ListItem from "../ListItem/ListItem";
 import styles from "./ItemList.css";
-import Button from "../../../UI/Button/Button";
 export default function ItemList({ list = [], itemSelected, favoriteClicked }) {
   const disList = list.map((item, index) => (
     <ListItem
@@ -11,15 +10,5 @@ export default function ItemList({ list = [], itemSelected, favoriteClicked }) {
       {...{ item }}
     />
   ));
-  return (
-    <>
-      <div className={styles.container}>{disList}</div>
-      <div className={styles.pagiPanel}>
-        <Button className='btn primary'>1</Button>
-        <Button className='btn primary'>2</Button>
-        <Button className='btn primary'>3</Button>
-        <Button className='btn primary'>4</Button>
-      </div>
-    </>
-  );
+  return <div className={styles.container}>{disList}</div>;
 }

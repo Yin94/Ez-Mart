@@ -59,10 +59,10 @@ export const startFetchingItemsCount = () => {
     }
   };
 };
-export const startFetchingItems = () => {
+export const startFetchingItems = cursor => {
   return async dispatch => {
     try {
-      const list = await fetchItems();
+      const list = await fetchItems(cursor);
       dispatch({ type: SET_LIST, list });
     } catch (error) {
       dispatch({ type: ITEMS_ERROR, error });

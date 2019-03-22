@@ -9,19 +9,12 @@ import ItemDetail from "./containers/ItemDetail/ItemDetail";
 import Items from "./containers/Items/Items";
 import { connect } from "react-redux";
 import { authSucceed, logOut } from "./store_redux/auth/auth";
-import { manageFavItem } from "./db_api/db_user";
 import MakePost from "./containers/MakePost/MakePost";
-import {
-  startFetchingItems,
-  setCurrentItem,
-  startFetchingItemsCount
-} from "./store_redux/items/items";
+import { startFetchingItemsCount } from "./store_redux/items/items";
 class App extends Component {
   componentDidMount = () => {
     this.props.startFetchItemsCount();
-    this.props.startFetchItems();
     const loggedIn = localStorage.getItem("user-authed");
-
     if (loggedIn) {
       const uid = localStorage.getItem("user-uid");
       this.props.authSucceed(uid, true);
@@ -30,15 +23,7 @@ class App extends Component {
   logOutHandler = () => {
     this.props.logOut();
   };
-  itemSelectedHandler = index => {
-    const item = this.props.items[index];
-    this.props.setCurrentItem(item);
-    this.props.history.push("item/" + item.id);
-  };
-  onSavHandler = async id => {
-    const error = await manageFavItem(id, true);
-    console.log(error);
-  };
+
   render() {
     const authed = this.props.authed;
     return (
@@ -51,16 +36,7 @@ class App extends Component {
             <Route path='/item/:id' component={ItemDetail} />
             <Route path='/fav' component={Favorites} />
             <Route path='/make-post' component={MakePost} />
-            <Route
-              path='/items'
-              component={() => (
-                <Items
-                  list={this.props.items}
-                  favoriteClicked={this.onSavHandler}
-                  itemSelected={index => this.itemSelectedHandler(index)}
-                />
-              )}
-            />
+            <Route path='/items' component={Items} />
             <Redirect to='/items' />
           </Switch>
         </Layout>
@@ -69,15 +45,12 @@ class App extends Component {
   }
 }
 const mps = state => ({
-  authed: state.auth.authed,
-  items: state.items.list
+  authed: state.auth.authed
 });
 
 const mpd = dispatch => ({
   authSucceed: (uid, mode) => dispatch(authSucceed(uid, mode)),
   logOut: () => dispatch(logOut()),
-  startFetchItems: () => dispatch(startFetchingItems()),
-  setCurrentItem: item => dispatch(setCurrentItem(item)),
   startFetchItemsCount: () => dispatch(startFetchingItemsCount())
 });
 export default withRouter(

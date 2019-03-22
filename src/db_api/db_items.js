@@ -5,7 +5,7 @@ export async function fetchItemTotalCounts() {
   console.log(snapShot);
   return snapShot.size;
 }
-export async function fetchItems() {
+export async function fetchItems(cursor, orderSchema = "post-time") {
   const result = [];
   try {
     const querySnapshot = await db.collection("items").get();
