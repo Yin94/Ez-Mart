@@ -1,6 +1,7 @@
 import { fetchSavList, manageFavItem } from "../../db_api/db_user";
 import { getCurrentUser } from "../../db_api/db_auth";
 import combine from "../../utility/combine";
+import { FAV_COUNT_CHANGED } from "../items/items";
 //reducer
 const initialState = {
   list: [],
@@ -52,6 +53,7 @@ export const startDeleteFavItem = id => {
     try {
       await manageFavItem(id, false);
       dispatch({ type: DELETE_ITEM, id });
+      dispatch({ type: FAV_COUNT_CHANGED, id, diff: -1 });
     } catch (error) {
       dispatch({ type: FAVS_ERROR, error: error.message });
     }

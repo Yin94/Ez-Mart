@@ -1,6 +1,6 @@
 import { db } from "../firebase/apps/apps";
 import { getCurrentUser } from "./db_auth";
-import { downloadFiles } from "./db_items";
+import { downloadFiles, upDateFavCount } from "./db_items";
 import firebase from "firebase";
 export async function fetchSavList(uid) {
   const result = [];
@@ -64,4 +64,6 @@ export async function manageFavItem(id, mode) {
   await savedArrayRef.update({
     list: mode ? field.arrayUnion(id) : field.arrayRemove(id)
   });
+  //update item savs count
+  await upDateFavCount(id, mode);
 }

@@ -26,6 +26,12 @@ const resetStatus = state =>
     loading: false,
     currentItem: null
   });
+const favItemChanged = (state, id, diff) => {
+  const list = [...state.list];
+  const item = list.find(item => item.id === id);
+  item.favs = item.favs + diff;
+  return combine(state, { list });
+};
 export default (state = initialState, action) => {
   switch (action.type) {
     case SET_LIST:
@@ -38,6 +44,8 @@ export default (state = initialState, action) => {
       return resetStatus(state);
     case SET_ITEMS_COUNT:
       return setItemsCount(state, action.count);
+    case FAV_COUNT_CHANGED:
+      return favItemChanged(state, action.id, action.diff);
     default:
       return state;
   }
@@ -48,6 +56,7 @@ const ITEMS_ERROR = "items/ITEMS_ERROR";
 const SET_CURRENT_ITEM = "items/SET_CURRENT_ITEM";
 const COMMIT_STATUS = "items/COMMIT_STATUS";
 const SET_ITEMS_COUNT = "SET_ITEMS_COUNT";
+export const FAV_COUNT_CHANGED = "FAV_COUNT_CHANGED";
 //action creators
 export const startFetchingItemsCount = () => {
   return async dispatch => {

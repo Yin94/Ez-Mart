@@ -1,14 +1,24 @@
 import { db, fileStorage } from "../firebase/apps/apps";
 import { getCurrentUser } from "./db_auth";
 export async function fetchItemTotalCounts() {
+  // change it for better performance
   const snapShot = await db.collection("items").get();
-  console.log(snapShot);
+
   return snapShot.size;
 }
-export async function fetchItems(cursor, orderSchema = "post-time") {
+export async function fetchItems(
+  cursor,
+  prevLastDocRef,
+  orderSchema = "post-time"
+) {
   const result = [];
   try {
-    const querySnapshot = await db.collection("items").get();
+    const querySnapshot = await db
+      .collection("items")
+      .orderBy(orderSchema)
+      // .startAt("21")
+      .limit(5)
+      .get();
     querySnapshot.forEach(item => result.push(item.data()));
     //only download cover img in the imgPath arrary
     for (let i in result) {
@@ -115,4 +125,27 @@ export async function fetchItemPublisher(uid) {
     .get();
   querySnapshot.forEach(item => result.push(item.data()));
   return result[0];
+}
+
+export async function upDateFavCount(id, mode) {
+  const difference = mode ? 1 : -1;
+  const docRef = await db.collection("items").doc(id);
+
+  db.runTransaction(function(transaction) {
+    // This code may get re-run multiple times if there are conflicts.
+    return transaction.get(docRef).then(function(sfDoc) {
+      if (!sfDoc.exists) {
+        throw "Document does not exist!";
+      }
+
+      var newFavs = sfDoc.data().favs + difference;
+      transaction.update(docRef, { favs: newFavs });
+    });
+  })
+    .then(function() {
+      return "succeed";
+    })
+    .catch(function(error) {
+      console.log("Transaction failed: ", error);
+    });
 }
