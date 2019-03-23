@@ -16,8 +16,9 @@ const initialState = {
 };
 const setList = (state, list) => combine(state, { list, succeed: true });
 const itemsError = (state, error) => combine(state, error);
-const setCurItem = (state, currentItem) =>
-  combine(state, { currentItem, succeed: true });
+const setCurItem = (state, currentItem) => {
+  return combine(state, { currentItem, succeed: true });
+};
 const setItemsCount = (state, count) => combine(state, { count });
 const resetStatus = state =>
   combine(state, {
@@ -84,9 +85,15 @@ export const startFetchingItem = (id, itemRef) => {
     if (itemRef) {
       // cuz  call by ref, have to create a new item, otherwise line61 will change state in store.
       const item = { ...itemRef };
-      const [coverImg, ...toBeDownload] = item.imgs;
-      const downloadedImgs = await downloadFiles(toBeDownload, item.id);
-      item.imgs = [coverImg, ...downloadedImgs];
+      if (!itemRef.downloadAllImgs) {
+        const [coverImg, ...toBeDownload] = item.imgs;
+        const downloadedImgs = await downloadFiles(toBeDownload, item.id);
+        item.imgs = [coverImg, ...downloadedImgs];
+      } else {
+        const downloadedImgs = await downloadFiles([...item.imgs], item.id);
+        item.imgs = [...downloadedImgs];
+      }
+
       dispatch(setCurrentItem(item));
     } else {
       const item = await queryItem(id);

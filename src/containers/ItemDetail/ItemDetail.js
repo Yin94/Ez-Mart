@@ -12,7 +12,6 @@ import {
 } from "../../store_redux/items/items";
 const mps = state => ({
   item: state.items.currentItem,
-  items: state.items,
   succeed: state.items.succeed
 });
 const mpd = dispatch => ({
@@ -29,7 +28,7 @@ export default withRouter(
       state = {
         showModal: false,
         imgIndex: 0,
-        imgLength: 5
+        imgLength: 0
       };
       onClickMainImgHandler = () => {
         this.setState({ showModal: true });
@@ -49,16 +48,20 @@ export default withRouter(
       onSaveHandler = async id => {
         await manageFavItem(id, true);
       };
-      onModalKeyPressHandler = e => {
+      onModalKeyPressHandler = (e, item) => {
         const key = e.keyCode;
         if (key === 27) this.onCloseModalHandler();
         if (key === 37 && this.state.imgIndex !== 0)
           this.onSwitchModalPicHandler({ target: { id: "left" } });
-        if (key === 39 && this.state.imgIndex !== this.state.imgLength - 1)
+        if (key === 39 && this.state.imgIndex !== item.imgs.length - 1)
           this.onSwitchModalPicHandler({ target: { id: "right" } });
       };
       componentDidMount = () => {
-        window.addEventListener("keyup", this.onModalKeyPressHandler, false);
+        window.addEventListener(
+          "keyup",
+          e => this.onModalKeyPressHandler(e, this.props.item),
+          false
+        );
         const id = this.props.match.params.id;
         const item = this.props.item;
         this.props.fetchItem(id, item);
@@ -80,7 +83,7 @@ export default withRouter(
               onSwitchImg={this.onSwitchModalPicHandler}
               show={this.state.showModal}
               close={this.onCloseModalHandler}
-              listLength={this.state.imgLength}
+              listLength={imgs.length}
               index={this.state.imgIndex}
             />
             <div className={styles.mainArea}>

@@ -10,6 +10,7 @@ function Modal({
   listLength,
   close,
   onSwitchImg,
+
   displayMode
 }) {
   let displayNav = [

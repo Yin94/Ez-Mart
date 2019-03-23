@@ -1,0 +1,16 @@
+.container {
+  display: grid;
+  grid-row-gap: 10px;
+}
+
+.postRow {
+  display: grid;
+  padding: 20px 10px;
+  border: 1px solid #f71e0b;
+  grid-gap: 10px;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.postRow > p:nth-child(2):hover {
+  color: red;
+}

@@ -5,14 +5,16 @@ export default function ItemList({
   list = [],
   itemSelected,
   userfavLsit,
-  favoriteClicked
+  favoriteClicked,
+  authed
 }) {
+  // console.log(authed);
   const disList = list.map((item, index) => (
     <ListItem
       key={item.id + index}
       itemSelected={() => itemSelected(index)}
       favoriteClicked={favoriteClicked}
-      {...{ item, userfavLsit }}
+      {...{ item, userfavLsit, authed }}
     />
   ));
   return <div className={styles.container}>{disList}</div>;

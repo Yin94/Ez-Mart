@@ -83,6 +83,16 @@ export async function addItem(item) {
   }
 }
 
+export async function updateItem(item) {
+  // const { imgs, ...form } = item;
+  // const files = [];
+  // let docRef = null;
+  // for (let img of imgs) {
+  //   files.push(img.name);
+  // }
+  // form.imgs = files;
+  // form["last-update-time"] = new Date();
+}
 async function upLoadFiles(files, itemId) {
   // Create a root reference
   const pathArray = [];

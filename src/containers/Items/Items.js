@@ -13,7 +13,8 @@ import { connect } from "react-redux";
 const mps = state => ({
   list: state.items.list,
   totalCount: state.items.count,
-  favs: state.favorites.list
+  favs: state.favorites.list,
+  authed: state.auth.authed
 });
 const mpd = dispatch => ({
   startFetchItems: cursor => dispatch(startFetchingItems(cursor)),
@@ -52,13 +53,14 @@ export default withRouter(
       };
 
       render() {
-        const totalCount = this.props.totalCount;
         // const totalCount = 6 * 5;
-
+        const totalCount = this.props.totalCount;
         const currentPage = this.state.currentPage;
+
         return (
           <div>
             <ItemList
+              authed={this.props.authed}
               list={this.props.list}
               userfavLsit={this.props.favs}
               itemSelected={this.itemSelectedHandler}

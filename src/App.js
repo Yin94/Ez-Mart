@@ -6,6 +6,7 @@ import Auth from "./containers/Auth/Auth";
 import NavBar from "./components/NavBar/NavBar";
 import Favorites from "./containers/Favorites/Favorites";
 import ItemDetail from "./containers/ItemDetail/ItemDetail";
+import MyPosts from "./containers/Posts/Posts";
 import Items from "./containers/Items/Items";
 import { connect } from "react-redux";
 import { authSucceed, logOut } from "./store_redux/auth/auth";
@@ -37,6 +38,8 @@ class App extends Component {
             <Route path='/fav' component={Favorites} />
             <Route path='/make-post' component={MakePost} />
             <Route path='/items' component={Items} />
+            <Route path='/my-posts' component={MyPosts} />
+
             <Redirect to='/items' />
           </Switch>
         </Layout>

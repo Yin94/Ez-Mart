@@ -67,3 +67,45 @@ export async function manageFavItem(id, mode) {
   //update item savs count
   await upDateFavCount(id, mode);
 }
+
+export async function fetchPostIDs() {
+  const uid = localStorage.getItem("user-uid");
+  let user = null;
+  try {
+    const userRef = await db
+      .collection("posts")
+      .where("uid", "==", uid)
+      .get();
+    //user first time using posts
+    if (!userRef.docs.length) {
+      const initialDoc = { uid, list: [] };
+      await db.collection("posts").add(initialDoc);
+      return [];
+    } else {
+      userRef.forEach(ele => (user = ele.data()));
+      return user.list;
+    }
+  } catch (err) {
+    return err;
+  }
+}
+
+export async function fetchPosts(postIDs) {
+  const posts = [];
+  try {
+    for (let id of postIDs) {
+      const idQuerySnapShot = await db
+        .collection("items")
+        .where("id", "==", id)
+        .get();
+      idQuerySnapShot.forEach(async ele => {
+        posts.push(ele.data());
+      });
+    }
+
+    return posts;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+}

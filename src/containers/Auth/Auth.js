@@ -94,7 +94,9 @@ export default connect(
     };
     onSwitchHandler = (e, path) => {
       e.preventDefault();
+      this.setState({ errorArray: [] });
       this.props.history.push(path);
+      this.props.commitStatus();
     };
 
     shouldComponentUpdate = (nextProps, nextState) => {
@@ -138,7 +140,10 @@ export default connect(
               type='email'
               autoFocus
             />
-            <ErrorBlock errMsg={validationErr[0]} />
+            <ErrorBlock
+              className={styles.errorSpan}
+              errMsg={validationErr[0]}
+            />
           </div>
           <div className={styles.ControlGroup}>
             <label htmlFor='pswd'>Password:</label>
@@ -148,7 +153,10 @@ export default connect(
               onChange={e => this.setState({ pswd: e.target.value })}
               type='password'
             />
-            <ErrorBlock errMsg={validationErr[1]} />
+            <ErrorBlock
+              className={styles.errorSpan}
+              errMsg={validationErr[1]}
+            />
           </div>
           {mode === "0" && (
             <div id='signUpPanel'>
@@ -160,7 +168,10 @@ export default connect(
                   onChange={e => this.setState({ confirmPswd: e.target.value })}
                   type='password'
                 />
-                <ErrorBlock errMsg={validationErr[2]} />
+                <ErrorBlock
+                  className={styles.errorSpan}
+                  errMsg={validationErr[2]}
+                />
               </div>
               <div className={styles.ControlGroup}>
                 <label htmlFor='username'>Username:</label>
@@ -170,7 +181,10 @@ export default connect(
                   onChange={e => this.setState({ username: e.target.value })}
                   type='text'
                 />
-                <ErrorBlock errMsg={validationErr[3]} />
+                <ErrorBlock
+                  className={styles.errorSpan}
+                  errMsg={validationErr[3]}
+                />
               </div>
               <div className={styles.ControlGroup}>
                 <label htmlFor='tel'>TEL:</label>
@@ -179,7 +193,10 @@ export default connect(
                   value={this.state.tel}
                   onChange={e => this.setState({ tel: e.target.value })}
                 />
-                <ErrorBlock errMsg={validationErr[4]} />
+                <ErrorBlock
+                  className={styles.errorSpan}
+                  errMsg={validationErr[4]}
+                />
               </div>
             </div>
           )}
