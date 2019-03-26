@@ -5,19 +5,34 @@ import Button from "../../UI/Button/Button";
 import { addItem, updateItem } from "../../db_api/db_items";
 import Spinner from "../../UI/Spinner/Spinner";
 import { connect } from "react-redux";
+import { downloadFiles } from "../../db_api/db_items";
+import ImagesPanel from "./ImagesPanel/ImagesPanel";
+import ErrorBlock from "../Auth/ErrorBlock/ErrorBlock";
+let initialState = {};
 const mps = state => ({
   post: state.posts.currentPost
 });
 
 const mpd = dispatch => ({});
-const validator = form => {
+const validator = (form, originalPost) => {
   const { name, notes, imgs, price } = form;
   const validArray = [];
+  const originalImgs = originalPost ? originalPost.imgs : null;
   let validImgLength = 0;
   const validList = notes.filter(item => item.length <= 100);
-  for (let img of imgs) {
-    if (img.size <= 20480000) validImgLength++;
-  }
+  if (originalImgs) {
+    //edit mode
+    for (let i in imgs) {
+      // should get in img object
+      if (typeof imgs[i] === "string" || !(imgs[i].size > 20480000))
+        validImgLength++;
+    }
+  } //create mode
+  else
+    for (let img of imgs) {
+      if (img.size <= 20480000) validImgLength++;
+    }
+
   validArray.push(name.length < 100);
   validArray.push(price == parseInt(price) && parseInt(price) > 0);
   validArray.push(validList.length === notes.length);
@@ -25,48 +40,45 @@ const validator = form => {
   return validArray;
 };
 
-const initialState = {
-  notes: [],
-  imgs: [],
-  name: "",
-  price: "",
-  validation: Array(4).fill(false),
-  loading: false,
-  succeed: false
-};
 export default connect(
   mps,
   mpd
 )(
   class MakePost extends Component {
+    mainImgRef = React.createRef();
     state = {
-      // notes: this.props.post,
       notes: [],
       imgs: [],
+      displayImgs: [],
       name: "",
       price: "",
-      validation: Array(4).fill(false),
       loading: false,
-      succeed: false
+      succeed: false,
+      error: false
     };
     onSubmitHandler = async e => {
       e.preventDefault();
       const { validation, ...form } = this.state;
-      const vArray = validator(form);
+      const originalPost = this.props.post;
+      const vArray = validator(form, originalPost);
+      const mode = this.props.match.params.mode;
       const vResult = vArray.reduce((cur, acc) => acc && cur, true);
       if (vResult) {
         //passed local verify start uploading
         this.setState({ loading: true });
         let error = null;
-        if (!this.props.post) error = await addItem(form);
+        if (mode === "0") error = await addItem(form);
         else {
           //  edit form logic
-          await updateItem(form);
+          error = await updateItem(form, originalPost.imgs);
         }
         if (error) {
-          this.setState({ loading: false, succeed: false });
-          alert(error);
-        } else this.setState({ ...initialState, succeed: true });
+          this.setState({ ...initialState, error: error }, () =>
+            console.log(this.state)
+          );
+        } else {
+          this.props.history.push("/my-posts");
+        }
       } else alert("error formed form");
 
       //got all the form data, need validation then send to store and update to server
@@ -96,12 +108,73 @@ export default connect(
       this.setState({
         notes: [],
         imgs: [],
+        displayImgs: [],
+
         name: "",
-        price: ""
+        price: "",
+        loading: false,
+        succeed: false,
+        error: false
       });
     };
-    componentDidMount = () => {
-      this.setState({ ...this.props.post });
+    onCancelHandler = () => {
+      this.props.history.goBack();
+    };
+    onImgFileChangeHandler = (event, index) => {
+      const files = event.target.files;
+
+      if (files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+          //set the img list
+          const imgs = [...this.state.imgs];
+          const displayImgs = [...this.state.displayImgs];
+          displayImgs[index] = e.target.result;
+          imgs[index] = files[0];
+          this.setState({ displayImgs, imgs });
+        }.bind(this);
+
+        reader.readAsDataURL(files[0]);
+      }
+    };
+    imgDeleteHandler = index => {
+      const img = this.state.imgs[index];
+      // this.state
+    };
+    componentDidMount = async () => {
+      const mode = this.props.match.params.mode;
+
+      const post = this.props.post;
+      if (mode === "0" || !post) return;
+      const imgs = await downloadFiles(post.imgs, post.id);
+      post.displayImgs = imgs;
+      initialState = {
+        ...post,
+        loading: false,
+        succeed: false,
+        error: false
+      };
+
+      this.setState({ ...post });
+    };
+    componentDidUpdate = (prevProps, prevState) => {
+      if (
+        prevProps.match.params.mode !== this.props.match.params.mode &&
+        this.props.match.params.mode === "0"
+      ) {
+        const reset = {
+          notes: [],
+          imgs: [],
+          displayImgs: [],
+          name: "",
+          price: "",
+          loading: false,
+          succeed: false,
+          error: false
+        };
+        this.setState({ ...reset }, () => console.log(this.state));
+      }
     };
 
     render() {
@@ -114,6 +187,9 @@ export default connect(
           value={this.state.notes[index]}
         />
       ));
+      const mode = this.props.match.params.mode;
+
+      const post = mode === "0" ? null : this.props.post;
 
       return (
         <div className={styles.container}>
@@ -161,20 +237,33 @@ export default connect(
               {displaynotes}
             </div>
             <div>
-              <input
-                type='file'
-                multiple
-                accept='image/*'
-                onChange={this.onUploadHanler}
-                files={this.state.imgs}
-                required
-              />
+              {mode !== "0" ? (
+                <ImagesPanel
+                  imgFileChange={this.onImgFileChangeHandler}
+                  displayImgs={this.state.displayImgs}
+                  imgDelete={this.imgDeleteHandler}
+                />
+              ) : (
+                <input
+                  type='file'
+                  multiple
+                  accept='image/*'
+                  onChange={this.onUploadHanler}
+                  files={this.state.imgs}
+                  required
+                />
+              )}
             </div>
 
+            {this.state.loading && <Spinner />}
+            {this.state.error && (
+              <ErrorBlock
+                className={styles.errorSpan}
+                errMsg={"0" + this.state.error}
+              />
+            )}
             <div className={styles.submitBtnGroup}>
-              {this.state.loading ? (
-                <Spinner />
-              ) : (
+              {mode === "0" ? (
                 <>
                   <Button type='submit' className='btn succeed'>
                     Submit
@@ -182,6 +271,18 @@ export default connect(
 
                   <Button type='button' onClick={this.onClearFormHandler}>
                     Clear form
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    style={{ width: "100%" }}
+                    type='submit'
+                    className='btn succeed'>
+                    Submit
+                  </Button>
+                  <Button type='button' onClick={this.onCancelHandler}>
+                    Cancel
                   </Button>
                 </>
               )}

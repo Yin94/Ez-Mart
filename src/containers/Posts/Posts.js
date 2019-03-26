@@ -37,8 +37,10 @@ export default connect(
     };
     onEditHandler = post => {
       this.props.setCurPost(post);
+
       this.props.history.push("/make-post/" + post.id);
     };
+
     componentDidMount = () => {
       this.props.startFetchPosts(this.props.isStart, this.props.idList);
     };

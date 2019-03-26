@@ -8,9 +8,11 @@ export async function authWiwthEmailAndPswd(form, mode) {
       ? await auth.signInWithEmailAndPassword(userData.email, pswd)
       : await auth.createUserWithEmailAndPassword(userData.email, pswd);
 
-    userData.uid = user.user.uid;
     // add user doc
-    await db.collection("users").add(userData);
+    if (!mode) {
+      userData.uid = user.user.uid;
+      await db.collection("users").add(userData);
+    }
     return null;
   } catch (error) {
     return error.message;

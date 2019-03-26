@@ -1,5 +1,6 @@
 import { db, fileStorage } from "../firebase/apps/apps";
 import { getCurrentUser } from "./db_auth";
+import firebase from "firebase";
 export async function fetchItemTotalCounts() {
   // change it for better performance
   const snapShot = await db.collection("items").get();
@@ -52,8 +53,9 @@ export async function queryItem(id) {
   }
 }
 export async function addItem(item) {
-  // Add a new document with a generated id.
-  const { imgs, ...form } = item;
+  // Add a new document with a generated <id className=""></id>
+  const { imgs, error, displayImgs, loading, succeed, ...form } = item;
+
   const files = [];
   let docRef = null;
   for (let img of imgs) {
@@ -61,13 +63,25 @@ export async function addItem(item) {
   }
   form.imgs = files;
   form.favs = 0;
-  form["post-time"] = new Date();
+  form["last-update-time"] = new Date();
   form.publisher = getCurrentUser().id || localStorage.getItem("user-uid");
   try {
     docRef = await db.collection("items").add(form);
     await upLoadFiles(imgs, docRef.id);
     await docRef.update({
       id: docRef.id
+    });
+    const postsRef = await db
+      .collection("posts")
+      .where("uid", "==", form.publisher)
+      .get();
+    let docId;
+    postsRef.forEach(doc => (docId = doc.id));
+    var posts = db.collection("posts").doc(docId);
+
+    // Atomically add a new region to the "regions" array field.
+    await posts.update({
+      list: firebase.firestore.FieldValue.arrayUnion(docRef.id)
     });
 
     return null;
@@ -76,6 +90,7 @@ export async function addItem(item) {
 
     try {
       await docRef.delete();
+      // delete uploaded imgs
       return "error on upload, transaction discarded";
     } catch (error) {
       return "error upload delete databse item failed";
@@ -83,16 +98,67 @@ export async function addItem(item) {
   }
 }
 
-export async function updateItem(item) {
-  // const { imgs, ...form } = item;
-  // const files = [];
-  // let docRef = null;
-  // for (let img of imgs) {
-  //   files.push(img.name);
-  // }
-  // form.imgs = files;
-  // form["last-update-time"] = new Date();
+export async function updateItem(l_item, oldImgs) {
+  const { displayImgs, error, isFirst, loading, succeed, ...item } = l_item;
+  const { imgs, id, ...form } = item;
+
+  const docRef = db.collection("items").doc(id);
+
+  try {
+    //update other data
+    form.lastModifyTime = new Date();
+    await docRef.update({
+      ...form
+    });
+    // update imgs
+    for (let i in imgs) {
+      if (!(imgs[i] instanceof File)) continue;
+      const err = await upLoadFile(imgs[i], id);
+      if (err) return err;
+
+      const doc = await docRef.get();
+      const data = doc.data();
+      const imgListFromServer = [...data.imgs];
+      imgListFromServer[i] = imgs[i].name;
+      await docRef.update({
+        imgs: imgListFromServer
+      });
+      await deleteFile(oldImgs[i], id);
+    }
+  } catch (error) {
+    return "Failed reaching server, please try again!";
+  }
 }
+async function upLoadFile(file, itemId) {
+  const fileRef = fileStorage
+    .ref()
+    .child("images/items/" + itemId + "/" + file.name);
+  try {
+    await fileRef.getDownloadURL();
+    return (
+      "Error: please change the filename of " + file.name + " and try again!"
+    );
+  } catch (err) {
+    try {
+      await fileRef.put(file);
+      return null;
+    } catch (error) {
+      return "Failed reaching server, please try again!";
+    }
+  }
+}
+async function deleteFile(fileName, itemId) {
+  // Create a reference to the file to delete
+  const fileRef = fileStorage
+    .ref()
+    .child("images/items/" + itemId + "/" + fileName);
+  // Delete the file
+  await fileRef.delete();
+
+  console.log("delete succeed!!!");
+}
+
+//
 async function upLoadFiles(files, itemId) {
   // Create a root reference
   const pathArray = [];

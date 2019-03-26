@@ -11,8 +11,9 @@ const initialState = {
   currentPost: null,
   isFirst: true
 };
-const setList = (state, idList, list) =>
-  combine(state, { idList, list, succeed: true, isFirst: false });
+const setList = (state, idList, list) => {
+  return combine(state, { idList, list, succeed: true, isFirst: false });
+};
 const postsError = (state, error) => combine(state, { error });
 const resetStatus = state =>
   combine(state, { error: false, succeed: false, loading: false });
@@ -63,15 +64,17 @@ export const startFetchingPosts = (isFirst, localIdList) => {
 };
 export function setCurrentPost(item) {
   // {name,}
-  const { imgs, name, price, notes } = item;
+  const { imgs, name, price, notes, id, favs, publisher } = item;
   const post = {
+    id,
     imgs,
     name,
     price,
+    favs,
+    publisher,
     notes,
-    validation: Array(4).fill(false),
-    loading: false,
-    succeed: false
+    // validation: Array(4).fill(false),
+    displayImgs: []
   };
   return { type: SET_CURRENT_POST, post };
 }

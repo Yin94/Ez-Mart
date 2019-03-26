@@ -102,7 +102,7 @@ export async function fetchPosts(postIDs) {
         posts.push(ele.data());
       });
     }
-
+    console.log(posts);
     return posts;
   } catch (error) {
     console.log(error);

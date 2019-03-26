@@ -36,7 +36,7 @@ class App extends Component {
             <Route path='/auth:mode' component={Auth} />
             <Route path='/item/:id' component={ItemDetail} />
             <Route path='/fav' component={Favorites} />
-            <Route path='/make-post' component={MakePost} />
+            <Route path='/make-post/:mode' component={MakePost} />
             <Route path='/items' component={Items} />
             <Route path='/my-posts' component={MyPosts} />
 

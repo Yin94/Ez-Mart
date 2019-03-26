@@ -43,3 +43,15 @@
   padding: 10px;
   font-size: 1.2em;
 }
+.errorSpan {
+  width: 90%;
+  margin: auto;
+  background-color: rgb(28, 28, 254);
+  font-size: 1.2em;
+  color: white;
+  opacity: 0.8;
+  border-radius: 4px;
+  padding: 20px 0;
+  display: block;
+  font-weight: bolder;
+}
