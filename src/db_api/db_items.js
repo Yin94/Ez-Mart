@@ -10,7 +10,7 @@ export async function fetchItemTotalCounts() {
 export async function fetchItems(
   cursor,
   prevLastDocRef,
-  orderSchema = "post-time"
+  orderSchema = "lastModifyTime"
 ) {
   const result = [];
   try {
@@ -53,9 +53,7 @@ export async function queryItem(id) {
   }
 }
 export async function addItem(item) {
-  // Add a new document with a generated <id className=""></id>
-  const { imgs, error, displayImgs, loading, succeed, ...form } = item;
-
+  const { imgs, id, displayImgs, ...form } = item;
   const files = [];
   let docRef = null;
   for (let img of imgs) {
@@ -78,84 +76,73 @@ export async function addItem(item) {
     let docId;
     postsRef.forEach(doc => (docId = doc.id));
     var posts = db.collection("posts").doc(docId);
-
     // Atomically add a new region to the "regions" array field.
     await posts.update({
       list: firebase.firestore.FieldValue.arrayUnion(docRef.id)
     });
-
-    return null;
+    return { id: docRef.id };
   } catch (error) {
     //keep data integrety
-
     try {
       await docRef.delete();
       // delete uploaded imgs
-      return "error on upload, transaction discarded";
+      return "error on uploading images, transaction discarded";
     } catch (error) {
-      return "error upload delete databse item failed";
+      return "error on uploading images, delete databse item failed";
     }
   }
 }
-
-export async function updateItem(l_item, oldImgs) {
-  const { displayImgs, error, isFirst, loading, succeed, ...item } = l_item;
-  const { imgs, id, ...form } = item;
-
-  const docRef = db.collection("items").doc(id);
-
+export async function deleteItem(id) {
   try {
-    //update other data
-    form.lastModifyTime = new Date();
-    await docRef.update({
-      ...form
+    const uid = getCurrentUser().id || localStorage.getItem("user-uid");
+    const docRef = db.collection("items").doc(id);
+    const snapShot = await db
+      .collection("posts")
+      .where("uid", "==", uid)
+      .get();
+    let docId = null;
+    snapShot.forEach(doc => (docId = doc.id));
+    const postDocRef = db.collection("posts").doc(docId);
+    await postDocRef.update({
+      list: firebase.firestore.FieldValue.arrayRemove(id)
     });
-    // update imgs
-    for (let i in imgs) {
-      if (!(imgs[i] instanceof File)) continue;
-      const err = await upLoadFile(imgs[i], id);
-      if (err) return err;
 
-      const doc = await docRef.get();
-      const data = doc.data();
-      const imgListFromServer = [...data.imgs];
-      imgListFromServer[i] = imgs[i].name;
-      await docRef.update({
-        imgs: imgListFromServer
-      });
-      await deleteFile(oldImgs[i], id);
-    }
+    await docRef.delete();
   } catch (error) {
-    return "Failed reaching server, please try again!";
+    return error.message;
   }
 }
-async function upLoadFile(file, itemId) {
-  const fileRef = fileStorage
-    .ref()
-    .child("images/items/" + itemId + "/" + file.name);
+export async function updateItem(formItem, tbd_Imgs, tba_Imgs) {
+  let { displayImgs, imgs, ...item } = formItem;
+  const docRef = db.collection("items").doc(item.id);
+  item.lastModifyTime = new Date();
   try {
-    await fileRef.getDownloadURL();
-    return (
-      "Error: please change the filename of " + file.name + " and try again!"
-    );
-  } catch (err) {
-    try {
-      await fileRef.put(file);
-      return null;
-    } catch (error) {
-      return "Failed reaching server, please try again!";
+    await docRef.update({
+      ...item
+    });
+    const storageRef = fileStorage.ref().child("images/items/" + item.id + "/");
+    // deleting  imgs
+    tbd_Imgs.forEach(async ele => {
+      const imgRef = storageRef.child(ele);
+      await imgRef.delete();
+    });
+    console.log("done deleting");
+    //uploading  imgs
+    for (let ele of tba_Imgs) {
+      const imgRef = storageRef.child(ele.name);
+      await imgRef.put(ele);
+      const index = imgs.indexOf(ele);
+      imgs[index] = ele.name;
     }
-  }
-}
-async function deleteFile(fileName, itemId) {
-  // Create a reference to the file to delete
-  const fileRef = fileStorage
-    .ref()
-    .child("images/items/" + itemId + "/" + fileName);
-  // Delete the file
-  await fileRef.delete();
+    //update img-list
+    await docRef.update({
+      imgs
+    });
 
-  console.log("delete succeed!!!");
+    return null;
+  } catch (err) {
+    return err.message;
+  }
 }
 
 //

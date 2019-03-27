@@ -10,9 +10,11 @@ import {
   startFetchingItem,
   commitItemsStatusAndItem
 } from "../../store_redux/items/items";
+import Button from "../../UI/Button/Button";
 const mps = state => ({
   item: state.items.currentItem,
-  succeed: state.items.succeed
+  succeed: state.items.succeed,
+  favList: state.favorites.list
 });
 const mpd = dispatch => ({
   fetchItem: (id, item) => dispatch(startFetchingItem(id, item)),
@@ -75,6 +77,8 @@ export default withRouter(
         const item = this.props.item;
         if (!item) return null;
         const { price, name, imgs, notes, id, publisher } = item;
+        const favBtnFlag =
+          this.props.favList.findIndex(ele => ele.id === id) !== -1;
 
         return (
           <>
@@ -103,7 +107,7 @@ export default withRouter(
               />
               <ItemDescrip
                 onSave={() => this.onSaveHandler(id)}
-                {...{ name, price, notes, publisher }}
+                {...{ name, price, notes, publisher, favBtnFlag }}
                 className={styles.details}
               />
             </div>

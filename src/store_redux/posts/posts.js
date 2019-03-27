@@ -1,6 +1,6 @@
 import combine from "../../utility/combine";
 import { fetchPosts, fetchPostIDs } from "../../db_api/db_user";
-import { getCurrentUser, managePost } from "../../db_api/db_auth";
+import { deleteItem } from "../../db_api/db_items";
 
 const initialState = {
   list: [],
@@ -11,6 +11,7 @@ const initialState = {
   currentPost: null,
   isFirst: true
 };
+const userSwitched = state => combine(state, { isFirst: true });
 const setList = (state, idList, list) => {
   return combine(state, { idList, list, succeed: true, isFirst: false });
 };
@@ -19,10 +20,22 @@ const resetStatus = state =>
   combine(state, { error: false, succeed: false, loading: false });
 const deletePost = (state, id) => {
   const list = state.list.filter(item => item.id !== id);
-  return combine(state, { list });
+  const idList = state.idList.filter(item => item !== id);
+  return combine(state, {
+    list,
+    idList,
+    succeed: true,
+    loading: false,
+    error: false
+  });
 };
 const setCurPost = (state, currentPost) => {
   return combine(state, { currentPost });
+};
+const addPostHandler = (state, id) => {
+  const idList = [...state.idList];
+  idList.push(id);
+  return combine(state, { idList });
 };
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -37,6 +50,10 @@ export default (state = initialState, action) => {
 
     case COMMIT_STATUS:
       return resetStatus(state);
+    case ADD_POST:
+      return addPostHandler(state, action.id);
+    case USER_SWITCHED:
+      return userSwitched(state);
     default:
       return state;
   }
@@ -44,10 +61,11 @@ export default (state = initialState, action) => {
 
 const SET_LIST = "posts/SET_LIST";
 const SET_CURRENT_POST = "posts/SET_CURRENT_POST";
-
-const POSTS_ERROR = "posts/Favs_ERROR";
+const ADD_POST = "posts/ADD_POST";
+const POSTS_ERROR = "posts/POSTS_ERROR";
 const COMMIT_STATUS = "posts/COMMIT_STATUS";
 const DELETE_POST = "posts/DELETE_ITEM";
+export const USER_SWITCHED = "posts/USER_SWITCHED";
 //action creators
 export const startFetchingPosts = (isFirst, localIdList) => {
   return async dispatch => {
@@ -64,16 +82,9 @@ export const startFetchingPosts = (isFirst, localIdList) => {
 };
 export function setCurrentPost(item) {
   // {name,}
-  const { imgs, name, price, notes, id, favs, publisher } = item;
+
   const post = {
-    id,
-    imgs,
-    name,
-    price,
-    favs,
-    publisher,
-    notes,
-    // validation: Array(4).fill(false),
+    ...item,
     displayImgs: []
   };
   return { type: SET_CURRENT_POST, post };
@@ -81,14 +92,17 @@ export function setCurrentPost(item) {
 export function commitStatus() {
   return { type: COMMIT_STATUS };
 }
-// export const startDeleteFavItem = id => {
-//   return async dispatch => {
-//     try {
-//       await managePost(id, false);
-//       dispatch({ type: DELETE_ITEM, id });
-//       dispatch({ type: FAV_COUNT_CHANGED, id, diff: -1 });
-//     } catch (error) {
-//       dispatch({ type: FAVS_ERROR, error: error.message });
-//     }
-//   };
-// };
+
+export function startDeletingPost(id) {
+  return async dispatch => {
+    const error = await deleteItem(id);
+    if (error) dispatch({ type: POSTS_ERROR, error });
+    else dispatch({ type: DELETE_POST, id });
+  };
+}
+export function addPost(id) {
+  return {
+    type: ADD_POST,
+    id
+  };
+}

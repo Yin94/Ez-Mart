@@ -13,6 +13,8 @@
 .nameAndPrice {
   display: grid;
   grid-template-columns: 8fr 2fr;
+  width: 80%;
+  margin: auto;
 }
 
 .postForm input,
@@ -29,13 +31,14 @@
 }
 
 .notesGroup {
-  margin: 50px 0;
+  margin: 50px auto;
+  width: 80%;
 }
 .submitBtnGroup {
-  width: 90%;
+  width: 80%;
   margin: auto;
   grid-gap: 50px;
-  padding: 20px;
+  padding: 20px 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
 }

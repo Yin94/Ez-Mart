@@ -22,6 +22,7 @@ class App extends Component {
     }
   };
   logOutHandler = () => {
+    this.props.history.push("/");
     this.props.logOut();
   };
 

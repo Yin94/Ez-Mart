@@ -1,6 +1,6 @@
 import combine from "../../utility/combine";
 import * as dbAuth from "../../db_api/db_auth";
-
+import { USER_SWITCHED } from "../posts/posts";
 //reducer part
 const initialState = {
   error: false,
@@ -61,6 +61,7 @@ export function tryAuth(form, mode) {
       localStorage.setItem("user-authed", true);
       localStorage.setItem("user-uid", user.uid);
       dispatch(authSucceed(user.uid));
+      dispatch({ type: USER_SWITCHED });
     }
   };
 }

@@ -8,37 +8,78 @@ import { connect } from "react-redux";
 import { downloadFiles } from "../../db_api/db_items";
 import ImagesPanel from "./ImagesPanel/ImagesPanel";
 import ErrorBlock from "../Auth/ErrorBlock/ErrorBlock";
-let initialState = {};
+import { addPost } from "../../store_redux/posts/posts";
+import Joi from "joi";
+import { add_Schema } from "./schema";
+let initialState = {
+  name: "",
+  notes: [],
+  imgs: [],
+  displayImgs: [],
+  price: "",
+  loading: false,
+  succeed: false,
+  error: false
+};
+const add_item_handler = async function(err, value, item, obj) {
+  if (!err) {
+    //validate succeed
+
+    let result = await addItem(item);
+    if (result.id) {
+      obj.props.addPost(result.id);
+      obj.props.history.push("/my-posts");
+    } else
+      obj.setState({
+        succeed: false,
+        loading: false,
+        error: result
+      });
+  } else {
+    // validate failed
+    obj.setState({
+      succeed: false,
+      loading: false,
+      error: err.message
+    });
+  }
+};
+
+const update_item_handler = async function(
+  err,
+  value,
+  item,
+  originalItem,
+  obj
+) {
+  if (err)
+    obj.setState({
+      error: err.message,
+      succeed: false,
+      loading: false
+    });
+  else {
+    const o_imgs = originalItem.imgs;
+    const imgs = item.imgs;
+    const tbd_imgs = o_imgs.filter(ele => !imgs.find(e => e === ele));
+    const tba_imgs = imgs.filter(ele => ele instanceof File);
+    const error = await updateItem(item, tbd_imgs, tba_imgs);
+    if (error)
+      obj.setState({
+        error,
+        succeed: false,
+        loading: false
+      });
+    else obj.props.history.push("/my-posts");
+  }
+};
 const mps = state => ({
   post: state.posts.currentPost
 });
 
-const mpd = dispatch => ({});
-const validator = (form, originalPost) => {
-  const { name, notes, imgs, price } = form;
-  const validArray = [];
-  const originalImgs = originalPost ? originalPost.imgs : null;
-  let validImgLength = 0;
-  const validList = notes.filter(item => item.length <= 100);
-  if (originalImgs) {
-    //edit mode
-    for (let i in imgs) {
-      // should get in img object
-      if (typeof imgs[i] === "string" || !(imgs[i].size > 20480000))
-        validImgLength++;
-    }
-  } //create mode
-  else
-    for (let img of imgs) {
-      if (img.size <= 20480000) validImgLength++;
-    }
-
-  validArray.push(name.length < 100);
-  validArray.push(price == parseInt(price) && parseInt(price) > 0);
-  validArray.push(validList.length === notes.length);
-  validArray.push(validImgLength === imgs.length);
-  return validArray;
-};
+const mpd = dispatch => ({
+  addPost: id => dispatch(addPost(id))
+});
 
 export default connect(
   mps,
@@ -47,41 +88,42 @@ export default connect(
   class MakePost extends Component {
     mainImgRef = React.createRef();
     state = {
+      name: "",
       notes: [],
       imgs: [],
       displayImgs: [],
-      name: "",
       price: "",
       loading: false,
       succeed: false,
       error: false
     };
+
     onSubmitHandler = async e => {
       e.preventDefault();
-      const { validation, ...form } = this.state;
-      const originalPost = this.props.post;
-      const vArray = validator(form, originalPost);
-      const mode = this.props.match.params.mode;
-      const vResult = vArray.reduce((cur, acc) => acc && cur, true);
-      if (vResult) {
-        //passed local verify start uploading
-        this.setState({ loading: true });
-        let error = null;
-        if (mode === "0") error = await addItem(form);
-        else {
-          //  edit form logic
-          error = await updateItem(form, originalPost.imgs);
-        }
-        if (error) {
-          this.setState({ ...initialState, error: error }, () =>
-            console.log(this.state)
-          );
-        } else {
-          this.props.history.push("/my-posts");
-        }
-      } else alert("error formed form");
+      const obj = this;
+      const mode = this.props.match.params["mode"];
 
-      //got all the form data, need validation then send to store and update to server
+      obj.setState({ loading: true });
+      //validation
+      const {
+        succeed,
+        loading,
+        error,
+        publisher,
+        lastModifyTime,
+        ...item
+      } = this.state;
+      item.imgs = [...item.imgs];
+      if (mode === "0")
+        Joi.validate(item, add_Schema, (err, value) =>
+          add_item_handler(err, value, item, obj)
+        );
+      else {
+        //update item
+        Joi.validate(item, add_Schema, (err, value) =>
+          update_item_handler(err, value, item, this.props.post, obj)
+        );
+      }
     };
     onDeleteNoteHandler = index => {
       const notes = this.state.notes;
@@ -101,21 +143,18 @@ export default connect(
     onUploadHanler = e => {
       this.setState({ imgs: e.target.files });
     };
+    onAddImgHandler = e => {
+      const displayImgs = [...this.state.displayImgs];
+      displayImgs.push(
+        "https://jessicahlawrence.files.wordpress.com/2014/03/plus_sign.png"
+      );
+      this.setState({ displayImgs });
+    };
     onClearNotesHandler = () => {
       this.setState({ notes: [] });
     };
     onClearFormHandler = () => {
-      this.setState({
-        notes: [],
-        imgs: [],
-        displayImgs: [],
-
-        name: "",
-        price: "",
-        loading: false,
-        succeed: false,
-        error: false
-      });
+      this.setState({ ...initialState });
     };
     onCancelHandler = () => {
       this.props.history.goBack();
@@ -139,45 +178,42 @@ export default connect(
       }
     };
     imgDeleteHandler = index => {
-      const img = this.state.imgs[index];
-      // this.state
+      const imgs = [...this.state.imgs];
+      const displayImgs = [...this.state.displayImgs];
+      imgs.splice(index, 1);
+      displayImgs.splice(index, 1);
+
+      this.setState({ imgs, displayImgs });
+    };
+    onClearImgHandler = () => {
+      this.setState({ displayImgs: [], imgs: [] });
     };
     componentDidMount = async () => {
       const mode = this.props.match.params.mode;
-
+      console.log("yo");
       const post = this.props.post;
       if (mode === "0" || !post) return;
       const imgs = await downloadFiles(post.imgs, post.id);
       post.displayImgs = imgs;
-      initialState = {
+
+      this.setState({
         ...post,
         loading: false,
         succeed: false,
         error: false
-      };
-
-      this.setState({ ...post });
+      });
     };
     componentDidUpdate = (prevProps, prevState) => {
       if (
-        prevProps.match.params.mode !== this.props.match.params.mode &&
-        this.props.match.params.mode === "0"
-      ) {
-        const reset = {
-          notes: [],
-          imgs: [],
-          displayImgs: [],
-          name: "",
-          price: "",
-          loading: false,
-          succeed: false,
-          error: false
-        };
-        this.setState({ ...reset }, () => console.log(this.state));
-      }
+        this.props.match.params.mode === "0" &&
+        prevProps.match.params.mode !== "0"
+      )
+        this.setState({ ...initialState });
     };
 
     render() {
+      const mode = this.props.match.params.mode;
+      if (!this.state.name && mode !== "0") return <></>;
       const displaynotes = this.state.notes.map((item, index) => (
         <NoteItem
           key={"yo" + index}
@@ -187,9 +223,6 @@ export default connect(
           value={this.state.notes[index]}
         />
       ));
-      const mode = this.props.match.params.mode;
-
-      const post = mode === "0" ? null : this.props.post;
 
       return (
         <div className={styles.container}>
@@ -236,12 +269,14 @@ export default connect(
               </Button>
               {displaynotes}
             </div>
-            <div>
+            <div style={{ width: "80%", margin: "auto" }}>
               {mode !== "0" ? (
                 <ImagesPanel
                   imgFileChange={this.onImgFileChangeHandler}
                   displayImgs={this.state.displayImgs}
                   imgDelete={this.imgDeleteHandler}
+                  addImg={this.onAddImgHandler}
+                  clearImgs={this.onClearImgHandler}
                 />
               ) : (
                 <input

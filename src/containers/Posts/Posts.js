@@ -6,7 +6,8 @@ import { setCurrentItem } from "../../store_redux/items/items";
 import {
   startFetchingPosts,
   commitStatus,
-  setCurrentPost
+  setCurrentPost,
+  startDeletingPost
 } from "../../store_redux/posts/posts";
 const mps = state => ({
   isStart: state.posts.isFirst,
@@ -20,7 +21,8 @@ const mpd = dispatch => ({
   startFetchPosts: (mode, list) => dispatch(startFetchingPosts(mode, list)),
   setCurItem: item => dispatch(setCurrentItem(item, true)),
   commitStatus: item => dispatch(commitStatus()),
-  setCurPost: post => dispatch(setCurrentPost(post))
+  setCurPost: post => dispatch(setCurrentPost(post)),
+  deletePost: id => dispatch(startDeletingPost(id))
 });
 export default connect(
   mps,
@@ -33,7 +35,7 @@ export default connect(
       this.props.history.push("/item/" + item.id);
     };
     onDeleteHandler = id => {
-      this.props.history.push("");
+      this.props.deletePost(id);
     };
     onEditHandler = post => {
       this.props.setCurPost(post);

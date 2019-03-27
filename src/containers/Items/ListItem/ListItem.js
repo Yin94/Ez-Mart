@@ -28,7 +28,7 @@ export default function ListItem({
         <img onClick={itemSelected} src={imgs[0]} alt='imgUrl' />
 
         {flag >= 0 ? (
-          <Button onClick={() => favoriteClicked(id, false)} name='left'>
+          <Button onClick={() => favoriteClicked(id, -1)} name='left'>
             UnSave
           </Button>
         ) : (
@@ -36,7 +36,7 @@ export default function ListItem({
             disabled={btnDisabled}
             id={btnDisabled ? "disabled" : "active"}
             title={title}
-            onClick={() => favoriteClicked(id, true)}
+            onClick={() => favoriteClicked(id, 1)}
             name='left'>
             Save
           </Button>

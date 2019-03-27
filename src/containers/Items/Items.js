@@ -35,12 +35,12 @@ export default withRouter(
         this.props.setCurrentItem(item);
         this.props.history.push("item/" + item.id);
       };
-      onSavHandler = async (id, mode) => {
-        const error = await manageFavItem(id, mode);
+      onSavHandler = async (id, diff) => {
+        const error = await manageFavItem(id, diff);
 
         if (error) alert(error.message);
         else {
-          this.props.updateFavCount(id, mode);
+          this.props.updateFavCount(id, diff);
         }
       };
       onPageSelectHandler = index => {

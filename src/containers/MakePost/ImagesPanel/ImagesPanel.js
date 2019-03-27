@@ -8,13 +8,24 @@ export default function ImagesPanel({
   imgs,
   displayImgs,
   imgFileChange,
-  imgDelete
+  imgDelete,
+  addImg,
+  clearImgs
 }) {
-  const mainPicStyle = { width: "100%", display: "block" };
+  const mainPicStyle = {
+    width: "100%",
+    display: "block"
+  };
   const [index, setIndex] = useState(0);
   return (
     <div>
-      <div className={styles.mainArea}>
+      <div
+        style={{
+          width: "80%",
+          margin: "auto",
+          borderRadius: "4px",
+          overflow: "hidden"
+        }}>
         <div className={styles.lgPic}>
           <div className={styles.fadeIn} id={"show"}>
             <label htmlFor='file-input'>Change this image</label>
@@ -29,11 +40,34 @@ export default function ImagesPanel({
             onChange={e => imgFileChange(e, index)}
             accept='image/*'
             id='file-input'
-            style={{ display: "none", zIndex: "1" }}
+            style={{
+              display: "none",
+              zIndex: "1"
+            }}
             type='file'
           />
         </div>
+        <Button
+          style={{
+            width: "40%",
+            margin: "20px auto"
+          }}
+          onClick={() => addImg()}
+          className='btn succeed'
+          type='button'>
+          Add Item Image
+        </Button>{" "}
+        <Button
+          style={{
+            width: "40%",
+            margin: "20px auto"
+          }}
+          onClick={clearImgs}
+          type='button'>
+          Delete All Images
+        </Button>{" "}
       </div>
+
       <Gallery
         imgList={displayImgs}
         className={styles.gallery}

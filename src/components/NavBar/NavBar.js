@@ -2,7 +2,7 @@ import React from "react";
 import SearchBar from "../../UI/SearchBar/SearchBar";
 import styles from "./NavItem/NavItem.css";
 import { NavLink } from "react-router-dom";
-import Button from "../../UI/Button/Button";
+
 export default function NavBar({ authed, logOut }) {
   const searchBarStyle = {
     paddingTop: "10px"

@@ -7,11 +7,16 @@ import { fetchItemPublisher } from "../../../db_api/db_items";
 async function fetchContactData(id) {
   return await fetchItemPublisher(id);
 }
-export default function ItemDescrip({ className, onSave, ...itemProps }) {
+export default function ItemDescrip({
+  className,
+  favBtnFlag,
+  onSave,
+  ...itemProps
+}) {
   const { name, price, notes, publisher } = itemProps;
   const [showContact, contactClicked] = useState(false);
   const [pubInfo, getPubInfo] = useState(null);
-
+  console.log(favBtnFlag);
   return (
     <div className={[className, styles["container"]].join(" ")}>
       <h3 style={{ fontSize: "40px" }}>{name}</h3>
@@ -22,7 +27,11 @@ export default function ItemDescrip({ className, onSave, ...itemProps }) {
 
       <SellerNote {...{ notes }} />
       <div className={styles.btnGroup}>
-        <Button onClick={onSave}>Save</Button>
+        {favBtnFlag ? (
+          <Button onClick={onSave}>Unsave</Button>
+        ) : (
+          <Button onClick={onSave}>Save</Button>
+        )}
         <div className={styles.dropdown}>
           <Button
             onClick={async () => {
