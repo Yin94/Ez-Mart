@@ -81,6 +81,7 @@ export async function manageFavItem(id, mode) {
   const savedArrayRef = db.collection("favorites").doc(docKey);
 
   const field = firebase.firestore.FieldValue;
+
   await savedArrayRef.update({
     list: mode ? field.arrayUnion(id) : field.arrayRemove(id)
   });

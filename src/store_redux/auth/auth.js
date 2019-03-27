@@ -1,6 +1,7 @@
 import combine from "../../utility/combine";
 import * as dbAuth from "../../db_api/db_auth";
 import { USER_SWITCHED } from "../posts/posts";
+import { USER_SWITCHED_FAV, startFetchingFavsIdList } from "../user/favorites";
 //reducer part
 const initialState = {
   error: false,
@@ -61,10 +62,12 @@ export function tryAuth(form, mode) {
       localStorage.setItem("user-authed", true);
       localStorage.setItem("user-uid", user.uid);
       dispatch(authSucceed(user.uid));
-      dispatch({ type: USER_SWITCHED });
+      // fetch id here
+      dispatch(startFetchingFavsIdList(user.uid));
     }
   };
 }
+
 export function authSucceed(uid, fromLocal) {
   return { type: AUTH_SUCCEED, uid, fromLocal };
 }
@@ -75,10 +78,13 @@ export function commitStatus() {
 }
 
 export function logOut() {
-  localStorage.removeItem("user-authed");
-  localStorage.removeItem("user-uid");
-
-  return {
-    type: LOG_OUT
+  return dispatch => {
+    localStorage.removeItem("user-authed");
+    localStorage.removeItem("user-uid");
+    dispatch({ type: USER_SWITCHED });
+    dispatch({ type: USER_SWITCHED_FAV });
+    dispatch({
+      type: LOG_OUT
+    });
   };
 }

@@ -4,7 +4,7 @@ import FavList from "./FavList/FavList";
 import { connect } from "react-redux";
 import {
   startFetchingFavs,
-  startDeleteFavItem
+  startManageFavItem
 } from "../../store_redux/user/favorites";
 import { setCurrentItem } from "../../store_redux/items/items";
 
@@ -18,7 +18,7 @@ const mps = state => ({
 const mpd = dispatch => ({
   fetchSavList: (idList, isStart) =>
     dispatch(startFetchingFavs(idList, isStart)),
-  deleteFavItem: id => dispatch(startDeleteFavItem(id)),
+  deleteFavItem: id => dispatch(startManageFavItem(id, false)),
   setPassedItem: item => dispatch(setCurrentItem(item))
 });
 export default connect(

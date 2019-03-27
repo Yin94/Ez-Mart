@@ -11,7 +11,7 @@ const initialState = {
   currentPost: null,
   isFirst: true
 };
-const userSwitched = state => combine(state, { isFirst: true });
+const userSwitched = state => combine(initialState);
 const setList = (state, idList, list) => {
   return combine(state, { idList, list, succeed: true, isFirst: false });
 };
