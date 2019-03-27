@@ -4,21 +4,23 @@ import Gallery from "../../components/Gallery/Gallery";
 import ItemDescrip from "./ItemDescrip/ItemDescrip";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { manageFavItem } from "../../db_api/db_user";
+
+import { startManageFavItem } from "../../store_redux/user/favorites";
 import Modal from "./Modal/Modal";
 import {
   startFetchingItem,
   commitItemsStatusAndItem
 } from "../../store_redux/items/items";
-import Button from "../../UI/Button/Button";
+
 const mps = state => ({
   item: state.items.currentItem,
   succeed: state.items.succeed,
-  favList: state.favorites.list
+  favIdList: state.favorites.idList
 });
 const mpd = dispatch => ({
   fetchItem: (id, item) => dispatch(startFetchingItem(id, item)),
-  commitStatus: () => dispatch(commitItemsStatusAndItem())
+  commitStatus: () => dispatch(commitItemsStatusAndItem()),
+  manageFavs: (id, mode) => dispatch(startManageFavItem(id, mode))
 });
 
 export default withRouter(
@@ -47,8 +49,9 @@ export default withRouter(
       onGalleryClickedHandler = imgIndex => {
         this.setState({ imgIndex });
       };
-      onSaveHandler = async id => {
-        await manageFavItem(id, true);
+      onSaveHandler = async (id, mode) => {
+        this.props.manageFavs(id, !mode);
+        // this.setState({})
       };
       onModalKeyPressHandler = (e, item) => {
         const key = e.keyCode;
@@ -76,9 +79,17 @@ export default withRouter(
       render() {
         const item = this.props.item;
         if (!item) return null;
-        const { price, name, imgs, notes, id, publisher } = item;
+        const {
+          price,
+          name,
+          imgs,
+          notes,
+          id,
+          publisher,
+          lastModifyTime
+        } = item;
         const favBtnFlag =
-          this.props.favList.findIndex(ele => ele.id === id) !== -1;
+          this.props.favIdList.findIndex(ele => ele === id) !== -1;
 
         return (
           <>
@@ -106,8 +117,15 @@ export default withRouter(
                 className={styles.gallery}
               />
               <ItemDescrip
-                onSave={() => this.onSaveHandler(id)}
-                {...{ name, price, notes, publisher, favBtnFlag }}
+                onSave={mode => this.onSaveHandler(id, mode)}
+                {...{
+                  name,
+                  price,
+                  notes,
+                  publisher,
+                  favBtnFlag,
+                  lastModifyTime
+                }}
                 className={styles.details}
               />
             </div>

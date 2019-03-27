@@ -4,7 +4,8 @@ export default function Header() {
   const bannerStyle = {
     backgroundColor: "#FB3808",
     height: "87px",
-    textAlign: "center"
+    textAlign: "center",
+    borderRadius: "0"
   };
   const headerStyle = {
     color: "white",

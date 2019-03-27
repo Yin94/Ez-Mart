@@ -42,7 +42,11 @@
   width: 0;
   transition: 0.5s ease;
   overflow: hidden;
-  background-color: yellow;
+  color: white;
+
+  font-weight: bolder;
+  background-color: #6db324;
+  opacity: 0.9;
 }
 .fadeIn[id="show"] {
   z-index: 0;

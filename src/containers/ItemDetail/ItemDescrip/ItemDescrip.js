@@ -3,6 +3,7 @@ import styles from "./ItemDecrip.css";
 import Button from "../../../UI/Button/Button";
 import SellerNote from "./SellerNote/SellerNote";
 import { fetchItemPublisher } from "../../../db_api/db_items";
+import { timeStampToDate } from "../../../utility/time-convert";
 // import moduleName from 'module'
 async function fetchContactData(id) {
   return await fetchItemPublisher(id);
@@ -13,10 +14,13 @@ export default function ItemDescrip({
   onSave,
   ...itemProps
 }) {
-  const { name, price, notes, publisher } = itemProps;
+  const { name, price, notes, publisher, lastModifyTime } = itemProps;
   const [showContact, contactClicked] = useState(false);
   const [pubInfo, getPubInfo] = useState(null);
-  console.log(favBtnFlag);
+
+  const date = timeStampToDate(lastModifyTime);
+  const dateString = date ? date.toDateString() : null;
+
   return (
     <div className={[className, styles["container"]].join(" ")}>
       <h3 style={{ fontSize: "40px" }}>{name}</h3>
@@ -26,11 +30,22 @@ export default function ItemDescrip({
       </div>
 
       <SellerNote {...{ notes }} />
+      <small
+        style={{
+          margin: "20px 0",
+          backgroundColor: "#FEE9DB",
+          borderRadius: "4px",
+          color: "#F70C0C",
+          padding: "10px 2px"
+        }}>
+        Last edit date:{" "}
+        <strong style={{ color: "#6DB324" }}>{dateString}</strong>
+      </small>
       <div className={styles.btnGroup}>
         {favBtnFlag ? (
-          <Button onClick={onSave}>Unsave</Button>
+          <Button onClick={() => onSave(favBtnFlag)}>Unsave</Button>
         ) : (
-          <Button onClick={onSave}>Save</Button>
+          <Button onClick={() => onSave(favBtnFlag)}>Save</Button>
         )}
         <div className={styles.dropdown}>
           <Button

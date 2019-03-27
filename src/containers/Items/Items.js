@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { startManageFavItem } from "../../store_redux/user/favorites";
 import { withRouter } from "react-router-dom";
 import Pagination from "./Pagination/Pagination";
-import { FAV_COUNT_CHANGED } from "../../store_redux/items/items";
+
 import {
   setCurrentItem,
   startFetchingItems
@@ -14,12 +14,13 @@ const mps = state => ({
   list: state.items.list,
   totalCount: state.items.count,
   favs: state.favorites.idList,
-  authed: state.auth.authed
+  authed: state.auth.authed,
+  error: state.favorites.error
 });
 const mpd = dispatch => ({
   startFetchItems: cursor => dispatch(startFetchingItems(cursor)),
   setCurrentItem: item => dispatch(setCurrentItem(item)),
-  updateFavCount: (id, diff) => dispatch({ type: FAV_COUNT_CHANGED, id, diff }),
+
   manageFavItem: (id, mode) => dispatch(startManageFavItem(id, mode))
 });
 export default withRouter(
@@ -37,14 +38,9 @@ export default withRouter(
         this.props.history.push("item/" + item.id);
       };
       onSavHandler = async (id, diff) => {
-        // const error = await manageFavItem(id, diff);
-
         this.props.manageFavItem(id, diff);
-
-        // if (error) alert(error.message);
-        // else {
-        //   this.props.updateFavCount(id, diff);
-        // }
+        const error = this.props.error;
+        if (error) alert(error.message);
       };
       onPageSelectHandler = index => {
         this.setState({ currentPage: index });

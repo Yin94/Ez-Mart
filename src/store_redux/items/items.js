@@ -27,11 +27,14 @@ const resetStatus = state =>
     loading: false,
     currentItem: null
   });
-const favItemChanged = (state, id, diff) => {
+const favItemChanged = (state, id, mode) => {
   const list = [...state.list];
   const item = list.find(item => item.id === id);
+  const diff = mode == true ? 1 : -1;
   item.favs = item.favs + diff;
-  return combine(state, { list });
+  const result = combine(state, { list });
+  console.log(result.list[0].favs, mode);
+  return result;
 };
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -46,7 +49,7 @@ export default (state = initialState, action) => {
     case SET_ITEMS_COUNT:
       return setItemsCount(state, action.count);
     case FAV_COUNT_CHANGED:
-      return favItemChanged(state, action.id, action.diff);
+      return favItemChanged(state, action.id, action.mode);
     default:
       return state;
   }

@@ -3,6 +3,8 @@ import classes from "./Posts.css";
 import PostBlock from "./PostBlock/PostBlock";
 import { connect } from "react-redux";
 import { setCurrentItem } from "../../store_redux/items/items";
+import Button from "../../UI/Button/Button";
+import SearchBar from "../../UI/SearchBar/SearchBar";
 import {
   startFetchingPosts,
   commitStatus,
@@ -29,10 +31,16 @@ export default connect(
   mpd
 )(
   class Posts extends Component {
+    state = {
+      filter: ""
+    };
     onClickHandler = item => {
       item.downloadAllImgs = true;
       this.props.setCurItem(item);
       this.props.history.push("/item/" + item.id);
+    };
+    onResetFilterHandler = () => {
+      this.setState({ filter: "" });
     };
     onDeleteHandler = id => {
       this.props.deletePost(id);
@@ -42,7 +50,11 @@ export default connect(
 
       this.props.history.push("/make-post/" + post.id);
     };
-
+    onSearchHandler = (e, value) => {
+      if (e.keyCode === 13 || e.target.name === "searchBtn") {
+        this.setState({ filter: value });
+      }
+    };
     componentDidMount = () => {
       this.props.startFetchPosts(this.props.isStart, this.props.idList);
     };
@@ -54,19 +66,28 @@ export default connect(
       if (!this.props.succeed) {
         return null;
       }
-      const list = this.props.list.map(ele => (
-        <div className={classes.postRow} key={ele.id}>
-          <PostBlock
-            post={ele}
-            editPost={() => this.onEditHandler(ele)}
-            deletePost={() => this.onDeleteHandler(ele.id)}
-            onClick={() => this.onClickHandler(ele)}
-          />{" "}
-        </div>
-      ));
+      let list = this.props.list
+        .filter(item => item.name.includes(this.state.filter))
+        .map(ele => (
+          <div className={classes.postRow} key={ele.id}>
+            <PostBlock
+              post={ele}
+              editPost={() => this.onEditHandler(ele)}
+              deletePost={() => this.onDeleteHandler(ele.id)}
+              onClick={() => this.onClickHandler(ele)}
+            />{" "}
+          </div>
+        ));
 
       return (
         <div className={classes.container}>
+          <SearchBar searchActivated={this.onSearchHandler} />
+          <Button
+            style={{ width: "20%", height: "40px", margin: "10px 0" }}
+            onClick={this.onResetFilterHandler}
+            className='btn succeed'>
+            reset search
+          </Button>
           <div className={classes.postRow}>
             <strong>Post Id</strong>
             <strong>Title</strong>

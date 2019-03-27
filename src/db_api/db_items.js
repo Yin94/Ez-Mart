@@ -17,7 +17,7 @@ export async function fetchItems(
     const querySnapshot = await db
       .collection("items")
       .orderBy(orderSchema)
-      // .startAt("21")
+
       .limit(5)
       .get();
     querySnapshot.forEach(item => result.push(item.data()));
@@ -30,6 +30,7 @@ export async function fetchItems(
       );
       result[i].imgs[0] = imgs[0];
     }
+
     return result;
   } catch (error) {
     return error;
@@ -47,6 +48,7 @@ export async function queryItem(id) {
     querySnapshot.forEach(item => result.push(item.data()));
     const imgs = await downloadFiles(result[0].imgs, id);
     result[0].imgs = imgs;
+
     return result[0];
   } catch (error) {
     return error;
@@ -61,7 +63,7 @@ export async function addItem(item) {
   }
   form.imgs = files;
   form.favs = 0;
-  form["last-update-time"] = new Date();
+  form["lastModifyTime"] = new Date();
   form.publisher = getCurrentUser().id || localStorage.getItem("user-uid");
   try {
     docRef = await db.collection("items").add(form);
@@ -126,7 +128,7 @@ export async function updateItem(formItem, tbd_Imgs, tba_Imgs) {
       const imgRef = storageRef.child(ele);
       await imgRef.delete();
     });
-    console.log("done deleting");
+
     //uploading  imgs
     for (let ele of tba_Imgs) {
       const imgRef = storageRef.child(ele.name);

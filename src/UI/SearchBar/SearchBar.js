@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./SearchBar.css";
 import Button from "../Button/Button";
 export default function SearchBar({
   containerStyle,
   type,
-  buttonText = "search"
+  buttonText = "search",
+  searchActivated
 }) {
+  const [input, setIntput] = useState("");
+  console.log(input);
   const searchGroup =
     type === "navSearch" ? (
       <>
@@ -14,13 +17,30 @@ export default function SearchBar({
           type='text'
           placeholder='Search..'
           name='search'
+          value={input}
+          onChange={e => setIntput(e.target.value)}
+          onKeyDown={e => searchActivated(e, input)}
         />
-        <Button style={{ width: "30%" }}>search</Button>
+        <Button
+          name='searchBtn'
+          onClick={e => searchActivated(e, input)}
+          style={{ width: "30%" }}>
+          Search
+        </Button>
       </>
     ) : (
       <>
-        <input type='text' placeholder='Search..' name='search' />
-        <Button>{buttonText}</Button>
+        <input
+          onChange={e => setIntput(e.target.value)}
+          onKeyDown={e => searchActivated(e, input)}
+          type='text'
+          placeholder='Search..'
+          name='search'
+        />
+
+        <Button name='searchBtn' onClick={e => searchActivated(e, input)}>
+          {buttonText}
+        </Button>
       </>
     );
   return (

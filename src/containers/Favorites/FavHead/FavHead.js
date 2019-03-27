@@ -1,8 +1,17 @@
 import React from "react";
-// import styles from "./FavHead.css";
 
+import Button from "../../../UI/Button/Button";
 import SearchBar from "../../../UI/SearchBar/SearchBar";
-export default function FavHead() {
-  const style = { borderBottom: "1px solid #f70d0b", padding: "10px 0" };
-  return <SearchBar containerStyle={style} />;
+export default function FavHead({ selected, resetSearch }) {
+  return (
+    <div style={{ borderBottom: "2px solid red" }}>
+      <SearchBar searchActivated={selected} />
+      <Button
+        style={{ width: "20%", height: "40px", margin: "10px 0" }}
+        onClick={resetSearch}
+        className='btn succeed'>
+        reset search
+      </Button>
+    </div>
+  );
 }

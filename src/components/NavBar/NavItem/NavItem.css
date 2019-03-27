@@ -7,7 +7,9 @@
   text-align: center;
   grid-gap: 5px;
 }
-
+.NavBar * {
+  border-radius: 0;
+}
 .NavBar a {
   text-decoration: none;
   color: black;

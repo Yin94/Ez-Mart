@@ -269,7 +269,7 @@ export default connect(
               </Button>
               {displaynotes}
             </div>
-            <div style={{ width: "80%", margin: "auto" }}>
+            <div style={{ width: "100%", margin: "auto" }}>
               {mode !== "0" ? (
                 <ImagesPanel
                   imgFileChange={this.onImgFileChangeHandler}
@@ -290,38 +290,41 @@ export default connect(
               )}
             </div>
 
-            {this.state.loading && <Spinner />}
             {this.state.error && (
               <ErrorBlock
                 className={styles.errorSpan}
                 errMsg={"0" + this.state.error}
               />
             )}
-            <div className={styles.submitBtnGroup}>
-              {mode === "0" ? (
-                <>
-                  <Button type='submit' className='btn succeed'>
-                    Submit
-                  </Button>
+            {this.state.loading ? (
+              <Spinner />
+            ) : (
+              <div className={styles.submitBtnGroup}>
+                {mode === "0" ? (
+                  <>
+                    <Button type='submit' className='btn succeed'>
+                      Submit
+                    </Button>
 
-                  <Button type='button' onClick={this.onClearFormHandler}>
-                    Clear form
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button
-                    style={{ width: "100%" }}
-                    type='submit'
-                    className='btn succeed'>
-                    Submit
-                  </Button>
-                  <Button type='button' onClick={this.onCancelHandler}>
-                    Cancel
-                  </Button>
-                </>
-              )}
-            </div>
+                    <Button type='button' onClick={this.onClearFormHandler}>
+                      Clear form
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      style={{ width: "100%" }}
+                      type='submit'
+                      className='btn succeed'>
+                      Submit
+                    </Button>
+                    <Button type='button' onClick={this.onCancelHandler}>
+                      Cancel
+                    </Button>
+                  </>
+                )}
+              </div>
+            )}
           </form>
         </div>
       );

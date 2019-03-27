@@ -20,6 +20,7 @@ const manageItem = (state, id, mode) => {
   let idList = [...state.idList];
   let list = [...state.list];
   // const idList = mode ? newList.push(id) : newList.filter(item => item !== id);
+  console.log(mode);
   if (mode == true) {
     idList.push(id);
   } else {

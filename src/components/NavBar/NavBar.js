@@ -3,7 +3,7 @@ import SearchBar from "../../UI/SearchBar/SearchBar";
 import styles from "./NavItem/NavItem.css";
 import { NavLink } from "react-router-dom";
 
-export default function NavBar({ authed, logOut }) {
+export default function NavBar({ authed, logOut, searched }) {
   const searchBarStyle = {
     paddingTop: "10px"
   };
@@ -14,7 +14,11 @@ export default function NavBar({ authed, logOut }) {
           Items
         </NavLink>
         <div className={styles.searchGroup}>
-          <SearchBar type='navSearch' containerStyle={searchBarStyle} />
+          <SearchBar
+            searchActivated={searched}
+            type='navSearch'
+            containerStyle={searchBarStyle}
+          />
         </div>
         {authed ? (
           <>

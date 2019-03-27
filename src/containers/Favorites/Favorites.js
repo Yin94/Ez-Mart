@@ -26,8 +26,19 @@ export default connect(
   mpd
 )(
   class Favorites extends Component {
+    state = {
+      filter: ""
+    };
     onDeleteHandler = id => {
       this.props.deleteFavItem(id);
+    };
+    onSearchHandler = (e, value) => {
+      if (e.keyCode === 13 || e.target.name === "searchBtn") {
+        this.setState({ filter: value });
+      }
+    };
+    onResetSearchHandler = e => {
+      this.setState({ filter: "" });
     };
     onClickItemHandler = item => {
       this.props.setPassedItem(item);
@@ -42,14 +53,20 @@ export default connect(
         if (this.props.error) alert("error on feching");
         return null;
       }
+      const list = this.props.list.filter(item =>
+        item.name.toLowerCase().includes(this.state.filter.toLocaleLowerCase())
+      );
 
       //get items via ids,  1 part from loadedItemList, one part from server
       return (
         <div>
-          <FavHead />
+          <FavHead
+            selected={this.onSearchHandler}
+            resetSearch={this.onResetSearchHandler}
+          />
           <FavList
             itemClicked={this.onClickItemHandler}
-            list={this.props.list}
+            list={list}
             deleteItem={this.onDeleteHandler}
           />
         </div>
