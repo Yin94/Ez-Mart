@@ -2,9 +2,9 @@ import { db } from "../firebase/apps/apps";
 import { getCurrentUser } from "./db_auth";
 import { downloadFiles, upDateFavCount } from "./db_items";
 import firebase from "firebase";
-export async function fetchSavList(uid) {
+export async function fetchSavIds(uid) {
   const result = [];
-  const savedItemResult = [];
+
   try {
     const querySnapshot = await db
       .collection("favorites")
@@ -15,6 +15,26 @@ export async function fetchSavList(uid) {
     });
     //check if favlist exists.
     const idList = result[0] ? result[0].list : [];
+    return idList;
+  } catch (err) {}
+}
+export async function fetchSavList(idList, uid, isStart) {
+  const result = [];
+  const savedItemResult = [];
+
+  try {
+    // if is start
+    if (isStart) {
+      const querySnapshot = await db
+        .collection("favorites")
+        .where("uid", "==", uid)
+        .get();
+      querySnapshot.forEach(item => {
+        result.push(item.data());
+      });
+      // check if favlist exists.
+      idList = result[0] ? result[0].list : [];
+    }
 
     for (let id of idList) {
       const idQuerySnapShot = await db

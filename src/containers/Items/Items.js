@@ -13,7 +13,7 @@ import { connect } from "react-redux";
 const mps = state => ({
   list: state.items.list,
   totalCount: state.items.count,
-  favs: state.favorites.list,
+  favs: state.favorites.idList,
   authed: state.auth.authed
 });
 const mpd = dispatch => ({

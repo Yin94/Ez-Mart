@@ -10,11 +10,14 @@ import { setCurrentItem } from "../../store_redux/items/items";
 
 const mps = state => ({
   list: state.favorites.list,
+  idList: state.favorites.idList,
   error: state.favorites.error,
-  succeed: state.favorites.succeed
+  succeed: state.favorites.succeed,
+  isStart: state.favorites.isStart
 });
 const mpd = dispatch => ({
-  fetchSavList: () => dispatch(startFetchingFavs()),
+  fetchSavList: (idList, isStart) =>
+    dispatch(startFetchingFavs(idList, isStart)),
   deleteFavItem: id => dispatch(startDeleteFavItem(id)),
   setPassedItem: item => dispatch(setCurrentItem(item))
 });
@@ -31,7 +34,7 @@ export default connect(
       this.props.history.push("/item/" + item.id);
     };
     componentDidMount = () => {
-      this.props.fetchSavList();
+      this.props.fetchSavList(this.props.idList, this.props.isStart);
     };
 
     render() {

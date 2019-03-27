@@ -20,7 +20,7 @@ export default function ListItem({
     btnDisabled = true;
     title = "Pleas signin first!";
   } else {
-    flag = userfavLsit.findIndex(yo => yo.id === id);
+    flag = userfavLsit.findIndex(yo => yo === id);
   }
   return (
     <div className={styles.container}>
