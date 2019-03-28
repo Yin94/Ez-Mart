@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import FavHead from "./FavHead/FavHead";
 import FavList from "./FavList/FavList";
 import { connect } from "react-redux";
+import Spinner from "../../UI/Spinner/LoaderSpinDots/LoaderSpinDots";
 import {
   startFetchingFavs,
   startManageFavItem
@@ -13,7 +14,8 @@ const mps = state => ({
   idList: state.favorites.idList,
   error: state.favorites.error,
   succeed: state.favorites.succeed,
-  isStart: state.favorites.isStart
+  isStart: state.favorites.isStart,
+  loading: state.favorites.loading
 });
 const mpd = dispatch => ({
   fetchSavList: (idList, isStart) =>
@@ -56,7 +58,7 @@ export default connect(
       const list = this.props.list.filter(item =>
         item.name.toLowerCase().includes(this.state.filter.toLocaleLowerCase())
       );
-
+      console.log(this.props.loading);
       //get items via ids,  1 part from loadedItemList, one part from server
       return (
         <div>
@@ -64,11 +66,15 @@ export default connect(
             selected={this.onSearchHandler}
             resetSearch={this.onResetSearchHandler}
           />
-          <FavList
-            itemClicked={this.onClickItemHandler}
-            list={list}
-            deleteItem={this.onDeleteHandler}
-          />
+          {this.props.loading ? (
+            <Spinner />
+          ) : (
+            <FavList
+              itemClicked={this.onClickItemHandler}
+              list={list}
+              deleteItem={this.onDeleteHandler}
+            />
+          )}
         </div>
       );
     }

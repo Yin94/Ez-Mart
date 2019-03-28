@@ -2,19 +2,25 @@ import React, { Component, Suspense } from "react";
 import Layout from "./hoc/Layout/Layout";
 import Header from "./components/Header/Header";
 import { Switch, Route, Redirect, withRouter } from "react-router-dom";
-import Auth from "./containers/Auth/Auth";
+// import Auth from "./containers/Auth/Auth";
 import NavBar from "./components/NavBar/NavBar";
-import Favorites from "./containers/Favorites/Favorites";
-import ItemDetail from "./containers/ItemDetail/ItemDetail";
+// import Favorites from "./containers/Favorites/Favorites";
+// import ItemDetail from "./containers/ItemDetail/ItemDetail";
 // import MyPosts from "./containers/Posts/Posts";
 // import Items from "./containers/Items/Items";
+// import MakePost from "./containers/MakePost/MakePost";
 import { connect } from "react-redux";
 import { authSucceed, logOut } from "./store_redux/auth/auth";
-import MakePost from "./containers/MakePost/MakePost";
 import { startFetchingItemsCount } from "./store_redux/items/items";
 import { startFetchingFavsIdList } from "./store_redux/user/favorites";
 const MyPosts = React.lazy(() => import("./containers/Posts/Posts"));
 const Items = React.lazy(() => import("./containers/Items/Items"));
+const Auth = React.lazy(() => import("./containers/Auth/Auth"));
+const Favorites = React.lazy(() => import("./containers/Favorites/Favorites"));
+const MakePost = React.lazy(() => import("./containers/MakePost/MakePost"));
+const ItemDetail = React.lazy(() =>
+  import("./containers/ItemDetail/ItemDetail")
+);
 class App extends Component {
   componentDidMount = () => {
     this.props.startFetchItemsCount();

@@ -12,9 +12,11 @@ const initialState = {
   error: false,
   loading: false,
   succeed: false,
+  lastVisibleDoc: null,
   count: 0
 };
-const setList = (state, list) => combine(state, { list, succeed: true });
+const setList = (state, list, lastVisibleDoc) =>
+  combine(state, { list, lastVisibleDoc, succeed: true, loading: false });
 const itemsError = (state, error) => combine(state, error);
 const setCurItem = (state, currentItem) => {
   return combine(state, { currentItem, succeed: true });
@@ -36,10 +38,11 @@ const favItemChanged = (state, id, mode) => {
   console.log(result.list[0].favs, mode);
   return result;
 };
+const setLoadingHandler = state => combine(state, { loading: true });
 export default (state = initialState, action) => {
   switch (action.type) {
     case SET_LIST:
-      return setList(state, action.list);
+      return setList(state, action.list, action.lastVisibleDoc);
     case ITEMS_ERROR:
       return itemsError(state, action.error);
     case SET_CURRENT_ITEM:
@@ -50,6 +53,8 @@ export default (state = initialState, action) => {
       return setItemsCount(state, action.count);
     case FAV_COUNT_CHANGED:
       return favItemChanged(state, action.id, action.mode);
+    case SET_LOADING:
+      return setLoadingHandler(state);
     default:
       return state;
   }
@@ -59,7 +64,8 @@ const SET_LIST = "items/SET_LIST";
 const ITEMS_ERROR = "items/ITEMS_ERROR";
 const SET_CURRENT_ITEM = "items/SET_CURRENT_ITEM";
 const COMMIT_STATUS = "items/COMMIT_STATUS";
-const SET_ITEMS_COUNT = "SET_ITEMS_COUNT";
+const SET_ITEMS_COUNT = "items/SET_ITEMS_COUNT";
+const SET_LOADING = "items/SET_LOADING";
 export const FAV_COUNT_CHANGED = "FAV_COUNT_CHANGED";
 //action creators
 export const startFetchingItemsCount = () => {
@@ -75,8 +81,10 @@ export const startFetchingItemsCount = () => {
 export const startFetchingItems = cursor => {
   return async dispatch => {
     try {
-      const list = await fetchItems(cursor);
-      dispatch({ type: SET_LIST, list });
+      dispatch({ type: SET_LOADING });
+      const result = await fetchItems(cursor);
+      const { list, lastVisibleDoc } = result;
+      dispatch({ type: SET_LIST, list, lastVisibleDoc });
     } catch (error) {
       dispatch({ type: ITEMS_ERROR, error });
     }

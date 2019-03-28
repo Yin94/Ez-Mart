@@ -9,6 +9,7 @@
   border: 1px solid #f71e0b;
   grid-gap: 10px;
   grid-template-columns: 1fr 1fr 1fr 1fr;
+  position: relative;
 }
 
 .postRow > p:nth-child(2):hover {

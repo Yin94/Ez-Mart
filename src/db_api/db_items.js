@@ -12,6 +12,7 @@ export async function fetchItems(
   prevLastDocRef,
   orderSchema = "lastModifyTime"
 ) {
+  console.log(cursor);
   const result = [];
   try {
     const querySnapshot = await db
@@ -31,7 +32,7 @@ export async function fetchItems(
       result[i].imgs[0] = imgs[0];
     }
 
-    return result;
+    return { list: result };
   } catch (error) {
     return error;
   }
@@ -214,3 +215,22 @@ export async function upDateFavCount(id, mode) {
       console.log("Transaction failed: ", error);
     });
 }
+
+// function fetch(params) {
+//   var first = db.collection("cities")
+//     .orderBy("population")
+//     .limit(25);
+
+//   return first.get().then(function (documentSnapshots) {
+//     // Get the last visible document
+//     var lastVisible = documentSnapshots.docs[documentSnapshots.docs.length - 1];
+//     console.log("last", lastVisible);
+
+//     // Construct a new query starting at this document,
+//     // get the next 25 cities.
+//     var next = db.collection("cities")
+//       .orderBy("population")
+//       .startAfter(lastVisible)
+//       .limit(25);
+//   });
+// }

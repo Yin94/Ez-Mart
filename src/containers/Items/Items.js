@@ -2,7 +2,8 @@ import ItemList from "./ItemList/ItemList";
 import React, { Component } from "react";
 import { startManageFavItem } from "../../store_redux/user/favorites";
 import { withRouter } from "react-router-dom";
-import Pagination from "./Pagination/Pagination";
+import Loader from "../../UI/Spinner/Loader3Color/Loader3Color";
+import Button from "../../UI/Button/Button";
 
 import {
   setCurrentItem,
@@ -15,7 +16,8 @@ const mps = state => ({
   totalCount: state.items.count,
   favs: state.favorites.idList,
   authed: state.auth.authed,
-  error: state.favorites.error
+  error: state.favorites.error,
+  loading: state.items.loading
 });
 const mpd = dispatch => ({
   startFetchItems: cursor => dispatch(startFetchingItems(cursor)),
@@ -31,6 +33,11 @@ export default withRouter(
     class Items extends Component {
       state = {
         currentPage: 1
+      };
+      onPageSelectHandler = e => {
+        const cpage = this.state.currentPage;
+        const diff = e.target.name === "next" ? 1 : -1;
+        this.setState({ currentPage: cpage + diff });
       };
       itemSelectedHandler = index => {
         const item = this.props.list[index];
@@ -52,11 +59,12 @@ export default withRouter(
       };
 
       render() {
-        // const totalCount = 6 * 5;
         const totalCount = this.props.totalCount;
         const currentPage = this.state.currentPage;
 
-        return (
+        return this.props.loading ? (
+          <Loader />
+        ) : (
           <div>
             <ItemList
               authed={this.props.authed}
@@ -65,10 +73,12 @@ export default withRouter(
               itemSelected={this.itemSelectedHandler}
               favoriteClicked={this.onSavHandler}
             />
-            <Pagination
-              pageSelected={this.onPageSelectHandler}
-              {...{ totalCount, currentPage }}
-            />
+            <Button name='last' onClick={this.onPageHandler}>
+              last
+            </Button>
+            <Button name='next' onClick={this.onPageHandler}>
+              next
+            </Button>
           </div>
         );
       }

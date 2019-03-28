@@ -13,8 +13,15 @@ const initialState = {
 };
 const userSwitched = state => combine(initialState);
 const setList = (state, idList, list) => {
-  return combine(state, { idList, list, succeed: true, isFirst: false });
+  return combine(state, {
+    idList,
+    list,
+    succeed: true,
+    isFirst: false,
+    loading: false
+  });
 };
+const setLoadingPost = state => combine(state, { loading: true });
 const postsError = (state, error) => combine(state, { error });
 const resetStatus = state =>
   combine(state, { error: false, succeed: false, loading: false });
@@ -54,6 +61,8 @@ export default (state = initialState, action) => {
       return addPostHandler(state, action.id);
     case USER_SWITCHED:
       return userSwitched(state);
+    case SET_LOADING:
+      return setLoadingPost(state);
     default:
       return state;
   }
@@ -65,14 +74,15 @@ const ADD_POST = "posts/ADD_POST";
 const POSTS_ERROR = "posts/POSTS_ERROR";
 const COMMIT_STATUS = "posts/COMMIT_STATUS";
 const DELETE_POST = "posts/DELETE_ITEM";
+const SET_LOADING = "posts/SET_LOADING";
 export const USER_SWITCHED = "posts/USER_SWITCHED";
 //action creators
 export const startFetchingPosts = (isFirst, localIdList) => {
   return async dispatch => {
+    dispatch({ type: "posts/SET_LOADING" });
     let idList = [...localIdList];
     let list = [];
     if (isFirst) idList = await fetchPostIDs();
-
     if (idList.length) list = await fetchPosts(idList);
 
     list instanceof Error || idList instanceof Error

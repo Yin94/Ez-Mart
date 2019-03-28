@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { setCurrentItem } from "../../store_redux/items/items";
 import Button from "../../UI/Button/Button";
 import SearchBar from "../../UI/SearchBar/SearchBar";
+import Spinner from "../../UI/Spinner/Spinner";
 import {
   startFetchingPosts,
   commitStatus,
@@ -16,7 +17,8 @@ const mps = state => ({
   idList: state.posts.idList,
   list: state.posts.list,
   err: state.posts.err,
-  succeed: state.posts.succeed
+  succeed: state.posts.succeed,
+  loading: state.posts.loading
 });
 
 const mpd = dispatch => ({
@@ -63,9 +65,6 @@ export default connect(
     };
 
     render() {
-      if (!this.props.succeed) {
-        return null;
-      }
       let list = this.props.list
         .filter(item => item.name.includes(this.state.filter))
         .map(ele => (
@@ -94,7 +93,7 @@ export default connect(
             <strong>Last Update Time</strong>
             <strong>Operation</strong>
           </div>
-          {list}
+          {this.props.loading ? <Spinner /> : list}
         </div>
       );
     }

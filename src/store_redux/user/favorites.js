@@ -12,7 +12,7 @@ const initialState = {
   isStart: true
 };
 const setList = (state, list) =>
-  combine(state, { list, succeed: true, isStart: false });
+  combine(state, { list, succeed: true, isStart: false, loading: false });
 const favsError = (state, error) => combine(state, { error });
 const resetStatus = state =>
   combine(state, { error: false, succeed: false, loading: false });
@@ -20,7 +20,7 @@ const manageItem = (state, id, mode) => {
   let idList = [...state.idList];
   let list = [...state.list];
   // const idList = mode ? newList.push(id) : newList.filter(item => item !== id);
-  console.log(mode);
+
   if (mode == true) {
     idList.push(id);
   } else {
@@ -29,8 +29,8 @@ const manageItem = (state, id, mode) => {
   }
   return combine(state, { idList, list });
 };
+const setLoadingFavs = state => combine(state, { loading: true });
 const userSwitched = state => combine(initialState);
-
 const setFavIds = (state, idList) => combine(state, { idList, succeed: true });
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -46,6 +46,8 @@ export default (state = initialState, action) => {
       return setFavIds(state, action.list);
     case USER_SWITCHED_FAV:
       return userSwitched(state);
+    case SET_LOADING:
+      return setLoadingFavs(state);
     default:
       return state;
   }
@@ -56,10 +58,12 @@ const FAVS_ERROR = "favorites/Favs_ERROR";
 const COMMIT_STATUS = "favorites/COMMIT_STATUS";
 const MANAGE_ITEM = "favorites/MANAGE_ITEM";
 const SET_FAV_IDs = "favorites/SET_FAV_IDs";
+const SET_LOADING = "favorites/SET_LOADING";
 export const USER_SWITCHED_FAV = "favorites/USER_SWITCHED_FAV";
 //action creators
 export const startFetchingFavs = (idList, isStart) => {
   return async dispatch => {
+    dispatch({ type: SET_LOADING });
     const uid = localStorage.getItem("user-uid") || getCurrentUser().id;
     const list = await fetchSavList(idList, uid, isStart);
 
