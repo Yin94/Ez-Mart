@@ -9,6 +9,7 @@ export default function Button({
 }) {
   className = className.split(" ").map(cName => styles[cName]);
   className = className.join(" ");
+
   return (
     <button style={style} {...{ ...others, className }} disabled={disabled}>
       {children}{" "}

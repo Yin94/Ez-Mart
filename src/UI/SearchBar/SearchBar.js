@@ -8,7 +8,7 @@ export default function SearchBar({
   searchActivated
 }) {
   const [input, setIntput] = useState("");
-  console.log(input);
+
   const searchGroup =
     type === "navSearch" ? (
       <>

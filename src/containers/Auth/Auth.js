@@ -101,7 +101,7 @@ export default connect(
 
     shouldComponentUpdate = (nextProps, nextState) => {
       //check here before render to enhance performance
-      if (nextProps.succceed) this.props.history.push("/");
+      if (nextProps.succceed) this.props.history.push("/items");
       return true;
     };
     componentWillUnmount = () => {

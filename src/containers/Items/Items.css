@@ -1,0 +1,13 @@
+.container button:disabled {
+  cursor: not-allowed;
+  color: #666666;
+  background-color: #cccccc;
+}
+
+.btnGroup {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 50%;
+  margin: 50px auto;
+  grid-column-gap: 5px;
+}

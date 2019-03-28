@@ -15,7 +15,8 @@ import {
 const mps = state => ({
   item: state.items.currentItem,
   succeed: state.items.succeed,
-  favIdList: state.favorites.idList
+  favIdList: state.favorites.idList,
+  saveBtnDisabled: !state.auth.authed
 });
 const mpd = dispatch => ({
   fetchItem: (id, item) => dispatch(startFetchingItem(id, item)),
@@ -77,7 +78,8 @@ export default withRouter(
       };
 
       render() {
-        const item = this.props.item;
+        const { item, saveBtnDisabled } = this.props;
+
         if (!item) return null;
         const {
           price,
@@ -124,7 +126,8 @@ export default withRouter(
                   notes,
                   publisher,
                   favBtnFlag,
-                  lastModifyTime
+                  lastModifyTime,
+                  saveBtnDisabled
                 }}
                 className={styles.details}
               />

@@ -4,25 +4,42 @@ import firebase from "firebase";
 export async function fetchItemTotalCounts() {
   // change it for better performance
   const snapShot = await db.collection("items").get();
-
   return snapShot.size;
 }
-export async function fetchItems(
-  cursor,
-  prevLastDocRef,
-  orderSchema = "lastModifyTime"
-) {
-  console.log(cursor);
-  const result = [];
+export async function fetchItems(cursor, mode, orderSchema = "lastModifyTime") {
+  let result = [];
   try {
-    const querySnapshot = await db
-      .collection("items")
-      .orderBy(orderSchema)
+    const shot = db.collection("items").orderBy(orderSchema);
+    const shotDesc = db.collection("items").orderBy(orderSchema, "desc");
 
-      .limit(5)
-      .get();
+    if (cursor) console.log(cursor.data().name, mode);
+    const querySnapshot = mode
+      ? await shot
+          .startAfter(cursor)
+          .limit(19)
+          .get()
+      : await shotDesc
+          .startAfter(cursor)
+          .limit(18)
+          .get();
     querySnapshot.forEach(item => result.push(item.data()));
+    let firstDoc;
+    let lastDoc;
+    if (mode) {
+      firstDoc = querySnapshot.docs[0];
+      if (querySnapshot.docs.length !== 19) {
+        lastDoc = "end";
+      } else {
+        result.pop();
+        lastDoc = querySnapshot.docs[querySnapshot.docs.length - 2];
+      }
+    } else {
+      firstDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
+      lastDoc = querySnapshot.docs[0];
+      result = result.reverse();
+    }
     //only download cover img in the imgPath arrary
+
     for (let i in result) {
       const imgs = await downloadFiles(
         result[i].imgs,
@@ -32,7 +49,7 @@ export async function fetchItems(
       result[i].imgs[0] = imgs[0];
     }
 
-    return { list: result };
+    return { list: result, firstDoc, lastDoc };
   } catch (error) {
     return error;
   }

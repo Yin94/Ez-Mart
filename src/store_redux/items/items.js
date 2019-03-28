@@ -13,10 +13,25 @@ const initialState = {
   loading: false,
   succeed: false,
   lastVisibleDoc: null,
+  firstDoc: null,
+  edge: null,
+  lastDoc: null,
   count: 0
 };
-const setList = (state, list, lastVisibleDoc) =>
-  combine(state, { list, lastVisibleDoc, succeed: true, loading: false });
+const setList = (state, mode, list, firstDoc, lastDoc) => {
+  const edge = mode ? "next" : "last";
+  if (!firstDoc && !lastDoc)
+    return combine(state, { succeed: true, edge, loading: false });
+
+  return combine(state, {
+    list,
+    firstDoc,
+    lastDoc,
+    edge: null,
+    succeed: true,
+    loading: false
+  });
+};
 const itemsError = (state, error) => combine(state, error);
 const setCurItem = (state, currentItem) => {
   return combine(state, { currentItem, succeed: true });
@@ -35,14 +50,20 @@ const favItemChanged = (state, id, mode) => {
   const diff = mode == true ? 1 : -1;
   item.favs = item.favs + diff;
   const result = combine(state, { list });
-  console.log(result.list[0].favs, mode);
+
   return result;
 };
 const setLoadingHandler = state => combine(state, { loading: true });
 export default (state = initialState, action) => {
   switch (action.type) {
     case SET_LIST:
-      return setList(state, action.list, action.lastVisibleDoc);
+      return setList(
+        state,
+        action.mode,
+        action.list,
+        action.firstDoc,
+        action.lastDoc
+      );
     case ITEMS_ERROR:
       return itemsError(state, action.error);
     case SET_CURRENT_ITEM:
@@ -78,13 +99,14 @@ export const startFetchingItemsCount = () => {
     }
   };
 };
-export const startFetchingItems = cursor => {
+export const startFetchingItems = (cursor, mode) => {
   return async dispatch => {
     try {
       dispatch({ type: SET_LOADING });
-      const result = await fetchItems(cursor);
-      const { list, lastVisibleDoc } = result;
-      dispatch({ type: SET_LIST, list, lastVisibleDoc });
+      const result = await fetchItems(cursor, mode);
+      const { list, firstDoc, lastDoc } = result;
+
+      dispatch({ type: SET_LIST, mode, list, firstDoc, lastDoc });
     } catch (error) {
       dispatch({ type: ITEMS_ERROR, error });
     }

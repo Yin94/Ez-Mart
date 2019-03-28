@@ -2,13 +2,7 @@ import React, { Component, Suspense } from "react";
 import Layout from "./hoc/Layout/Layout";
 import Header from "./components/Header/Header";
 import { Switch, Route, Redirect, withRouter } from "react-router-dom";
-// import Auth from "./containers/Auth/Auth";
 import NavBar from "./components/NavBar/NavBar";
-// import Favorites from "./containers/Favorites/Favorites";
-// import ItemDetail from "./containers/ItemDetail/ItemDetail";
-// import MyPosts from "./containers/Posts/Posts";
-// import Items from "./containers/Items/Items";
-// import MakePost from "./containers/MakePost/MakePost";
 import { connect } from "react-redux";
 import { authSucceed, logOut } from "./store_redux/auth/auth";
 import { startFetchingItemsCount } from "./store_redux/items/items";
@@ -33,7 +27,7 @@ class App extends Component {
     }
   };
   logOutHandler = () => {
-    this.props.history.push("/");
+    this.props.history.push("/items");
     this.props.logOut();
   };
   onSearchHandler = (e, value) => {
@@ -59,7 +53,7 @@ class App extends Component {
               <Route path='/item/:id' component={ItemDetail} />
               <Route path='/fav' component={Favorites} />
               <Route path='/make-post/:mode' component={MakePost} />
-              <Route path='/items' component={Items} />{" "}
+              <Route path='/items' component={Items} />
               <Route path='/my-posts' component={MyPosts} />
             </Suspense>
             <Redirect to='/items' />

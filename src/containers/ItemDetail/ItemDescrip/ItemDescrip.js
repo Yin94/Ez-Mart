@@ -12,6 +12,7 @@ export default function ItemDescrip({
   className,
   favBtnFlag,
   onSave,
+  saveBtnDisabled = true,
   ...itemProps
 }) {
   const { name, price, notes, publisher, lastModifyTime } = itemProps;
@@ -43,9 +44,13 @@ export default function ItemDescrip({
       </small>
       <div className={styles.btnGroup}>
         {favBtnFlag ? (
-          <Button onClick={() => onSave(favBtnFlag)}>Unsave</Button>
+          <Button disabled={saveBtnDisabled} onClick={() => onSave(favBtnFlag)}>
+            Unsave
+          </Button>
         ) : (
-          <Button onClick={() => onSave(favBtnFlag)}>Save</Button>
+          <Button disabled={saveBtnDisabled} onClick={() => onSave(favBtnFlag)}>
+            Save
+          </Button>
         )}
         <div className={styles.dropdown}>
           <Button

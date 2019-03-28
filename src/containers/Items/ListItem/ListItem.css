@@ -68,8 +68,8 @@
   cursor: pointer;
 }
 .imgContainer:hover button[name="left"]:disabled {
-  background-color: #cccccc;
-  color: #666666;
+  /* background-color: #cccccc; */
+  /* color: #666666; */
   filter: none;
   opacity: 1;
   cursor: not-allowed;

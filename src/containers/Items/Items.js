@@ -4,7 +4,7 @@ import { startManageFavItem } from "../../store_redux/user/favorites";
 import { withRouter } from "react-router-dom";
 import Loader from "../../UI/Spinner/Loader3Color/Loader3Color";
 import Button from "../../UI/Button/Button";
-
+import styles from "./Items.css";
 import {
   setCurrentItem,
   startFetchingItems
@@ -15,12 +15,14 @@ const mps = state => ({
   list: state.items.list,
   totalCount: state.items.count,
   favs: state.favorites.idList,
+  firstDoc: state.items.firstDoc,
+  lastDoc: state.items.lastDoc,
   authed: state.auth.authed,
   error: state.favorites.error,
   loading: state.items.loading
 });
 const mpd = dispatch => ({
-  startFetchItems: cursor => dispatch(startFetchingItems(cursor)),
+  startFetchItems: (cursor, mode) => dispatch(startFetchingItems(cursor, mode)),
   setCurrentItem: item => dispatch(setCurrentItem(item)),
 
   manageFavItem: (id, mode) => dispatch(startManageFavItem(id, mode))
@@ -32,12 +34,22 @@ export default withRouter(
   )(
     class Items extends Component {
       state = {
-        currentPage: 1
+        disabledLeftBtn: false,
+        disabledRightBtn: false,
+        curPage: 0
       };
-      onPageSelectHandler = e => {
-        const cpage = this.state.currentPage;
-        const diff = e.target.name === "next" ? 1 : -1;
-        this.setState({ currentPage: cpage + diff });
+      onPageHandler = e => {
+        const lastDoc = this.props.lastDoc;
+        const firstDoc = this.props.firstDoc;
+        const page = this.state.curPage;
+        const mode = e.target.name === "next" ? true : false;
+        if (mode) {
+          this.setState({ curPage: page + 1 });
+          this.props.startFetchItems(lastDoc, true);
+        } else {
+          this.setState({ curPage: page - 1 });
+          this.props.startFetchItems(firstDoc, false);
+        }
       };
       itemSelectedHandler = index => {
         const item = this.props.list[index];
@@ -49,23 +61,21 @@ export default withRouter(
         const error = this.props.error;
         if (error) alert(error.message);
       };
-      onPageSelectHandler = index => {
-        this.setState({ currentPage: index });
-      };
+
       componentDidMount = () => {
         //TODO: add pagination logic here
-        const currentPage = this.state.currentPage;
-        this.props.startFetchItems(currentPage);
+        this.props.startFetchItems(null, true);
       };
 
       render() {
-        const totalCount = this.props.totalCount;
-        const currentPage = this.state.currentPage;
-
+        let leftDisabled = false,
+          rightDisabled = false;
+        if (this.props.lastDoc === "end") rightDisabled = true;
+        if (!this.state.curPage) leftDisabled = true;
         return this.props.loading ? (
           <Loader />
         ) : (
-          <div>
+          <div className={styles.container}>
             <ItemList
               authed={this.props.authed}
               list={this.props.list}
@@ -73,12 +83,20 @@ export default withRouter(
               itemSelected={this.itemSelectedHandler}
               favoriteClicked={this.onSavHandler}
             />
-            <Button name='last' onClick={this.onPageHandler}>
-              last
-            </Button>
-            <Button name='next' onClick={this.onPageHandler}>
-              next
-            </Button>
+            <div className={styles.btnGroup}>
+              <Button
+                disabled={leftDisabled}
+                name='last'
+                onClick={this.onPageHandler}>
+                last page
+              </Button>
+              <Button
+                disabled={rightDisabled}
+                name='next'
+                onClick={this.onPageHandler}>
+                next page
+              </Button>
+            </div>
           </div>
         );
       }
