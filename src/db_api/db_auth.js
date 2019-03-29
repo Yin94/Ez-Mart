@@ -1,4 +1,4 @@
-import { auth, db } from "../firebase/apps/apps";
+import { auth, db } from '../firebase/apps/apps';
 
 export async function authWiwthEmailAndPswd(form, mode) {
   const { pswd, confirmPswd, ...userData } = form;
@@ -8,10 +8,9 @@ export async function authWiwthEmailAndPswd(form, mode) {
       ? await auth.signInWithEmailAndPassword(userData.email, pswd)
       : await auth.createUserWithEmailAndPassword(userData.email, pswd);
 
-    // add user doc
     if (!mode) {
       userData.uid = user.user.uid;
-      await db.collection("users").add(userData);
+      await db.collection('users').add(userData);
     }
     return null;
   } catch (error) {

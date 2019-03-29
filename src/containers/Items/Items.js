@@ -50,8 +50,6 @@ export default withRouter(
       };
       onSavHandler = async (id, diff) => {
         this.props.manageFavItem(id, diff);
-        // const error = this.props.error;
-        // if (error) alert('error form Items' + error.message);
       };
 
       componentDidMount = () => {
@@ -60,7 +58,6 @@ export default withRouter(
       };
 
       render() {
-        // if(this.state.curPage)
         return this.props.loading ? (
           <Loader />
         ) : (

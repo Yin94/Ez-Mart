@@ -1,4 +1,5 @@
 import React, { Component, Suspense } from 'react';
+import ErrorBoundary from './hoc/ErrorBoundary/ErrorBoundary';
 import Layout from './hoc/Layout/Layout';
 import Header from './components/Header/Header';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
@@ -39,27 +40,29 @@ class App extends Component {
   render() {
     const authed = this.props.authed;
     return (
-      <div style={{ width: '100%' }}>
-        <Header />
-        <NavBar
-          {...{ authed }}
-          logOut={this.logOutHandler}
-          searched={this.onSearchHandler}
-        />
-        <Layout>
-          <Suspense fallback={<div>Loading...</div>}>
-            <Switch>
-              <Route path='/auth:mode' component={Auth} />
-              <Route path='/item/:id' component={ItemDetail} />
-              <Route path='/fav' component={Favorites} />
-              <Route path='/make-post/:mode' component={MakePost} />
-              <Route path='/items' component={Items} />
-              <Route path='/my-posts' component={MyPosts} />
-              <Redirect to='/items' />
-            </Switch>
-          </Suspense>
-        </Layout>
-      </div>
+      <ErrorBoundary>
+        <div style={{ width: '100%' }}>
+          <Header />
+          <NavBar
+            {...{ authed }}
+            logOut={this.logOutHandler}
+            searched={this.onSearchHandler}
+          />
+          <Layout>
+            <Suspense fallback={<div>Loading...</div>}>
+              <Switch>
+                <Route path='/auth:mode' component={Auth} />
+                <Route path='/item/:id' component={ItemDetail} />
+                <Route path='/fav' component={Favorites} />
+                <Route path='/make-post/:mode' component={MakePost} />
+                <Route path='/items' component={Items} />
+                <Route path='/my-posts' component={MyPosts} />
+                <Redirect to='/items' />
+              </Switch>
+            </Suspense>
+          </Layout>
+        </div>
+      </ErrorBoundary>
     );
   }
 }
