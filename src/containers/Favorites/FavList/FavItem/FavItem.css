@@ -7,19 +7,21 @@
 .container img {
   width: 100%;
   border-radius: 1em;
+  height: 200px;
 }
-.container img[id="delete"] {
+.container img[id='delete'] {
   position: absolute;
   top: 3px;
   right: 3px;
-  width: 20%;
+  width: 10%;
+  height: 10%;
   display: none;
   opacity: 0.8;
 }
 .container img:hover {
   cursor: pointer;
 }
-.container button[id="delete"] {
+.container button[id='delete'] {
   position: absolute;
   top: 3px;
   right: 3px;
@@ -49,22 +51,22 @@
 
   width: 50%;
 }
-.container > div button[name="left"] {
+.container > div button[name='left'] {
   position: absolute;
   bottom: 0;
   left: 0;
   display: none;
 }
 
-.container > div button[name="right"] {
+.container > div button[name='right'] {
   position: absolute;
   bottom: 0;
   right: 0;
   display: none;
 }
 
-.imgContainer:hover button[name="right"],
-.imgContainer:hover button[name="left"],
-.imgContainer:hover *[id="delete"] {
+.imgContainer:hover button[name='right'],
+.imgContainer:hover button[name='left'],
+.imgContainer:hover *[id='delete'] {
   display: inline-block;
 }

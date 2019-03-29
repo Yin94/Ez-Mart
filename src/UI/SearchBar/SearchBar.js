@@ -1,19 +1,19 @@
-import React, { useState } from "react";
-import styles from "./SearchBar.css";
-import Button from "../Button/Button";
+import React, { useState } from 'react';
+import styles from './SearchBar.css';
+import Button from '../Button/Button';
 export default function SearchBar({
   containerStyle,
   type,
-  buttonText = "search",
+  buttonText = 'search',
   searchActivated
 }) {
-  const [input, setIntput] = useState("");
+  const [input, setIntput] = useState('');
 
   const searchGroup =
-    type === "navSearch" ? (
+    type === 'navSearch' ? (
       <>
         <input
-          style={{ width: "70%" }}
+          style={{ width: '70%' }}
           type='text'
           placeholder='Search..'
           name='search'
@@ -24,7 +24,7 @@ export default function SearchBar({
         <Button
           name='searchBtn'
           onClick={e => searchActivated(e, input)}
-          style={{ width: "30%" }}>
+          style={{ width: '30%' }}>
           Search
         </Button>
       </>

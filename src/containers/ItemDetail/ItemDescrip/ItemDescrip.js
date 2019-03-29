@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import styles from "./ItemDecrip.css";
-import Button from "../../../UI/Button/Button";
-import SellerNote from "./SellerNote/SellerNote";
-import { fetchItemPublisher } from "../../../db_api/db_items";
-import { timeStampToDate } from "../../../utility/time-convert";
+import React, { useState } from 'react';
+import styles from './ItemDecrip.css';
+import Button from '../../../UI/Button/Button';
+import SellerNote from './SellerNote/SellerNote';
+import { fetchItemPublisher } from '../../../db_api/db_items';
+import { timeStampToDate } from '../../../utility/time-convert';
 // import moduleName from 'module'
 async function fetchContactData(id) {
   return await fetchItemPublisher(id);
@@ -23,8 +23,8 @@ export default function ItemDescrip({
   const dateString = date ? date.toDateString() : null;
 
   return (
-    <div className={[className, styles["container"]].join(" ")}>
-      <h3 style={{ fontSize: "40px" }}>{name}</h3>
+    <div className={[className, styles['container']].join(' ')}>
+      <h3 style={{ fontSize: '40px' }}>{name}</h3>
 
       <div className={styles.price}>
         <small>Price:</small> <strong>${price}</strong>
@@ -33,14 +33,14 @@ export default function ItemDescrip({
       <SellerNote {...{ notes }} />
       <small
         style={{
-          margin: "20px 0",
-          backgroundColor: "#FEE9DB",
-          borderRadius: "4px",
-          color: "#F70C0C",
-          padding: "10px 2px"
+          margin: '20px 0',
+          backgroundColor: '#FEE9DB',
+          borderRadius: '4px',
+          color: '#F70C0C',
+          padding: '10px 2px'
         }}>
-        Last edit date:{" "}
-        <strong style={{ color: "#6DB324" }}>{dateString}</strong>
+        Last edit date:{' '}
+        <strong style={{ color: '#6DB324' }}>{dateString}</strong>
       </small>
       <div className={styles.btnGroup}>
         {favBtnFlag ? (
@@ -64,23 +64,23 @@ export default function ItemDescrip({
               }
               contactClicked(!showContact);
             }}
-            style={{ width: "100%" }}
+            style={{ width: '100%' }}
             className='btn succeed'>
             Contact Seller
           </Button>
           {showContact && (
             <div className={styles.dropdownContent}>
               <small>Seller:</small>
-              <p>{pubInfo["username"]}</p>
+              <p>{pubInfo['username']}</p>
 
               <small>Email:</small>
               <input
-                defaultValue={pubInfo["email"]}
+                defaultValue={pubInfo['email']}
                 type='email'
                 name='seller-email'
               />
               <small>Tel:</small>
-              <p> {pubInfo["tel"]}</p>
+              <p> {pubInfo['tel']}</p>
             </div>
           )}
         </div>

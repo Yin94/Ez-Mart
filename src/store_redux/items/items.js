@@ -1,10 +1,10 @@
-import combine from "../../utility/combine";
-import {
-  fetchItems,
-  queryItem,
-  fetchItemTotalCounts,
-  downloadFiles
-} from "../../db_api/db_items";
+import combine from '../../utility/combine';
+import { queryItem, downloadFiles } from '../../db_api/db_items';
+import algoliasearch from 'algoliasearch/lite';
+import PAGE_CAP from '../../utility/page_cap';
+var client = algoliasearch('RV8PWAHFSY', '064d6e4b07f954168530110ec18bbf8d');
+
+var searchIndex = client.initIndex('dev_ezMart_items');
 //reducer
 const initialState = {
   list: [],
@@ -12,31 +12,16 @@ const initialState = {
   error: false,
   loading: false,
   succeed: false,
-  lastVisibleDoc: null,
-  firstDoc: null,
-  edge: null,
-  lastDoc: null,
-  count: 0
+  currentPage: 0
 };
-const setList = (state, mode, list, firstDoc, lastDoc) => {
-  const edge = mode ? "next" : "last";
-  if (!firstDoc && !lastDoc)
-    return combine(state, { succeed: true, edge, loading: false });
-
-  return combine(state, {
-    list,
-    firstDoc,
-    lastDoc,
-    edge: null,
-    succeed: true,
-    loading: false
-  });
+const setList = (state, list) => {
+  return combine(state, { list, succeed: true, loading: false });
 };
 const itemsError = (state, error) => combine(state, error);
 const setCurItem = (state, currentItem) => {
   return combine(state, { currentItem, succeed: true });
 };
-const setItemsCount = (state, count) => combine(state, { count });
+
 const resetStatus = state =>
   combine(state, {
     error: false,
@@ -54,62 +39,60 @@ const favItemChanged = (state, id, mode) => {
   return result;
 };
 const setLoadingHandler = state => combine(state, { loading: true });
+const setPage = (state, page) => combine(state, { currentItem: page });
 export default (state = initialState, action) => {
   switch (action.type) {
     case SET_LIST:
-      return setList(
-        state,
-        action.mode,
-        action.list,
-        action.firstDoc,
-        action.lastDoc
-      );
+      return setList(state, action.list);
     case ITEMS_ERROR:
       return itemsError(state, action.error);
     case SET_CURRENT_ITEM:
       return setCurItem(state, action.item);
     case COMMIT_STATUS:
       return resetStatus(state);
-    case SET_ITEMS_COUNT:
-      return setItemsCount(state, action.count);
+
     case FAV_COUNT_CHANGED:
       return favItemChanged(state, action.id, action.mode);
     case SET_LOADING:
       return setLoadingHandler(state);
+    case SET_CURRENT_PAGE:
+      return setPage(state, action.page);
     default:
       return state;
   }
 };
 //actions
-const SET_LIST = "items/SET_LIST";
-const ITEMS_ERROR = "items/ITEMS_ERROR";
-const SET_CURRENT_ITEM = "items/SET_CURRENT_ITEM";
-const COMMIT_STATUS = "items/COMMIT_STATUS";
-const SET_ITEMS_COUNT = "items/SET_ITEMS_COUNT";
-const SET_LOADING = "items/SET_LOADING";
-export const FAV_COUNT_CHANGED = "FAV_COUNT_CHANGED";
+const SET_LIST = 'items/SET_LIST';
+const ITEMS_ERROR = 'items/ITEMS_ERROR';
+const SET_CURRENT_ITEM = 'items/SET_CURRENT_ITEM';
+const COMMIT_STATUS = 'items/COMMIT_STATUS';
+const SET_CURRENT_PAGE = 'items/SET_CURRENT_PAGE';
+const SET_LOADING = 'items/SET_LOADING';
+export const FAV_COUNT_CHANGED = 'FAV_COUNT_CHANGED';
 //action creators
-export const startFetchingItemsCount = () => {
-  return async dispatch => {
-    try {
-      const count = await fetchItemTotalCounts();
-      dispatch({ type: SET_ITEMS_COUNT, count });
-    } catch (error) {
-      dispatch({ type: ITEMS_ERROR, error });
-    }
-  };
-};
-export const startFetchingItems = (cursor, mode, filter) => {
-  return async dispatch => {
-    try {
-      dispatch({ type: SET_LOADING });
-      const result = await fetchItems(cursor, mode, filter);
-      const { list, firstDoc, lastDoc } = result;
 
-      dispatch({ type: SET_LIST, mode, list, firstDoc, lastDoc });
-    } catch (error) {
-      dispatch({ type: ITEMS_ERROR, error });
-    }
+export const startFetchingItems = (page, filter) => {
+  return async dispatch => {
+    dispatch({ type: SET_LOADING });
+    searchIndex.search(
+      { query: filter, page, hitsPerPage: PAGE_CAP },
+      async function searchDone(error, content) {
+        if (error) dispatch({ type: ITEMS_ERROR, error });
+        else {
+          const hits = [...content.hits];
+
+          for (let item of hits) {
+            const images = await downloadFiles(
+              item.imgs,
+              item.objectID,
+              'cover-img'
+            );
+            item.imgs[0] = images[0];
+          }
+          dispatch({ type: SET_LIST, list: hits });
+        }
+      }
+    );
   };
 };
 

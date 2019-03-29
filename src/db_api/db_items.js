@@ -1,70 +1,6 @@
 import { db, fileStorage } from '../firebase/apps/apps';
 import { getCurrentUser } from './db_auth';
 import firebase from 'firebase';
-export async function fetchItemTotalCounts() {
-  // change it for better performance
-  const snapShot = await db.collection('items').get();
-  return snapShot.size;
-}
-export async function fetchItems(
-  cursor,
-  mode,
-  filter = '',
-  orderSchema = 'lastModifyTime'
-) {
-  let result = [];
-  try {
-    const shot = db
-      .collection('items')
-
-      .orderBy(orderSchema);
-
-    const shotDesc = db.collection('items').orderBy(orderSchema, 'desc');
-
-    const querySnapshot = mode
-      ? await shot
-          .startAfter(cursor)
-          .limit(19)
-          .get()
-      : await shotDesc
-          .startAfter(cursor)
-          .limit(18)
-          .get();
-
-    querySnapshot.forEach(item => result.push(item.data()));
-    console.log(result);
-    let firstDoc;
-    let lastDoc;
-    if (mode) {
-      firstDoc = querySnapshot.docs[0];
-      if (querySnapshot.docs.length !== 19) {
-        lastDoc = 'end';
-      } else {
-        result.pop();
-        lastDoc = querySnapshot.docs[querySnapshot.docs.length - 2];
-      }
-    } else {
-      firstDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
-      lastDoc = querySnapshot.docs[0];
-      result = result.reverse();
-    }
-    //only download cover img in the imgPath arrary
-
-    for (let i in result) {
-      const imgs = await downloadFiles(
-        result[i].imgs,
-        result[i].id,
-        'cover-img'
-      );
-      result[i].imgs[0] = imgs[0];
-    }
-
-    return { list: result, firstDoc, lastDoc };
-  } catch (error) {
-    return error;
-  }
-}
-
 // query Item and download images
 export async function queryItem(id) {
   const result = [];
@@ -96,6 +32,7 @@ export async function addItem(item) {
   try {
     docRef = await db.collection('items').add(form);
     await upLoadFiles(imgs, docRef.id);
+    // an obj created in algolia this
     await docRef.update({
       id: docRef.id
     });
@@ -232,6 +169,7 @@ export async function upDateFavCount(id, mode) {
       }
 
       var newFavs = sfDoc.data().favs + difference;
+      if (newFavs < 0) return;
       transaction.update(docRef, { favs: newFavs });
     });
   })
@@ -242,22 +180,3 @@ export async function upDateFavCount(id, mode) {
       console.log('Transaction failed: ', error);
     });
 }
-
-// function fetch(params) {
-//   var first = db.collection("cities")
-//     .orderBy("population")
-//     .limit(25);
-
-//   return first.get().then(function (documentSnapshots) {
-//     // Get the last visible document
-//     var lastVisible = documentSnapshots.docs[documentSnapshots.docs.length - 1];
-//     console.log("last", lastVisible);
-
-//     // Construct a new query starting at this document,
-//     // get the next 25 cities.
-//     var next = db.collection("cities")
-//       .orderBy("population")
-//       .startAfter(lastVisible)
-//       .limit(25);
-//   });
-// }

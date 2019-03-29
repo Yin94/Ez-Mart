@@ -1,7 +1,7 @@
-import { fetchSavIds, fetchSavList, manageFavItem } from "../../db_api/db_user";
-import { getCurrentUser } from "../../db_api/db_auth";
-import combine from "../../utility/combine";
-import { FAV_COUNT_CHANGED } from "../items/items";
+import { fetchSavIds, fetchSavList, manageFavItem } from '../../db_api/db_user';
+import { getCurrentUser } from '../../db_api/db_auth';
+import combine from '../../utility/combine';
+import { FAV_COUNT_CHANGED } from '../items/items';
 //reducer
 const initialState = {
   list: [],
@@ -53,18 +53,18 @@ export default (state = initialState, action) => {
   }
 };
 
-const SET_LIST = "favorites/SET_LIST";
-const FAVS_ERROR = "favorites/Favs_ERROR";
-const COMMIT_STATUS = "favorites/COMMIT_STATUS";
-const MANAGE_ITEM = "favorites/MANAGE_ITEM";
-const SET_FAV_IDs = "favorites/SET_FAV_IDs";
-const SET_LOADING = "favorites/SET_LOADING";
-export const USER_SWITCHED_FAV = "favorites/USER_SWITCHED_FAV";
+const SET_LIST = 'favorites/SET_LIST';
+const FAVS_ERROR = 'favorites/Favs_ERROR';
+const COMMIT_STATUS = 'favorites/COMMIT_STATUS';
+const MANAGE_ITEM = 'favorites/MANAGE_ITEM';
+const SET_FAV_IDs = 'favorites/SET_FAV_IDs';
+const SET_LOADING = 'favorites/SET_LOADING';
+export const USER_SWITCHED_FAV = 'favorites/USER_SWITCHED_FAV';
 //action creators
 export const startFetchingFavs = (idList, isStart) => {
   return async dispatch => {
     dispatch({ type: SET_LOADING });
-    const uid = localStorage.getItem("user-uid") || getCurrentUser().id;
+    const uid = localStorage.getItem('user-uid') || getCurrentUser().id;
     const list = await fetchSavList(idList, uid, isStart);
 
     list instanceof Error
@@ -80,7 +80,7 @@ export const startManageFavItem = (id, mode) => {
       dispatch({ type: MANAGE_ITEM, id, mode });
       dispatch({ type: FAV_COUNT_CHANGED, id, mode });
     } catch (error) {
-      dispatch({ type: FAVS_ERROR, error: error.message });
+      dispatch({ type: FAVS_ERROR, error: error });
     }
   };
 };

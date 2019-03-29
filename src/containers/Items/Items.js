@@ -1,28 +1,27 @@
-import ItemList from "./ItemList/ItemList";
-import React, { Component } from "react";
-import { startManageFavItem } from "../../store_redux/user/favorites";
-import { withRouter } from "react-router-dom";
-import Loader from "../../UI/Spinner/Loader3Color/Loader3Color";
-import Button from "../../UI/Button/Button";
-import styles from "./Items.css";
+import ItemList from './ItemList/ItemList';
+import React, { Component } from 'react';
+import { startManageFavItem } from '../../store_redux/user/favorites';
+import { withRouter } from 'react-router-dom';
+import Loader from '../../UI/Spinner/Loader3Color/Loader3Color';
+import Pagination from './Pagination/Pagination';
+import styles from './Items.css';
 import {
   setCurrentItem,
   startFetchingItems
-} from "../../store_redux/items/items";
+} from '../../store_redux/items/items';
 
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 const mps = state => ({
   list: state.items.list,
   totalCount: state.items.count,
   favs: state.favorites.idList,
-  firstDoc: state.items.firstDoc,
-  lastDoc: state.items.lastDoc,
+  curPage: state.items.currentPage,
   authed: state.auth.authed,
   error: state.favorites.error,
   loading: state.items.loading
 });
 const mpd = dispatch => ({
-  startFetchItems: (cursor, mode) => dispatch(startFetchingItems(cursor, mode)),
+  startFetchItems: (page, filter) => dispatch(startFetchingItems(page, filter)),
   setCurrentItem: item => dispatch(setCurrentItem(item)),
 
   manageFavItem: (id, mode) => dispatch(startManageFavItem(id, mode))
@@ -36,42 +35,32 @@ export default withRouter(
       state = {
         disabledLeftBtn: false,
         disabledRightBtn: false,
-        curPage: 0
+        curPage: 1
       };
-      onPageHandler = e => {
-        const lastDoc = this.props.lastDoc;
-        const firstDoc = this.props.firstDoc;
-        const page = this.state.curPage;
-        const mode = e.target.name === "next" ? true : false;
-        if (mode) {
-          this.setState({ curPage: page + 1 });
-          this.props.startFetchItems(lastDoc, true);
-        } else {
-          this.setState({ curPage: page - 1 });
-          this.props.startFetchItems(firstDoc, false);
-        }
+      onPageHandler = page => {
+        page = parseInt(page) - 1;
+        this.setState({ curPage: page + 1 }, () =>
+          this.props.startFetchItems(page, '')
+        );
       };
       itemSelectedHandler = index => {
         const item = this.props.list[index];
         this.props.setCurrentItem(item);
-        this.props.history.push("item/" + item.id);
+        this.props.history.push('item/' + item.id);
       };
       onSavHandler = async (id, diff) => {
         this.props.manageFavItem(id, diff);
-        const error = this.props.error;
-        if (error) alert(error.message);
+        // const error = this.props.error;
+        // if (error) alert('error form Items' + error.message);
       };
 
       componentDidMount = () => {
         //TODO: add pagination logic here
-        this.props.startFetchItems(null, true, "");
+        this.props.startFetchItems(0, '');
       };
 
       render() {
-        let leftDisabled = false,
-          rightDisabled = false;
-        if (this.props.lastDoc === "end") rightDisabled = true;
-        if (!this.state.curPage) leftDisabled = true;
+        // if(this.state.curPage)
         return this.props.loading ? (
           <Loader />
         ) : (
@@ -83,20 +72,12 @@ export default withRouter(
               itemSelected={this.itemSelectedHandler}
               favoriteClicked={this.onSavHandler}
             />
-            <div className={styles.btnGroup}>
-              <Button
-                disabled={leftDisabled}
-                name='last'
-                onClick={this.onPageHandler}>
-                last page
-              </Button>
-              <Button
-                disabled={rightDisabled}
-                name='next'
-                onClick={this.onPageHandler}>
-                next page
-              </Button>
-            </div>
+
+            <Pagination
+              totalCount={11}
+              pageSelected={this.onPageHandler}
+              currentPage={this.state.curPage}
+            />
           </div>
         );
       }

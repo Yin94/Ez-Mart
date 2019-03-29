@@ -1,14 +1,18 @@
-import React from "react";
-import styles from "./Pagination.css";
-import Button from "../../../UI/Button/Button";
-import MainSpan from "./MainSpan";
+import React from 'react';
+import styles from './Pagination.css';
+import Button from '../../../UI/Button/Button';
+import MainSpan from './MainSpan';
 //should be 6*3
-export const PAGE_CAP = 5;
+import PAGE_CAP from '../../../utility/page_cap';
 
 export default function Pagination({ totalCount, pageSelected, currentPage }) {
   const totalPage = Math.ceil(totalCount / PAGE_CAP);
   const displayArea = [
-    <Button onClick={() => pageSelected(1)} key='1'>
+    <Button
+      curPage={currentPage}
+      id='1'
+      onClick={() => pageSelected(1)}
+      key='1'>
       1
     </Button>
   ];
@@ -20,13 +24,21 @@ export default function Pagination({ totalCount, pageSelected, currentPage }) {
       />
     );
     displayArea.push(
-      <Button onClick={() => pageSelected(totalPage)} key={totalPage}>
+      <Button
+        curPage={currentPage}
+        id={totalPage}
+        onClick={() => pageSelected(totalPage)}
+        key={totalPage}>
         {totalPage}
       </Button>
     );
   } else if (totalPage === 2) {
     displayArea.push(
-      <Button onClick={() => pageSelected(2)} key='2'>
+      <Button
+        curPage={currentPage}
+        id='2'
+        onClick={() => pageSelected(2)}
+        key='2'>
         2
       </Button>
     );

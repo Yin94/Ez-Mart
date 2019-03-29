@@ -1,6 +1,6 @@
-import React from "react";
-import Button from "../../../UI/Button/Button";
-import { PAGE_CAP } from "./Pagination";
+import React from 'react';
+import Button from '../../../UI/Button/Button';
+import PAGE_CAP from '../../../utility/page_cap';
 
 export default function MainSpan({
   totalCount,
@@ -12,26 +12,35 @@ export default function MainSpan({
   let mainSpan = null;
   if (totalCount <= 6 * PAGE_CAP) {
     let displayArray = Array(totalPage - 2).fill(false);
-    displayArray = displayArray.map((ele, index) => (
-      <Button onClick={() => pageSelected(index + 2)} key={index}>
-        {index + 2}
-      </Button>
-    ));
+    displayArray = displayArray.map((ele, index) =>
+      index + 2 === currentPage ? (
+        <Button
+          disabled={true}
+          onClick={() => pageSelected(index + 2)}
+          key={index}>
+          {index + 2}
+        </Button>
+      ) : (
+        <Button onClick={() => pageSelected(index + 2)} key={index}>
+          {index + 2}
+        </Button>
+      )
+    );
     mainSpan = <>{displayArray}</>;
   } else {
     if (currentPage >= 1 && currentPage <= 4)
       mainSpan = (
         <>
-          <Button id='2' onClick={() => pageSelected(2)}>
+          <Button curPage={currentPage} id='2' onClick={() => pageSelected(2)}>
             2
           </Button>
-          <Button id='3' onClick={() => pageSelected(3)}>
+          <Button curPage={currentPage} id='3' onClick={() => pageSelected(3)}>
             3
           </Button>
-          <Button id='4' onClick={() => pageSelected(4)}>
+          <Button curPage={currentPage} id='4' onClick={() => pageSelected(4)}>
             4
           </Button>
-          <Button id='5' onClick={() => pageSelected(5)}>
+          <Button curPage={currentPage} id='5' onClick={() => pageSelected(5)}>
             5
           </Button>
           {notingSpan}
@@ -43,16 +52,19 @@ export default function MainSpan({
           {notingSpan}
           <Button
             id={totalPage - 3}
+            curPage={currentPage}
             onClick={() => pageSelected(totalPage - 3)}>
             {totalPage - 3}
           </Button>
           <Button
             id={totalPage - 2}
+            curPage={currentPage}
             onClick={() => pageSelected(totalPage - 2)}>
             {totalPage - 2}
           </Button>
           <Button
             id={totalPage - 1}
+            curPage={currentPage}
             onClick={() => pageSelected(totalPage - 1)}>
             {totalPage - 1}
           </Button>
@@ -64,14 +76,19 @@ export default function MainSpan({
           {notingSpan}
           <Button
             id={currentPage - 1}
+            curPage={currentPage}
             onClick={() => pageSelected(currentPage - 1)}>
             {currentPage - 1}
           </Button>
-          <Button id={currentPage} onClick={() => pageSelected(currentPage)}>
+          <Button
+            id={currentPage}
+            curPage={currentPage}
+            onClick={() => pageSelected(currentPage)}>
             {currentPage}
           </Button>
           <Button
             id={currentPage + 1}
+            curPage={currentPage}
             onClick={() => pageSelected(currentPage + 1)}>
             {currentPage + 1}
           </Button>
