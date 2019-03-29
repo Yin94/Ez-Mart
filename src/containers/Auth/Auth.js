@@ -1,17 +1,17 @@
-import React from "react";
-import styles from "./Auth.css";
-import Button from "../../UI/Button/Button";
-import { Link } from "react-router-dom";
-import { tryAuth, commitStatus } from "../../store_redux/auth/auth";
-import { connect } from "react-redux";
-import Spinner from "../../UI/Spinner/Spinner";
-import ErrorBlock from "./ErrorBlock/ErrorBlock";
-import Joi from "joi";
+import React from 'react';
+import styles from './Auth.css';
+import Button from '../../UI/Button/Button';
+import { Link } from 'react-router-dom';
+import { tryAuth, commitStatus } from '../../store_redux/auth/auth';
+import { connect } from 'react-redux';
+import Spinner from '../../UI/Spinner/Spinner';
+import ErrorBlock from './ErrorBlock/ErrorBlock';
+import Joi from 'joi';
 const schema = Joi.object().keys({
   email: Joi.string()
     .max(30)
     .required()
-    .error(new Error("0Email must be shorter than 30 characters")),
+    .error(new Error('0Email must be shorter than 30 characters')),
   pswd: Joi.string()
     .regex(/(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$/)
     .min(8)
@@ -19,22 +19,22 @@ const schema = Joi.object().keys({
     .required()
     .error(
       new Error(
-        "1Password must between 8 and 20 charactors, and must have at least one uppercase, one lowercase,one number, and one special charactoer"
+        '1Password must between 8 and 20 charactors, and must have at least one uppercase, one lowercase,one number, and one special charactoer'
       )
     ),
-  confirmPswd: Joi.ref("pswd"),
+  confirmPswd: Joi.ref('pswd'),
   username: Joi.string()
     .max(15)
     .min(5)
     .required()
-    .error(new Error("3Username must between 5 and 15 characters")),
+    .error(new Error('3Username must between 5 and 15 characters')),
   tel: Joi.string()
     .regex(/[0-9]+/)
     .min(10)
     .max(10)
     .error(
       new Error(
-        "4Tel number not valie, please input 10 digits USA phone number"
+        '4Tel number not valie, please input 10 digits USA phone number'
       )
     )
 });
@@ -55,20 +55,19 @@ export default connect(
 )(
   class extends React.Component {
     state = {
-      email: "",
-      pswd: "",
-      confirmPswd: "",
-      username: "",
-      tel: "",
+      email: '',
+      pswd: '',
+      confirmPswd: '',
+      username: '',
+      tel: '',
       errorArray: []
     };
 
     submitHandler = async (e, mode) => {
       e.preventDefault();
       const { errorArray, ...form } = this.state;
-      //sign up
+
       if (!parseInt(mode)) {
-        //TODO: verificating logic here
         const ob = this;
         Joi.validate(form, schema, function(err, value) {
           if (!err) {
@@ -76,16 +75,14 @@ export default connect(
           } else {
             const error = err ? err.message : null;
             const errorArray = [];
-            if (error[0] === "c") errorArray[2] = "2Two passwords not the same";
+            if (error[0] === 'c') errorArray[2] = '2Two passwords not the same';
             else errorArray[error[0]] = error;
             ob.setState({
               errorArray
             });
           }
         });
-      }
-      //sign in
-      else {
+      } else {
         this.props.submitSignIn(form);
       }
     };
@@ -100,28 +97,26 @@ export default connect(
     };
 
     shouldComponentUpdate = (nextProps, nextState) => {
-      //check here before render to enhance performance
-      if (nextProps.succceed) this.props.history.push("/items");
+      if (nextProps.succceed) this.props.history.push('/items');
       return true;
     };
     componentWillUnmount = () => {
-      //reset status may cause bug in lazy loading
       this.props.commitStatus();
     };
 
     render() {
-      const mode = this.props.match.params["mode"];
-      let switchText = "",
-        switchPath = "";
-      if (mode === "0") {
-        switchText = "Signin";
-        switchPath = "/auth1";
+      const mode = this.props.match.params['mode'];
+      let switchText = '',
+        switchPath = '';
+      if (mode === '0') {
+        switchText = 'Signin';
+        switchPath = '/auth1';
       } else {
-        switchText = "Signup";
-        switchPath = "/auth0";
+        switchText = 'Signup';
+        switchPath = '/auth0';
       }
       let displayTxt =
-        this.props.match.params["mode"] === "0" ? "Signup" : "Signin";
+        this.props.match.params['mode'] === '0' ? 'Signup' : 'Signin';
       const error = this.props.error;
       const validationErr = this.state.errorArray;
       return (
@@ -158,7 +153,7 @@ export default connect(
               errMsg={validationErr[1]}
             />
           </div>
-          {mode === "0" && (
+          {mode === '0' && (
             <div id='signUpPanel'>
               <div className={styles.ControlGroup}>
                 <label htmlFor='confirmPswd'>Confirm Password:</label>
@@ -201,12 +196,12 @@ export default connect(
             </div>
           )}
           <div>
-            {this.props.loading && <Spinner style={{ left: "45%" }} />}
+            {this.props.loading && <Spinner style={{ left: '45%' }} />}
 
             {error && (
               <strong className={styles.errorSpan}>
-                {" "}
-                {displayTxt} failed: <span> {"__" + error}</span>
+                {' '}
+                {displayTxt} failed: <span> {'__' + error}</span>
               </strong>
             )}
           </div>
@@ -224,7 +219,7 @@ export default connect(
               Switch to {switchText}
             </Button>
             <small>
-              {"Forgot password? go"} <Link to='resetpswd'>reset</Link>{" "}
+              {'Forgot password? go'} <Link to='resetpswd'>reset</Link>{' '}
             </small>
           </div>
         </form>

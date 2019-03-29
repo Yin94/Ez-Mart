@@ -30,7 +30,6 @@ class App extends Component {
     this.props.logOut();
   };
   onSearchHandler = (e, value) => {
-    // e.keyCode
     if (e.keyCode === 13 || e.target.name === 'searchBtn') {
       this.props.history.push('/items');
 
