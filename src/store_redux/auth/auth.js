@@ -64,6 +64,8 @@ export function tryAuth(form, mode) {
       dispatch(authSucceed(user.uid));
       // fetch id here
       dispatch(startFetchingFavsIdList(user.uid));
+      dispatch({ type: USER_SWITCHED });
+      dispatch({ type: USER_SWITCHED_FAV });
     }
   };
 }
@@ -78,13 +80,10 @@ export function commitStatus() {
 }
 
 export function logOut() {
-  return dispatch => {
-    localStorage.removeItem("user-authed");
-    localStorage.removeItem("user-uid");
-    dispatch({ type: USER_SWITCHED });
-    dispatch({ type: USER_SWITCHED_FAV });
-    dispatch({
-      type: LOG_OUT
-    });
+  localStorage.removeItem("user-authed");
+  localStorage.removeItem("user-uid");
+
+  return {
+    type: LOG_OUT
   };
 }

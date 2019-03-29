@@ -5,7 +5,7 @@ import { Switch, Route, Redirect, withRouter } from "react-router-dom";
 import NavBar from "./components/NavBar/NavBar";
 import { connect } from "react-redux";
 import { authSucceed, logOut } from "./store_redux/auth/auth";
-import { startFetchingItemsCount } from "./store_redux/items/items";
+import { startFetchingItems } from "./store_redux/items/items";
 import { startFetchingFavsIdList } from "./store_redux/user/favorites";
 const MyPosts = React.lazy(() => import("./containers/Posts/Posts"));
 const Items = React.lazy(() => import("./containers/Items/Items"));
@@ -17,8 +17,6 @@ const ItemDetail = React.lazy(() =>
 );
 class App extends Component {
   componentDidMount = () => {
-    this.props.startFetchItemsCount();
-
     const loggedIn = localStorage.getItem("user-authed");
     if (loggedIn) {
       const uid = localStorage.getItem("user-uid");
@@ -33,7 +31,7 @@ class App extends Component {
   onSearchHandler = (e, value) => {
     // e.keyCode
     if (e.keyCode === 13 || e.target.name === "searchBtn") {
-      console.log(value);
+      this.props.fetchItems(value);
     }
   };
   render() {
@@ -70,8 +68,9 @@ const mps = state => ({
 const mpd = dispatch => ({
   authSucceed: (uid, mode) => dispatch(authSucceed(uid, mode)),
   logOut: () => dispatch(logOut()),
-  startFetchItemsCount: () => dispatch(startFetchingItemsCount()),
-  startFetchFavs: uid => dispatch(startFetchingFavsIdList(uid))
+
+  startFetchFavs: uid => dispatch(startFetchingFavsIdList(uid)),
+  fetchItems: filter => dispatch(startFetchingItems(null, true, filter))
 });
 export default withRouter(
   connect(

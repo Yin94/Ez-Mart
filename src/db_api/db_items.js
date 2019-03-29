@@ -1,18 +1,26 @@
-import { db, fileStorage } from "../firebase/apps/apps";
-import { getCurrentUser } from "./db_auth";
-import firebase from "firebase";
+import { db, fileStorage } from '../firebase/apps/apps';
+import { getCurrentUser } from './db_auth';
+import firebase from 'firebase';
 export async function fetchItemTotalCounts() {
   // change it for better performance
-  const snapShot = await db.collection("items").get();
+  const snapShot = await db.collection('items').get();
   return snapShot.size;
 }
-export async function fetchItems(cursor, mode, orderSchema = "lastModifyTime") {
+export async function fetchItems(
+  cursor,
+  mode,
+  filter = '',
+  orderSchema = 'lastModifyTime'
+) {
   let result = [];
   try {
-    const shot = db.collection("items").orderBy(orderSchema);
-    const shotDesc = db.collection("items").orderBy(orderSchema, "desc");
+    const shot = db
+      .collection('items')
 
-    if (cursor) console.log(cursor.data().name, mode);
+      .orderBy(orderSchema);
+
+    const shotDesc = db.collection('items').orderBy(orderSchema, 'desc');
+
     const querySnapshot = mode
       ? await shot
           .startAfter(cursor)
@@ -22,13 +30,15 @@ export async function fetchItems(cursor, mode, orderSchema = "lastModifyTime") {
           .startAfter(cursor)
           .limit(18)
           .get();
+
     querySnapshot.forEach(item => result.push(item.data()));
+    console.log(result);
     let firstDoc;
     let lastDoc;
     if (mode) {
       firstDoc = querySnapshot.docs[0];
       if (querySnapshot.docs.length !== 19) {
-        lastDoc = "end";
+        lastDoc = 'end';
       } else {
         result.pop();
         lastDoc = querySnapshot.docs[querySnapshot.docs.length - 2];
@@ -44,7 +54,7 @@ export async function fetchItems(cursor, mode, orderSchema = "lastModifyTime") {
       const imgs = await downloadFiles(
         result[i].imgs,
         result[i].id,
-        "cover-img"
+        'cover-img'
       );
       result[i].imgs[0] = imgs[0];
     }
@@ -60,8 +70,8 @@ export async function queryItem(id) {
   const result = [];
   try {
     const querySnapshot = await db
-      .collection("items")
-      .where("id", "==", id)
+      .collection('items')
+      .where('id', '==', id)
       .get();
     querySnapshot.forEach(item => result.push(item.data()));
     const imgs = await downloadFiles(result[0].imgs, id);
@@ -81,21 +91,21 @@ export async function addItem(item) {
   }
   form.imgs = files;
   form.favs = 0;
-  form["lastModifyTime"] = new Date();
-  form.publisher = getCurrentUser().id || localStorage.getItem("user-uid");
+  form['lastModifyTime'] = new Date();
+  form.publisher = getCurrentUser().id || localStorage.getItem('user-uid');
   try {
-    docRef = await db.collection("items").add(form);
+    docRef = await db.collection('items').add(form);
     await upLoadFiles(imgs, docRef.id);
     await docRef.update({
       id: docRef.id
     });
     const postsRef = await db
-      .collection("posts")
-      .where("uid", "==", form.publisher)
+      .collection('posts')
+      .where('uid', '==', form.publisher)
       .get();
     let docId;
     postsRef.forEach(doc => (docId = doc.id));
-    var posts = db.collection("posts").doc(docId);
+    var posts = db.collection('posts').doc(docId);
     // Atomically add a new region to the "regions" array field.
     await posts.update({
       list: firebase.firestore.FieldValue.arrayUnion(docRef.id)
@@ -106,23 +116,23 @@ export async function addItem(item) {
     try {
       await docRef.delete();
       // delete uploaded imgs
-      return "error on uploading images, transaction discarded";
+      return 'error on uploading images, transaction discarded';
     } catch (error) {
-      return "error on uploading images, delete databse item failed";
+      return 'error on uploading images, delete databse item failed';
     }
   }
 }
 export async function deleteItem(id) {
   try {
-    const uid = getCurrentUser().id || localStorage.getItem("user-uid");
-    const docRef = db.collection("items").doc(id);
+    const uid = getCurrentUser().id || localStorage.getItem('user-uid');
+    const docRef = db.collection('items').doc(id);
     const snapShot = await db
-      .collection("posts")
-      .where("uid", "==", uid)
+      .collection('posts')
+      .where('uid', '==', uid)
       .get();
     let docId = null;
     snapShot.forEach(doc => (docId = doc.id));
-    const postDocRef = db.collection("posts").doc(docId);
+    const postDocRef = db.collection('posts').doc(docId);
     await postDocRef.update({
       list: firebase.firestore.FieldValue.arrayRemove(id)
     });
@@ -134,13 +144,13 @@ export async function deleteItem(id) {
 }
 export async function updateItem(formItem, tbd_Imgs, tba_Imgs) {
   let { displayImgs, imgs, ...item } = formItem;
-  const docRef = db.collection("items").doc(item.id);
+  const docRef = db.collection('items').doc(item.id);
   item.lastModifyTime = new Date();
   try {
     await docRef.update({
       ...item
     });
-    const storageRef = fileStorage.ref().child("images/items/" + item.id + "/");
+    const storageRef = fileStorage.ref().child('images/items/' + item.id + '/');
     // deleting  imgs
     tbd_Imgs.forEach(async ele => {
       const imgRef = storageRef.child(ele);
@@ -174,7 +184,7 @@ async function upLoadFiles(files, itemId) {
   // Create a reference to 'mountains.jpg'
   for (let file of files) {
     const fileRef = storageRef.child(
-      "images/items/" + itemId + "/" + file.name
+      'images/items/' + itemId + '/' + file.name
     );
     const result = await fileRef.put(file);
     pathArray.push(result.ref.fullPath);
@@ -185,15 +195,15 @@ async function upLoadFiles(files, itemId) {
 export async function downloadFiles(files, itemId, mode) {
   const pathReference = fileStorage.ref();
   const urls = [];
-  if (mode === "cover-img") {
-    const ref = pathReference.child("images/items/" + itemId + "/" + files[0]);
+  if (mode === 'cover-img') {
+    const ref = pathReference.child('images/items/' + itemId + '/' + files[0]);
     let url = await ref.getDownloadURL();
     urls.push(url);
     return urls;
   }
 
   for (let file of files) {
-    const ref = pathReference.child("images/items/" + itemId + "/" + file);
+    const ref = pathReference.child('images/items/' + itemId + '/' + file);
     let url = await ref.getDownloadURL();
     urls.push(url);
   }
@@ -203,8 +213,8 @@ export async function downloadFiles(files, itemId, mode) {
 export async function fetchItemPublisher(uid) {
   const result = [];
   const querySnapshot = await db
-    .collection("users")
-    .where("uid", "==", uid)
+    .collection('users')
+    .where('uid', '==', uid)
     .get();
   querySnapshot.forEach(item => result.push(item.data()));
   return result[0];
@@ -212,13 +222,13 @@ export async function fetchItemPublisher(uid) {
 
 export async function upDateFavCount(id, mode) {
   const difference = mode ? 1 : -1;
-  const docRef = await db.collection("items").doc(id);
+  const docRef = await db.collection('items').doc(id);
 
   db.runTransaction(function(transaction) {
     // This code may get re-run multiple times if there are conflicts.
     return transaction.get(docRef).then(function(sfDoc) {
       if (!sfDoc.exists) {
-        throw "Document does not exist!";
+        throw 'Document does not exist!';
       }
 
       var newFavs = sfDoc.data().favs + difference;
@@ -226,10 +236,10 @@ export async function upDateFavCount(id, mode) {
     });
   })
     .then(function() {
-      return "succeed";
+      return 'succeed';
     })
     .catch(function(error) {
-      console.log("Transaction failed: ", error);
+      console.log('Transaction failed: ', error);
     });
 }
 

@@ -64,7 +64,7 @@ export default withRouter(
 
       componentDidMount = () => {
         //TODO: add pagination logic here
-        this.props.startFetchItems(null, true);
+        this.props.startFetchItems(null, true, "");
       };
 
       render() {

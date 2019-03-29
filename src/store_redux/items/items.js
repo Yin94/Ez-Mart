@@ -99,11 +99,11 @@ export const startFetchingItemsCount = () => {
     }
   };
 };
-export const startFetchingItems = (cursor, mode) => {
+export const startFetchingItems = (cursor, mode, filter) => {
   return async dispatch => {
     try {
       dispatch({ type: SET_LOADING });
-      const result = await fetchItems(cursor, mode);
+      const result = await fetchItems(cursor, mode, filter);
       const { list, firstDoc, lastDoc } = result;
 
       dispatch({ type: SET_LIST, mode, list, firstDoc, lastDoc });
