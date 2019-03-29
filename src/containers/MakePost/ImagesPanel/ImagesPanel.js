@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import Gallery from "../../../components/Gallery/Gallery";
-import styles from "../../ItemDetail/Item.css";
+import React, { useState } from 'react';
+import Gallery from '../../../components/Gallery/Gallery';
+import styles from '../../ItemDetail/Item.css';
 
-import Button from "../../../UI/Button/Button";
+import Button from '../../../UI/Button/Button';
 // import moduleName from "";
 export default function ImagesPanel({
   imgs,
@@ -13,21 +13,21 @@ export default function ImagesPanel({
   clearImgs
 }) {
   const mainPicStyle = {
-    width: "100%",
-    display: "block"
+    width: '100%',
+    display: 'block'
   };
   const [index, setIndex] = useState(0);
   return (
     <div>
       <div
         style={{
-          width: "80%",
-          margin: "auto",
-          borderRadius: "4px",
-          overflow: "hidden"
+          width: '80%',
+          margin: 'auto',
+          borderRadius: '4px',
+          overflow: 'hidden'
         }}>
         <div className={styles.lgPic}>
-          <div className={styles.fadeIn} id={"show"}>
+          <div className={styles.fadeIn} id={'show'}>
             <label htmlFor='file-input'>Change this image</label>
             <Button type='button' onClick={() => imgDelete(index)}>
               Delete
@@ -41,34 +41,35 @@ export default function ImagesPanel({
             accept='image/*'
             id='file-input'
             style={{
-              display: "none",
-              zIndex: "1"
+              display: 'none',
+              zIndex: '1'
             }}
             type='file'
           />
         </div>
         <Button
           style={{
-            width: "40%",
-            margin: "20px auto"
+            width: '40%',
+            margin: '20px auto'
           }}
           onClick={() => addImg()}
           className='btn succeed'
           type='button'>
           Add Item Image
-        </Button>{" "}
+        </Button>{' '}
         <Button
           style={{
-            width: "40%",
-            margin: "20px auto"
+            width: '40%',
+            margin: '20px auto'
           }}
           onClick={clearImgs}
           type='button'>
           Delete All Images
-        </Button>{" "}
+        </Button>{' '}
       </div>
 
       <Gallery
+        editMode={true}
         imgList={displayImgs}
         className={styles.gallery}
         onClick={i => {

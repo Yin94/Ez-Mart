@@ -1,17 +1,17 @@
-import React, { Component } from "react";
-import classes from "./Posts.css";
-import PostBlock from "./PostBlock/PostBlock";
-import { connect } from "react-redux";
-import { setCurrentItem } from "../../store_redux/items/items";
-import Button from "../../UI/Button/Button";
-import SearchBar from "../../UI/SearchBar/SearchBar";
-import Spinner from "../../UI/Spinner/Spinner";
+import React, { Component } from 'react';
+import classes from './Posts.css';
+import PostBlock from './PostBlock/PostBlock';
+import { connect } from 'react-redux';
+import { setCurrentItem } from '../../store_redux/items/items';
+import Button from '../../UI/Button/Button';
+import SearchBar from '../../UI/SearchBar/SearchBar';
+import Spinner from '../../UI/Spinner/Spinner';
 import {
   startFetchingPosts,
   commitStatus,
   setCurrentPost,
   startDeletingPost
-} from "../../store_redux/posts/posts";
+} from '../../store_redux/posts/posts';
 const mps = state => ({
   isStart: state.posts.isFirst,
   idList: state.posts.idList,
@@ -34,15 +34,15 @@ export default connect(
 )(
   class Posts extends Component {
     state = {
-      filter: ""
+      filter: ''
     };
     onClickHandler = item => {
       item.downloadAllImgs = true;
       this.props.setCurItem(item);
-      this.props.history.push("/item/" + item.id);
+      this.props.history.push('/item/' + item.id);
     };
     onResetFilterHandler = () => {
-      this.setState({ filter: "" });
+      this.setState({ filter: '' });
     };
     onDeleteHandler = id => {
       this.props.deletePost(id);
@@ -50,10 +50,10 @@ export default connect(
     onEditHandler = post => {
       this.props.setCurPost(post);
 
-      this.props.history.push("/make-post/" + post.id);
+      this.props.history.push('/make-post/' + post.id);
     };
     onSearchHandler = (e, value) => {
-      if (e.keyCode === 13 || e.target.name === "searchBtn") {
+      if (e.keyCode === 13 || e.target.name === 'searchBtn') {
         this.setState({ filter: value });
       }
     };
@@ -66,7 +66,7 @@ export default connect(
 
     render() {
       let list = this.props.list
-        .filter(item => item.name.includes(this.state.filter))
+        .filter(item => item.name.toLowerCase().includes(this.state.filter))
         .map(ele => (
           <div className={classes.postRow} key={ele.id}>
             <PostBlock
@@ -74,7 +74,7 @@ export default connect(
               editPost={() => this.onEditHandler(ele)}
               deletePost={() => this.onDeleteHandler(ele.id)}
               onClick={() => this.onClickHandler(ele)}
-            />{" "}
+            />{' '}
           </div>
         ));
 
@@ -82,15 +82,15 @@ export default connect(
         <div className={classes.container}>
           <SearchBar searchActivated={this.onSearchHandler} />
           <Button
-            style={{ width: "20%", height: "40px", margin: "10px 0" }}
+            style={{ width: '20%', height: '40px', margin: '10px 0' }}
             onClick={this.onResetFilterHandler}
             className='btn succeed'>
             reset search
           </Button>
           <div className={classes.postRow}>
-            <strong>Post Id</strong>
             <strong>Title</strong>
             <strong>Last Update Time</strong>
+            <strong>Post Id</strong>
             <strong>Operation</strong>
           </div>
           {this.props.loading ? <Spinner /> : list}

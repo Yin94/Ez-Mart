@@ -177,6 +177,6 @@ export async function upDateFavCount(id, mode) {
       return 'succeed';
     })
     .catch(function(error) {
-      console.log('Transaction failed: ', error);
+      alert('Transaction failed: ', error);
     });
 }

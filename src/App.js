@@ -47,17 +47,17 @@ class App extends Component {
           searched={this.onSearchHandler}
         />
         <Layout>
-          <Switch>
-            <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Switch>
               <Route path='/auth:mode' component={Auth} />
               <Route path='/item/:id' component={ItemDetail} />
               <Route path='/fav' component={Favorites} />
               <Route path='/make-post/:mode' component={MakePost} />
               <Route path='/items' component={Items} />
               <Route path='/my-posts' component={MyPosts} />
-            </Suspense>
-            <Redirect to='/items' />
-          </Switch>
+              <Redirect to='/items' />
+            </Switch>
+          </Suspense>
         </Layout>
       </div>
     );

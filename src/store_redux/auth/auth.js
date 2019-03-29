@@ -1,19 +1,18 @@
-import combine from "../../utility/combine";
-import * as dbAuth from "../../db_api/db_auth";
-import { USER_SWITCHED } from "../posts/posts";
-import { USER_SWITCHED_FAV, startFetchingFavsIdList } from "../user/favorites";
+import combine from '../../utility/combine';
+import * as dbAuth from '../../db_api/db_auth';
+import { USER_SWITCHED } from '../posts/posts';
+import { USER_SWITCHED_FAV, startFetchingFavsIdList } from '../user/favorites';
 //reducer part
 const initialState = {
   error: false,
   loading: false,
   succeed: false,
   authed: false,
-  uid: ""
+  uid: ''
 };
 function setInfo(state, uid, fromLocal) {
   const newStatus = { loading: false, authed: true, uid: uid };
   if (!fromLocal) newStatus.succeed = true;
-  console.log(newStatus.succeed);
 
   return combine(state, newStatus);
 }
@@ -25,7 +24,7 @@ function setProcessing(state) {
 }
 const resetStatus = state =>
   combine(state, { error: false, loading: false, succeed: false });
-const logAuthOut = state => combine(state, { authed: false, uid: "" });
+const logAuthOut = state => combine(state, { authed: false, uid: '' });
 //reducer function
 export default function(state = initialState, action) {
   switch (action.type) {
@@ -44,11 +43,11 @@ export default function(state = initialState, action) {
   }
 }
 //actions
-const AUTH_SUCCEED = "auth/AUTH_SUCCEED";
-const AUTH_PROCESSING = "auth/PROCESSING";
-const AUTH_ERROR = "auth/AUTH_ERROR";
-const COMMIT_STATUS = "auth/COMMIT_STATUS";
-const LOG_OUT = "auth/LOG_OUT";
+const AUTH_SUCCEED = 'auth/AUTH_SUCCEED';
+const AUTH_PROCESSING = 'auth/PROCESSING';
+const AUTH_ERROR = 'auth/AUTH_ERROR';
+const COMMIT_STATUS = 'auth/COMMIT_STATUS';
+const LOG_OUT = 'auth/LOG_OUT';
 //action creators
 export function tryAuth(form, mode) {
   return async dispatch => {
@@ -59,8 +58,8 @@ export function tryAuth(form, mode) {
     if (result) dispatch({ type: AUTH_ERROR, error: result });
     else {
       const user = dbAuth.getCurrentUser();
-      localStorage.setItem("user-authed", true);
-      localStorage.setItem("user-uid", user.uid);
+      localStorage.setItem('user-authed', true);
+      localStorage.setItem('user-uid', user.uid);
       dispatch(authSucceed(user.uid));
       // fetch id here
       dispatch(startFetchingFavsIdList(user.uid));
@@ -80,8 +79,8 @@ export function commitStatus() {
 }
 
 export function logOut() {
-  localStorage.removeItem("user-authed");
-  localStorage.removeItem("user-uid");
+  localStorage.removeItem('user-authed');
+  localStorage.removeItem('user-uid');
 
   return {
     type: LOG_OUT

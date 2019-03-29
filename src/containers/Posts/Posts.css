@@ -6,12 +6,27 @@
 .postRow {
   display: grid;
   padding: 20px 10px;
-  border: 1px solid #f71e0b;
+  border-top: 3px solid #fda60a;
+  border-radius: 0px;
   grid-gap: 10px;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   position: relative;
+  margin-top: 30px;
 }
-
-.postRow > p:nth-child(2):hover {
-  color: red;
+.postRow > strong {
+  color: #7ebd30;
+  font-weight: bolder;
+  font-size: 1.2em;
+}
+.postRow > p {
+  font-weight: bold;
+}
+.postRow > p:nth-child(1) {
+  color: #fc2a07;
+  font-weight: bolder;
+  font-size: 1.1em;
+}
+.postRow > p:nth-child(1):hover {
+  cursor: pointer;
+  filter: brightness(80%);
 }

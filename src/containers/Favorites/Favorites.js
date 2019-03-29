@@ -1,13 +1,13 @@
-import React, { Component } from "react";
-import FavHead from "./FavHead/FavHead";
-import FavList from "./FavList/FavList";
-import { connect } from "react-redux";
-import Spinner from "../../UI/Spinner/LoaderSpinDots/LoaderSpinDots";
+import React, { Component } from 'react';
+import FavHead from './FavHead/FavHead';
+import FavList from './FavList/FavList';
+import { connect } from 'react-redux';
+import Spinner from '../../UI/Spinner/LoaderSpinDots/LoaderSpinDots';
 import {
   startFetchingFavs,
   startManageFavItem
-} from "../../store_redux/user/favorites";
-import { setCurrentItem } from "../../store_redux/items/items";
+} from '../../store_redux/user/favorites';
+import { setCurrentItem } from '../../store_redux/items/items';
 
 const mps = state => ({
   list: state.favorites.list,
@@ -29,22 +29,22 @@ export default connect(
 )(
   class Favorites extends Component {
     state = {
-      filter: ""
+      filter: ''
     };
     onDeleteHandler = id => {
       this.props.deleteFavItem(id);
     };
     onSearchHandler = (e, value) => {
-      if (e.keyCode === 13 || e.target.name === "searchBtn") {
+      if (e.keyCode === 13 || e.target.name === 'searchBtn') {
         this.setState({ filter: value });
       }
     };
     onResetSearchHandler = e => {
-      this.setState({ filter: "" });
+      this.setState({ filter: '' });
     };
     onClickItemHandler = item => {
       this.props.setPassedItem(item);
-      this.props.history.push("/item/" + item.id);
+      this.props.history.push('/item/' + item.id);
     };
     componentDidMount = () => {
       this.props.fetchSavList(this.props.idList, this.props.isStart);
@@ -52,13 +52,13 @@ export default connect(
 
     render() {
       if (!this.props.succeed) {
-        if (this.props.error) alert("error on feching");
+        if (this.props.error) alert('error on feching');
         return null;
       }
       const list = this.props.list.filter(item =>
         item.name.toLowerCase().includes(this.state.filter.toLocaleLowerCase())
       );
-      console.log(this.props.loading);
+
       //get items via ids,  1 part from loadedItemList, one part from server
       return (
         <div>

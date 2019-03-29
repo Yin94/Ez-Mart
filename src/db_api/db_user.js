@@ -1,14 +1,14 @@
-import { db } from "../firebase/apps/apps";
-import { getCurrentUser } from "./db_auth";
-import { downloadFiles, upDateFavCount } from "./db_items";
-import firebase from "firebase";
+import { db } from '../firebase/apps/apps';
+import { getCurrentUser } from './db_auth';
+import { downloadFiles, upDateFavCount } from './db_items';
+import firebase from 'firebase';
 export async function fetchSavIds(uid) {
   const result = [];
 
   try {
     const querySnapshot = await db
-      .collection("favorites")
-      .where("uid", "==", uid)
+      .collection('favorites')
+      .where('uid', '==', uid)
       .get();
     querySnapshot.forEach(item => {
       result.push(item.data());
@@ -26,8 +26,8 @@ export async function fetchSavList(idList, uid, isStart) {
     // if is start
     if (isStart) {
       const querySnapshot = await db
-        .collection("favorites")
-        .where("uid", "==", uid)
+        .collection('favorites')
+        .where('uid', '==', uid)
         .get();
       querySnapshot.forEach(item => {
         result.push(item.data());
@@ -38,8 +38,8 @@ export async function fetchSavList(idList, uid, isStart) {
 
     for (let id of idList) {
       const idQuerySnapShot = await db
-        .collection("items")
-        .where("id", "==", id)
+        .collection('items')
+        .where('id', '==', id)
         .get();
       idQuerySnapShot.forEach(async ele => {
         savedItemResult.push(ele.data());
@@ -50,7 +50,7 @@ export async function fetchSavList(idList, uid, isStart) {
       const imgs = await downloadFiles(
         savedItemResult[i].imgs,
         savedItemResult[i].id,
-        "cover-img"
+        'cover-img'
       );
       savedItemResult[i].imgs[0] = imgs[0];
     }
@@ -67,8 +67,8 @@ export async function manageFavItem(id, mode) {
   const uid = getCurrentUser().uid;
 
   let userSavedDocRef = await db
-    .collection("favorites")
-    .where("uid", "==", uid)
+    .collection('favorites')
+    .where('uid', '==', uid)
     .get();
   userSavedDocRef.forEach(item => (docKey = item.id));
   const newDoc = {
@@ -76,9 +76,9 @@ export async function manageFavItem(id, mode) {
     list: []
   };
   if (!docKey) {
-    docKey = (await db.collection("favorites").add(newDoc)).id;
+    docKey = (await db.collection('favorites').add(newDoc)).id;
   }
-  const savedArrayRef = db.collection("favorites").doc(docKey);
+  const savedArrayRef = db.collection('favorites').doc(docKey);
 
   const field = firebase.firestore.FieldValue;
 
@@ -90,17 +90,17 @@ export async function manageFavItem(id, mode) {
 }
 
 export async function fetchPostIDs() {
-  const uid = localStorage.getItem("user-uid");
+  const uid = localStorage.getItem('user-uid');
   let user = null;
   try {
     const userRef = await db
-      .collection("posts")
-      .where("uid", "==", uid)
+      .collection('posts')
+      .where('uid', '==', uid)
       .get();
     //user first time using posts
     if (!userRef.docs.length) {
       const initialDoc = { uid, list: [] };
-      await db.collection("posts").add(initialDoc);
+      await db.collection('posts').add(initialDoc);
       return [];
     } else {
       userRef.forEach(ele => (user = ele.data()));
@@ -116,17 +116,16 @@ export async function fetchPosts(postIDs) {
   try {
     for (let id of postIDs) {
       const idQuerySnapShot = await db
-        .collection("items")
-        .where("id", "==", id)
+        .collection('items')
+        .where('id', '==', id)
         .get();
       idQuerySnapShot.forEach(async ele => {
         posts.push(ele.data());
       });
     }
-    console.log(posts);
+
     return posts;
   } catch (error) {
-    console.log(error);
     return error;
   }
 }

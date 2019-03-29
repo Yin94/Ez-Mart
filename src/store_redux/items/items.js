@@ -120,6 +120,8 @@ export const startFetchingItem = (id, itemRef) => {
 };
 
 export const setCurrentItem = item => {
+  if (!item.lastModifyTime['seconds'])
+    item.lastModifyTime['seconds'] = item.lastModifyTime['_seconds'];
   return { type: SET_CURRENT_ITEM, item };
 };
 export const commitItemsStatusAndItem = () => {

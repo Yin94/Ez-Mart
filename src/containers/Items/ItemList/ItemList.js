@@ -8,7 +8,6 @@ export default function ItemList({
   favoriteClicked,
   authed
 }) {
-  // console.log(authed);
   const disList = list.map((item, index) => (
     <ListItem
       key={item.id + index}

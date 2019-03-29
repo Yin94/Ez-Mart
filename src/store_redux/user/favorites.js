@@ -88,7 +88,7 @@ export const startManageFavItem = (id, mode) => {
 export const startFetchingFavsIdList = id => {
   return async dispatch => {
     const list = await fetchSavIds(id);
-    console.log(list);
+
     dispatch({ type: SET_FAV_IDs, list });
   };
 };

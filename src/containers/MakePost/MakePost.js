@@ -1,22 +1,22 @@
-import React, { Component } from "react";
-import styles from "./MakePost.css";
-import NoteItem from "./NoteItem/NoteItem";
-import Button from "../../UI/Button/Button";
-import { addItem, updateItem } from "../../db_api/db_items";
-import Spinner from "../../UI/Spinner/Spinner";
-import { connect } from "react-redux";
-import { downloadFiles } from "../../db_api/db_items";
-import ImagesPanel from "./ImagesPanel/ImagesPanel";
-import ErrorBlock from "../Auth/ErrorBlock/ErrorBlock";
-import { addPost } from "../../store_redux/posts/posts";
-import Joi from "joi";
-import { add_Schema } from "./schema";
+import React, { Component } from 'react';
+import styles from './MakePost.css';
+import NoteItem from './NoteItem/NoteItem';
+import Button from '../../UI/Button/Button';
+import { addItem, updateItem } from '../../db_api/db_items';
+import Spinner from '../../UI/Spinner/Spinner';
+import { connect } from 'react-redux';
+import { downloadFiles } from '../../db_api/db_items';
+import ImagesPanel from './ImagesPanel/ImagesPanel';
+import ErrorBlock from '../Auth/ErrorBlock/ErrorBlock';
+import { addPost } from '../../store_redux/posts/posts';
+import Joi from 'joi';
+import { add_Schema } from './schema';
 let initialState = {
-  name: "",
+  name: '',
   notes: [],
   imgs: [],
   displayImgs: [],
-  price: "",
+  price: '',
   loading: false,
   succeed: false,
   error: false
@@ -28,7 +28,7 @@ const add_item_handler = async function(err, value, item, obj) {
     let result = await addItem(item);
     if (result.id) {
       obj.props.addPost(result.id);
-      obj.props.history.push("/my-posts");
+      obj.props.history.push('/my-posts');
     } else
       obj.setState({
         succeed: false,
@@ -70,7 +70,7 @@ const update_item_handler = async function(
         succeed: false,
         loading: false
       });
-    else obj.props.history.push("/my-posts");
+    else obj.props.history.push('/my-posts');
   }
 };
 const mps = state => ({
@@ -88,11 +88,11 @@ export default connect(
   class MakePost extends Component {
     mainImgRef = React.createRef();
     state = {
-      name: "",
+      name: '',
       notes: [],
       imgs: [],
       displayImgs: [],
-      price: "",
+      price: '',
       loading: false,
       succeed: false,
       error: false
@@ -101,7 +101,7 @@ export default connect(
     onSubmitHandler = async e => {
       e.preventDefault();
       const obj = this;
-      const mode = this.props.match.params["mode"];
+      const mode = this.props.match.params['mode'];
 
       obj.setState({ loading: true });
       //validation
@@ -114,7 +114,7 @@ export default connect(
         ...item
       } = this.state;
       item.imgs = [...item.imgs];
-      if (mode === "0")
+      if (mode === '0')
         Joi.validate(item, add_Schema, (err, value) =>
           add_item_handler(err, value, item, obj)
         );
@@ -132,7 +132,7 @@ export default connect(
     };
     onAddNoteHandler = () => {
       const list = [...this.state.notes];
-      list.push("");
+      list.push('');
       this.setState({ notes: list });
     };
     onNoteChangedHander = (e, index) => {
@@ -146,7 +146,7 @@ export default connect(
     onAddImgHandler = e => {
       const displayImgs = [...this.state.displayImgs];
       displayImgs.push(
-        "https://jessicahlawrence.files.wordpress.com/2014/03/plus_sign.png"
+        'https://jessicahlawrence.files.wordpress.com/2014/03/plus_sign.png'
       );
       this.setState({ displayImgs });
     };
@@ -190,9 +190,9 @@ export default connect(
     };
     componentDidMount = async () => {
       const mode = this.props.match.params.mode;
-      console.log("yo");
+
       const post = this.props.post;
-      if (mode === "0" || !post) return;
+      if (mode === '0' || !post) return;
       const imgs = await downloadFiles(post.imgs, post.id);
       post.displayImgs = imgs;
 
@@ -205,18 +205,18 @@ export default connect(
     };
     componentDidUpdate = (prevProps, prevState) => {
       if (
-        this.props.match.params.mode === "0" &&
-        prevProps.match.params.mode !== "0"
+        this.props.match.params.mode === '0' &&
+        prevProps.match.params.mode !== '0'
       )
         this.setState({ ...initialState });
     };
 
     render() {
       const mode = this.props.match.params.mode;
-      if (!this.state.name && mode !== "0") return <></>;
+      if (!this.state.name && mode !== '0') return <></>;
       const displaynotes = this.state.notes.map((item, index) => (
         <NoteItem
-          key={"yo" + index}
+          key={'yo' + index}
           index={index}
           deleteNote={this.onDeleteNoteHandler}
           noteChanged={this.onNoteChangedHander}
@@ -264,13 +264,13 @@ export default connect(
               <Button
                 type='button'
                 onClick={this.onClearNotesHandler}
-                style={{ backgroundColor: "red" }}>
+                style={{ backgroundColor: 'red' }}>
                 Clear Notes
               </Button>
               {displaynotes}
             </div>
-            <div style={{ width: "100%", margin: "auto" }}>
-              {mode !== "0" ? (
+            <div style={{ width: '100%', margin: 'auto' }}>
+              {mode !== '0' ? (
                 <ImagesPanel
                   imgFileChange={this.onImgFileChangeHandler}
                   displayImgs={this.state.displayImgs}
@@ -293,14 +293,14 @@ export default connect(
             {this.state.error && (
               <ErrorBlock
                 className={styles.errorSpan}
-                errMsg={"0" + this.state.error}
+                errMsg={'0' + this.state.error}
               />
             )}
             {this.state.loading ? (
               <Spinner />
             ) : (
               <div className={styles.submitBtnGroup}>
-                {mode === "0" ? (
+                {mode === '0' ? (
                   <>
                     <Button type='submit' className='btn succeed'>
                       Submit
@@ -313,7 +313,7 @@ export default connect(
                 ) : (
                   <>
                     <Button
-                      style={{ width: "100%" }}
+                      style={{ width: '100%' }}
                       type='submit'
                       className='btn succeed'>
                       Submit
