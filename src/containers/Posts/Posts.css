@@ -30,3 +30,12 @@
   cursor: pointer;
   filter: brightness(80%);
 }
+
+@media only screen and (max-width: 500px) {
+  .container *[id='Posts_id'] {
+    display: none;
+  }
+  .postRow {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}

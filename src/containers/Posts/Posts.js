@@ -12,6 +12,7 @@ import {
   setCurrentPost,
   startDeletingPost
 } from '../../store_redux/posts/posts';
+
 const mps = state => ({
   isStart: state.posts.isFirst,
   idList: state.posts.idList,
@@ -82,15 +83,18 @@ export default connect(
         <div className={classes.container}>
           <SearchBar searchActivated={this.onSearchHandler} />
           <Button
-            style={{ width: '20%', height: '40px', margin: '10px 0' }}
+            style={{
+              width: '20%',
+              margin: '10px 0'
+            }}
             onClick={this.onResetFilterHandler}
             className='btn succeed'>
-            reset search
+            Reset Search
           </Button>
           <div className={classes.postRow}>
             <strong>Title</strong>
             <strong>Last Update Time</strong>
-            <strong>Post Id</strong>
+            <strong id={'Posts_id'}>Post Id</strong>
             <strong>Operation</strong>
           </div>
           {this.props.loading ? <Spinner style={{ margin: 'auto' }} /> : list}

@@ -13,13 +13,13 @@ const schema = Joi.object().keys({
     .required()
     .error(new Error('0Email must be shorter than 30 characters')),
   pswd: Joi.string()
-    .regex(/(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$/)
+    .regex(/(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=.,`]).*$/)
     .min(8)
     .max(20)
     .required()
     .error(
       new Error(
-        '1Password must between 8 and 20 charactors, and must have at least one uppercase, one lowercase,one number, and one special charactoer'
+        '1Password must between 8 and 20 charactors, and must have at least one uppercase, one lowercase,one number, and one character of "@#$ %^&+=.,`"'
       )
     ),
   confirmPswd: Joi.ref('pswd'),

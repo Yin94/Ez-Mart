@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '../../../UI/Button/Button';
 import { timeStampToDate } from '../../../utility/time-convert';
+
 export default function PostBlock({ post, onClick, editPost, deletePost }) {
   const timeStamp = post.lastModifyTime;
   const time = timeStampToDate(timeStamp);
@@ -9,7 +10,7 @@ export default function PostBlock({ post, onClick, editPost, deletePost }) {
     <>
       <p {...{ onClick }}>{post.name}</p>
       <p>{time ? time.toDateString() : null}</p>
-      <p>{post.id}</p>
+      <p id={'Posts_id'}>{post.id}</p>
       <div>
         <Button
           onClick={editPost}
