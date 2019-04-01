@@ -44,8 +44,9 @@ export default function NavBar({ authed, logOut, searched, userName }) {
               onClick={logOut}
               activeClassName={styles.active}
               to='#'>
-              <p style={{ color: '#609D21', fontWeight: 'bold' }}>{userName}</p>
-              <small style={{ color: '#F71E0B' }}>Logout</small>
+              <p style={{ color: '#609D21' }}>
+                {userName ? userName : 'Logout'}
+              </p>
             </NavLink>
           </>
         ) : (
