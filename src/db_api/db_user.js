@@ -13,7 +13,7 @@ export async function fetchSavIds(uid) {
     querySnapshot.forEach(item => {
       result.push(item.data());
     });
-    //check if favlist exists.
+
     const idList = result[0] ? result[0].list : [];
     return idList;
   } catch (err) {}
@@ -23,7 +23,6 @@ export async function fetchSavList(idList, uid, isStart) {
   const savedItemResult = [];
 
   try {
-    // if is start
     if (isStart) {
       const querySnapshot = await db
         .collection('favorites')
@@ -32,7 +31,7 @@ export async function fetchSavList(idList, uid, isStart) {
       querySnapshot.forEach(item => {
         result.push(item.data());
       });
-      // check if favlist exists.
+
       idList = result[0] ? result[0].list : [];
     }
 
@@ -85,7 +84,7 @@ export async function manageFavItem(id, mode) {
   await savedArrayRef.update({
     list: mode ? field.arrayUnion(id) : field.arrayRemove(id)
   });
-  //update item savs count
+
   await upDateFavCount(id, mode);
 }
 
@@ -97,7 +96,7 @@ export async function fetchPostIDs() {
       .collection('posts')
       .where('uid', '==', uid)
       .get();
-    //user first time using posts
+
     if (!userRef.docs.length) {
       const initialDoc = { uid, list: [] };
       await db.collection('posts').add(initialDoc);

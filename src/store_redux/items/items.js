@@ -5,13 +5,15 @@ import PAGE_CAP from '../../utility/page_cap';
 var client = algoliasearch('RV8PWAHFSY', '064d6e4b07f954168530110ec18bbf8d');
 
 var searchIndex = client.initIndex('dev_ezMart_items');
-//reducer
+
 const initialState = {
   list: [],
   currentItem: null,
   error: false,
   loading: false,
   succeed: false,
+  isFirst: true,
+  count: 0,
   currentPage: 0
 };
 const setList = (state, list) => {
@@ -40,6 +42,12 @@ const favItemChanged = (state, id, mode) => {
 };
 const setLoadingHandler = state => combine(state, { loading: true });
 const setPage = (state, page) => combine(state, { currentItem: page });
+const flipFrist = state => {
+  const isFirst = !state.isFirst;
+  combine(state, { isFirst });
+};
+const setTotalCount = (state, count, filter) =>
+  combine(state, { count, filter });
 export default (state = initialState, action) => {
   switch (action.type) {
     case SET_LIST:
@@ -57,30 +65,41 @@ export default (state = initialState, action) => {
       return setLoadingHandler(state);
     case SET_CURRENT_PAGE:
       return setPage(state, action.page);
+    case FLIP_FIRST:
+      return flipFrist(state);
+    case SET_TOTAL_COUNT_AND_FILTER:
+      return setTotalCount(state, action.count, action.filter);
     default:
       return state;
   }
 };
-//actions
+
 const SET_LIST = 'items/SET_LIST';
+const FLIP_FIRST = 'items/FLIP_FIRST';
 const ITEMS_ERROR = 'items/ITEMS_ERROR';
 const SET_CURRENT_ITEM = 'items/SET_CURRENT_ITEM';
 const COMMIT_STATUS = 'items/COMMIT_STATUS';
 const SET_CURRENT_PAGE = 'items/SET_CURRENT_PAGE';
 const SET_LOADING = 'items/SET_LOADING';
+const SET_TOTAL_COUNT_AND_FILTER = 'items/SET_TOTAL_COUNT_AND_FILTER';
 export const FAV_COUNT_CHANGED = 'FAV_COUNT_CHANGED';
-//action creators
 
-export const startFetchingItems = (page, filter) => {
+export const startFetchingItems = (page, filter, isFirst) => {
   return async dispatch => {
+    let count = null;
     dispatch({ type: SET_LOADING });
+    if (isFirst) {
+      count = await searchIndex.search({ query: filter }, { hitsPerPage: 0 });
+      count = count.nbHits;
+
+      dispatch({ type: SET_TOTAL_COUNT_AND_FILTER, count, filter });
+    }
     searchIndex.search(
       { query: filter, page, hitsPerPage: PAGE_CAP },
       async function searchDone(error, content) {
         if (error) dispatch({ type: ITEMS_ERROR, error });
         else {
           const hits = [...content.hits];
-
           for (let item of hits) {
             const images = await downloadFiles(
               item.imgs,
@@ -89,6 +108,7 @@ export const startFetchingItems = (page, filter) => {
             );
             item.imgs[0] = images[0];
           }
+
           dispatch({ type: SET_LIST, list: hits });
         }
       }
@@ -99,7 +119,6 @@ export const startFetchingItems = (page, filter) => {
 export const startFetchingItem = (id, itemRef) => {
   return async dispatch => {
     if (itemRef) {
-      // cuz  call by ref, have to create a new item, otherwise line61 will change state in store.
       const item = { ...itemRef };
       if (!itemRef.downloadAllImgs) {
         const [coverImg, ...toBeDownload] = item.imgs;

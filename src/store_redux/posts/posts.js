@@ -1,6 +1,6 @@
-import combine from "../../utility/combine";
-import { fetchPosts, fetchPostIDs } from "../../db_api/db_user";
-import { deleteItem } from "../../db_api/db_items";
+import combine from '../../utility/combine';
+import { fetchPosts, fetchPostIDs } from '../../db_api/db_user';
+import { deleteItem } from '../../db_api/db_items';
 
 const initialState = {
   list: [],
@@ -68,18 +68,18 @@ export default (state = initialState, action) => {
   }
 };
 
-const SET_LIST = "posts/SET_LIST";
-const SET_CURRENT_POST = "posts/SET_CURRENT_POST";
-const ADD_POST = "posts/ADD_POST";
-const POSTS_ERROR = "posts/POSTS_ERROR";
-const COMMIT_STATUS = "posts/COMMIT_STATUS";
-const DELETE_POST = "posts/DELETE_ITEM";
-const SET_LOADING = "posts/SET_LOADING";
-export const USER_SWITCHED = "posts/USER_SWITCHED";
-//action creators
+const SET_LIST = 'posts/SET_LIST';
+const SET_CURRENT_POST = 'posts/SET_CURRENT_POST';
+const ADD_POST = 'posts/ADD_POST';
+const POSTS_ERROR = 'posts/POSTS_ERROR';
+const COMMIT_STATUS = 'posts/COMMIT_STATUS';
+const DELETE_POST = 'posts/DELETE_ITEM';
+const SET_LOADING = 'posts/SET_LOADING';
+export const USER_SWITCHED = 'posts/USER_SWITCHED';
+
 export const startFetchingPosts = (isFirst, localIdList) => {
   return async dispatch => {
-    dispatch({ type: "posts/SET_LOADING" });
+    dispatch({ type: 'posts/SET_LOADING' });
     let idList = [...localIdList];
     let list = [];
     if (isFirst) idList = await fetchPostIDs();
@@ -91,8 +91,6 @@ export const startFetchingPosts = (isFirst, localIdList) => {
   };
 };
 export function setCurrentPost(item) {
-  // {name,}
-
   const post = {
     ...item,
     displayImgs: []

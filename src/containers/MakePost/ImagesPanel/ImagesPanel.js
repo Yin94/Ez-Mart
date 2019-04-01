@@ -3,7 +3,7 @@ import Gallery from '../../../components/Gallery/Gallery';
 import styles from '../../ItemDetail/Item.css';
 
 import Button from '../../../UI/Button/Button';
-// import moduleName from "";
+
 export default function ImagesPanel({
   imgs,
   displayImgs,

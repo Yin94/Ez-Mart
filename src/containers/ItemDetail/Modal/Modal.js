@@ -1,8 +1,8 @@
-import React from "react";
-import PropTypes from "prop-types";
-import styles from "./Modal.css";
-import ClosingTag from "../../../UI/ClosingTag/ClosingTag";
-import NavArrow from "../../../UI/NavArrow/NavArrow";
+import React from 'react';
+import PropTypes from 'prop-types';
+import styles from './Modal.css';
+import ClosingTag from '../../../UI/ClosingTag/ClosingTag';
+import NavArrow from '../../../UI/NavArrow/NavArrow';
 function Modal({
   imgs,
   index,
@@ -16,15 +16,15 @@ function Modal({
   let displayNav = [
     <NavArrow
       id='left'
-      key={"left"}
+      key={'left'}
       onClick={onSwitchImg}
-      orientation={"left"}
+      orientation={'left'}
     />,
     <NavArrow
       id='right'
-      key={"right"}
+      key={'right'}
       onClick={onSwitchImg}
-      orientation={"right"}
+      orientation={'right'}
     />
   ];
   if (index === listLength - 1) displayNav.pop();
@@ -39,7 +39,6 @@ function Modal({
   ) : null;
 }
 
-//
 Modal.propTypes = {
   img: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
@@ -50,6 +49,6 @@ Modal.defaultProps = {
   listLength: 5,
 
   img:
-    "https://external-preview.redd.it/DawO9IaFnqzr214G_g3hnQTrk01Gk4MY1z8qXSk6I_M.jpg?auto=webp&s=787392ee1ec8231441cfdb02c9b5b6a3c612846b"
+    'https://external-preview.redd.it/DawO9IaFnqzr214G_g3hnQTrk01Gk4MY1z8qXSk6I_M.jpg?auto=webp&s=787392ee1ec8231441cfdb02c9b5b6a3c612846b'
 };
 export default Modal;

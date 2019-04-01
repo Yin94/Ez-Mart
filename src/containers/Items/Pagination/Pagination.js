@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './Pagination.css';
 import Button from '../../../UI/Button/Button';
 import MainSpan from './MainSpan';
-//should be 6*3
+
 import PAGE_CAP from '../../../utility/page_cap';
 
 export default function Pagination({ totalCount, pageSelected, currentPage }) {

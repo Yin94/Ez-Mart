@@ -2,7 +2,7 @@ import { fetchSavIds, fetchSavList, manageFavItem } from '../../db_api/db_user';
 import { getCurrentUser } from '../../db_api/db_auth';
 import combine from '../../utility/combine';
 import { FAV_COUNT_CHANGED } from '../items/items';
-//reducer
+
 const initialState = {
   list: [],
   idList: [],
@@ -19,7 +19,6 @@ const resetStatus = state =>
 const manageItem = (state, id, mode) => {
   let idList = [...state.idList];
   let list = [...state.list];
-  // const idList = mode ? newList.push(id) : newList.filter(item => item !== id);
 
   if (mode == true) {
     idList.push(id);
@@ -60,7 +59,7 @@ const MANAGE_ITEM = 'favorites/MANAGE_ITEM';
 const SET_FAV_IDs = 'favorites/SET_FAV_IDs';
 const SET_LOADING = 'favorites/SET_LOADING';
 export const USER_SWITCHED_FAV = 'favorites/USER_SWITCHED_FAV';
-//action creators
+
 export const startFetchingFavs = (idList, isStart) => {
   return async dispatch => {
     dispatch({ type: SET_LOADING });

@@ -2,7 +2,7 @@ import ItemList from './ItemList/ItemList';
 import React, { Component } from 'react';
 import { startManageFavItem } from '../../store_redux/user/favorites';
 import { withRouter } from 'react-router-dom';
-import Loader from '../../UI/Spinner/Loader3Color/Loader3Color';
+import Loader from '../../UI/Spinner/LoaderSpinDots/LoaderSpinDots';
 import Pagination from './Pagination/Pagination';
 import styles from './Items.css';
 import {
@@ -16,12 +16,16 @@ const mps = state => ({
   totalCount: state.items.count,
   favs: state.favorites.idList,
   curPage: state.items.currentPage,
+  isFirst: state.items.isFirst,
   authed: state.auth.authed,
   error: state.favorites.error,
-  loading: state.items.loading
+  loading: state.items.loading,
+  count: state.items.count,
+  filter: state.items.filter
 });
 const mpd = dispatch => ({
-  startFetchItems: (page, filter) => dispatch(startFetchingItems(page, filter)),
+  startFetchItems: (page, filter, isFirst) =>
+    dispatch(startFetchingItems(page, filter, isFirst)),
   setCurrentItem: item => dispatch(setCurrentItem(item)),
 
   manageFavItem: (id, mode) => dispatch(startManageFavItem(id, mode))
@@ -40,7 +44,7 @@ export default withRouter(
       onPageHandler = page => {
         page = parseInt(page) - 1;
         this.setState({ curPage: page + 1 }, () =>
-          this.props.startFetchItems(page, '')
+          this.props.startFetchItems(page, this.props.filter)
         );
       };
       itemSelectedHandler = index => {
@@ -53,8 +57,7 @@ export default withRouter(
       };
 
       componentDidMount = () => {
-        //TODO: add pagination logic here
-        this.props.startFetchItems(0, '');
+        this.props.startFetchItems(0, '', true);
       };
 
       render() {
@@ -66,12 +69,13 @@ export default withRouter(
               authed={this.props.authed}
               list={this.props.list}
               userfavLsit={this.props.favs}
+              favLimit={this.props.favs.length < 18}
               itemSelected={this.itemSelectedHandler}
               favoriteClicked={this.onSavHandler}
             />
 
             <Pagination
-              totalCount={11}
+              totalCount={this.props.count}
               pageSelected={this.onPageHandler}
               currentPage={this.state.curPage}
             />

@@ -4,7 +4,7 @@ import Button from '../../../UI/Button/Button';
 import SellerNote from './SellerNote/SellerNote';
 import { fetchItemPublisher } from '../../../db_api/db_items';
 import { timeStampToDate } from '../../../utility/time-convert';
-// import moduleName from 'module'
+
 async function fetchContactData(id) {
   return await fetchItemPublisher(id);
 }
@@ -15,10 +15,9 @@ export default function ItemDescrip({
   saveBtnDisabled = true,
   ...itemProps
 }) {
-  const { name, price, notes, publisher, lastModifyTime } = itemProps;
+  const { name, price, notes, publisher, lastModifyTime, favLimit } = itemProps;
   const [showContact, contactClicked] = useState(false);
   const [pubInfo, getPubInfo] = useState(null);
-
   const date = timeStampToDate(lastModifyTime);
   const dateString = date ? date.toDateString() : null;
 
@@ -46,6 +45,10 @@ export default function ItemDescrip({
         {favBtnFlag ? (
           <Button disabled={saveBtnDisabled} onClick={() => onSave(favBtnFlag)}>
             Unsave
+          </Button>
+        ) : favLimit ? (
+          <Button disabled={true} onClick={() => onSave(favBtnFlag)}>
+            non-premium user only can save 18 items
           </Button>
         ) : (
           <Button disabled={saveBtnDisabled} onClick={() => onSave(favBtnFlag)}>

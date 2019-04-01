@@ -62,6 +62,9 @@
   .container {
     grid-row-gap: 10px;
   }
+}
+
+@media only screen and (max-width: 900px) {
   .btnGroup {
     grid-template-columns: auto;
     width: 80%;

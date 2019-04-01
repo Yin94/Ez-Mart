@@ -6,6 +6,7 @@ export default function ItemList({
   itemSelected,
   userfavLsit,
   favoriteClicked,
+  favLimit,
   authed
 }) {
   const disList = list.map((item, index) => (
@@ -13,7 +14,7 @@ export default function ItemList({
       key={item.id + index}
       itemSelected={() => itemSelected(index)}
       favoriteClicked={favoriteClicked}
-      {...{ item, userfavLsit, authed }}
+      {...{ item, userfavLsit, authed, favLimit }}
     />
   ));
   return <div className={styles.container}>{disList}</div>;

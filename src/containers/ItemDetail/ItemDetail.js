@@ -1,16 +1,16 @@
-import React, { Component } from "react";
-import styles from "./Item.css";
-import Gallery from "../../components/Gallery/Gallery";
-import ItemDescrip from "./ItemDescrip/ItemDescrip";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import React, { Component } from 'react';
+import styles from './Item.css';
+import Gallery from '../../components/Gallery/Gallery';
+import ItemDescrip from './ItemDescrip/ItemDescrip';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
-import { startManageFavItem } from "../../store_redux/user/favorites";
-import Modal from "./Modal/Modal";
+import { startManageFavItem } from '../../store_redux/user/favorites';
+import Modal from './Modal/Modal';
 import {
   startFetchingItem,
   commitItemsStatusAndItem
-} from "../../store_redux/items/items";
+} from '../../store_redux/items/items';
 
 const mps = state => ({
   item: state.items.currentItem,
@@ -40,7 +40,7 @@ export default withRouter(
       };
       onSwitchModalPicHandler = e => {
         let imgIndex = this.state.imgIndex;
-        imgIndex = e.target.id === "left" ? imgIndex - 1 : imgIndex + 1;
+        imgIndex = e.target.id === 'left' ? imgIndex - 1 : imgIndex + 1;
 
         this.setState({ imgIndex });
       };
@@ -52,19 +52,18 @@ export default withRouter(
       };
       onSaveHandler = async (id, mode) => {
         this.props.manageFavs(id, !mode);
-        // this.setState({})
       };
       onModalKeyPressHandler = (e, item) => {
         const key = e.keyCode;
         if (key === 27) this.onCloseModalHandler();
         if (key === 37 && this.state.imgIndex !== 0)
-          this.onSwitchModalPicHandler({ target: { id: "left" } });
+          this.onSwitchModalPicHandler({ target: { id: 'left' } });
         if (key === 39 && this.state.imgIndex !== item.imgs.length - 1)
-          this.onSwitchModalPicHandler({ target: { id: "right" } });
+          this.onSwitchModalPicHandler({ target: { id: 'right' } });
       };
       componentDidMount = () => {
         window.addEventListener(
-          "keyup",
+          'keyup',
           e => this.onModalKeyPressHandler(e, this.props.item),
           false
         );
@@ -74,7 +73,7 @@ export default withRouter(
       };
       componentWillUnmount = () => {
         this.props.commitStatus();
-        window.removeEventListener("keyup", this.onCloseModalHandler, false);
+        window.removeEventListener('keyup', this.onCloseModalHandler, false);
       };
 
       render() {
@@ -93,6 +92,7 @@ export default withRouter(
         const favBtnFlag =
           this.props.favIdList.findIndex(ele => ele === id) !== -1;
 
+        const favLimit = this.props.favIdList.length >= 18;
         return (
           <>
             <Modal
@@ -127,7 +127,8 @@ export default withRouter(
                   publisher,
                   favBtnFlag,
                   lastModifyTime,
-                  saveBtnDisabled
+                  saveBtnDisabled,
+                  favLimit
                 }}
                 className={styles.details}
               />

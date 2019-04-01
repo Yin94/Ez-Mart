@@ -23,8 +23,6 @@ let initialState = {
 };
 const add_item_handler = async function(err, value, item, obj) {
   if (!err) {
-    //validate succeed
-
     let result = await addItem(item);
     if (result.id) {
       obj.props.addPost(result.id);
@@ -36,7 +34,6 @@ const add_item_handler = async function(err, value, item, obj) {
         error: result
       });
   } else {
-    // validate failed
     obj.setState({
       succeed: false,
       loading: false,
@@ -104,7 +101,7 @@ export default connect(
       const mode = this.props.match.params['mode'];
 
       obj.setState({ loading: true });
-      //validation
+
       const {
         succeed,
         loading,
@@ -119,7 +116,6 @@ export default connect(
           add_item_handler(err, value, item, obj)
         );
       else {
-        //update item
         Joi.validate(item, add_Schema, (err, value) =>
           update_item_handler(err, value, item, this.props.post, obj)
         );
@@ -166,7 +162,6 @@ export default connect(
         var reader = new FileReader();
 
         reader.onload = function(e) {
-          //set the img list
           const imgs = [...this.state.imgs];
           const displayImgs = [...this.state.displayImgs];
           displayImgs[index] = e.target.result;

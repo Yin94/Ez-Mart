@@ -18,3 +18,12 @@ export async function authWiwthEmailAndPswd(form, mode) {
   }
 }
 export const getCurrentUser = () => auth.currentUser;
+
+export async function resetPswd(email) {
+  try {
+    await auth.sendPasswordResetEmail(email);
+    return null;
+  } catch (err) {
+    return err.message;
+  }
+}

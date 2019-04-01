@@ -1,7 +1,7 @@
 import { db, fileStorage } from '../firebase/apps/apps';
 import { getCurrentUser } from './db_auth';
 import firebase from 'firebase';
-// query Item and download images
+
 export async function queryItem(id) {
   const result = [];
   try {
@@ -32,7 +32,7 @@ export async function addItem(item) {
   try {
     docRef = await db.collection('items').add(form);
     await upLoadFiles(imgs, docRef.id);
-    // an obj created in algolia this
+
     await docRef.update({
       id: docRef.id
     });
@@ -43,16 +43,15 @@ export async function addItem(item) {
     let docId;
     postsRef.forEach(doc => (docId = doc.id));
     var posts = db.collection('posts').doc(docId);
-    // Atomically add a new region to the "regions" array field.
+
     await posts.update({
       list: firebase.firestore.FieldValue.arrayUnion(docRef.id)
     });
     return { id: docRef.id };
   } catch (error) {
-    //keep data integrety
     try {
       await docRef.delete();
-      // delete uploaded imgs
+
       return 'error on uploading images, transaction discarded';
     } catch (error) {
       return 'error on uploading images, delete databse item failed';
@@ -88,20 +87,19 @@ export async function updateItem(formItem, tbd_Imgs, tba_Imgs) {
       ...item
     });
     const storageRef = fileStorage.ref().child('images/items/' + item.id + '/');
-    // deleting  imgs
+
     tbd_Imgs.forEach(async ele => {
       const imgRef = storageRef.child(ele);
       await imgRef.delete();
     });
 
-    //uploading  imgs
     for (let ele of tba_Imgs) {
       const imgRef = storageRef.child(ele.name);
       await imgRef.put(ele);
       const index = imgs.indexOf(ele);
       imgs[index] = ele.name;
     }
-    //update img-list
+
     await docRef.update({
       imgs
     });
@@ -112,13 +110,10 @@ export async function updateItem(formItem, tbd_Imgs, tba_Imgs) {
   }
 }
 
-//
 async function upLoadFiles(files, itemId) {
-  // Create a root reference
   const pathArray = [];
   var storageRef = fileStorage.ref();
 
-  // Create a reference to 'mountains.jpg'
   for (let file of files) {
     const fileRef = storageRef.child(
       'images/items/' + itemId + '/' + file.name
@@ -162,7 +157,6 @@ export async function upDateFavCount(id, mode) {
   const docRef = await db.collection('items').doc(id);
 
   db.runTransaction(function(transaction) {
-    // This code may get re-run multiple times if there are conflicts.
     return transaction.get(docRef).then(function(sfDoc) {
       if (!sfDoc.exists) {
         throw 'Document does not exist!';

@@ -1,27 +1,29 @@
-import React from "react";
-import styles from "./ListItem.css";
-import Button from "../../../UI/Button/Button";
-import { Link } from "react-router-dom";
+import React from 'react';
+import styles from './ListItem.css';
+import Button from '../../../UI/Button/Button';
+import { Link } from 'react-router-dom';
 
 export default function ListItem({
   itemSelected,
   userfavLsit,
   item,
   favoriteClicked,
-  authed
+  authed,
+  favLimit
 }) {
   const { name, imgs, price, id, favs } = item;
 
   let btnDisabled = false,
-    title = "";
+    title = '';
   let flag = null;
   if (!authed) {
     flag = -1;
     btnDisabled = true;
-    title = "Pleas signin first!";
+    title = 'Pleas signin first!';
   } else {
     flag = userfavLsit.findIndex(yo => yo === id);
   }
+
   return (
     <div className={styles.container}>
       <div className={styles.imgContainer}>
@@ -31,14 +33,18 @@ export default function ListItem({
           <Button onClick={() => favoriteClicked(id, false)} name='left'>
             UnSave
           </Button>
-        ) : (
+        ) : favLimit ? (
           <Button
             disabled={btnDisabled}
-            id={btnDisabled ? "disabled" : "active"}
+            id={btnDisabled ? 'disabled' : 'active'}
             title={title}
             onClick={() => favoriteClicked(id, true)}
             name='left'>
             Save
+          </Button>
+        ) : (
+          <Button style={{ fontSize: '0.5em' }} name='left' disabled={true}>
+            Upgrade to premium to save more
           </Button>
         )}
 
@@ -52,7 +58,7 @@ export default function ListItem({
       </div>
 
       <p>
-        <Link to={"/item/" + id + "/" + true}>{name}</Link>
+        <Link to={'/item/' + id + '/' + true}>{name}</Link>
       </p>
     </div>
   );

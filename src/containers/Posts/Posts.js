@@ -93,7 +93,7 @@ export default connect(
             <strong>Post Id</strong>
             <strong>Operation</strong>
           </div>
-          {this.props.loading ? <Spinner /> : list}
+          {this.props.loading ? <Spinner style={{ margin: 'auto' }} /> : list}
         </div>
       );
     }

@@ -59,7 +59,6 @@ export default connect(
         item.name.toLowerCase().includes(this.state.filter.toLocaleLowerCase())
       );
 
-      //get items via ids,  1 part from loadedItemList, one part from server
       return (
         <div>
           <FavHead
